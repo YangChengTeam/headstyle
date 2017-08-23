@@ -1,0 +1,128 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/create_bg"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:gravity="center">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/create_top_icon"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginTop="60dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:background="@drawable/create_boder_bg"
+            android:gravity="center">
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/square_head_image"
+                android:layout_width="135dp"
+                android:layout_height="135dp"
+                android:scaleType="fitXY"
+                fresco:placeholderImage="@mipmap/example_square"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginLeft="10dp"
+            android:gravity="center">
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/circle_head_image"
+                android:layout_width="146dp"
+                android:layout_height="146dp"
+                fresco:roundedCornerRadius="5dp"
+                fresco:roundBottomLeft="false"
+                fresco:roundBottomRight="false"
+                fresco:roundWithOverlayColor="@color/white"
+                fresco:roundingBorderWidth="3dp"
+                fresco:roundingBorderColor="@color/more_line_color"
+                fresco:placeholderImage="@mipmap/example_square"
+                fresco:roundAsCircle="true"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/select_photo_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/select_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@mipmap/select_photo"
+                android:gravity="center"
+                android:text="选择图片"
+                android:textColor="@color/white"/>
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@mipmap/select_photo_left_icon"/>
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/edit_photo_layout"
+        android:layout_width="225dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp">
+
+        <LinearLayout
+            android:layout_width="190dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/edit_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@mipmap/edit_photo"
+                android:gravity="center"
+                android:text="编辑图片"
+                android:textColor="@color/colorPrimary"/>
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|right"
+            android:src="@mipmap/edit_photo_right_icon"/>
+    </FrameLayout>
+
+</LinearLayout>

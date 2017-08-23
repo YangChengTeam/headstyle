@@ -1,0 +1,28 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    android:background="@drawable/common_boder_bg">
+
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/photo"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:scaleType="fitXY"
+        fresco:placeholderImage="@mipmap/show_add_default_icon"
+        fresco:viewAspectRatio="1"
+        />
+
+    <ImageView
+        android:id="@+id/show_photo_delete_iv"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_gravity="right"
+        android:src="@mipmap/photo_delete_icon"
+        android:layout_margin="1dp"
+        android:visibility="gone"/>
+</FrameLayout>

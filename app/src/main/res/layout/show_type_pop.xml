@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="100dp"
+              android:layout_height="91dp"
+              android:background="@drawable/common_boder_bg"
+              android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/take_photo_self_tv"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:gravity="center"
+        android:text="@string/take_photo_self_text"
+        android:textColor="@color/forget_text_color"
+        android:textSize="16sp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/pop_line_color"></View>
+
+    <TextView
+        android:id="@+id/chat_tv"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:gravity="center"
+        android:text="@string/chat_text"
+        android:textColor="@color/forget_text_color"
+        android:textSize="16sp"/>
+</LinearLayout>

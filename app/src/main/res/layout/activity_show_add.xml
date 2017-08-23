@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/show_top_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/colorPrimary"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/back_image"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:src="@drawable/back_selector"/>
+
+        <TextView
+            android:id="@+id/title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:text="@string/add_show_text"
+            android:textColor="@color/white"
+            android:textSize="20sp"/>
+
+        <!--<LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/show_type_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableRight="@mipmap/show_down_icon"
+                android:gravity="center"
+                android:text="@string/take_photo_self_text"
+                android:textColor="@color/white"/>
+        </LinearLayout>-->
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/show_content_layout"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/common_boder_bg"
+                android:layout_margin="10dp"
+                android:orientation="vertical">
+
+                <EditText
+                    android:id="@+id/show_content_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:background="@null"
+                    android:focusable="true"
+                    android:gravity="top"
+                    android:hint="@string/show_tip_text"
+                    android:maxLength="200"
+                    android:padding="5dp"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/line_color"
+                    android:textSize="16sp"/>
+
+                <!--<View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/pop_line_color"></View>-->
+            </LinearLayout>
+
+            <!--<GridView
+                android:id="@+id/show_type_photo_grid_view"
+                android:layout_margin="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="140dp"
+                android:columnWidth="@dimen/show_thumbnail_size"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:horizontalSpacing="@dimen/show_thumbnail_spacing"
+                android:numColumns="auto_fit"
+                android:stretchMode="columnWidth"
+                android:verticalSpacing="@dimen/image_thumbnail_spacing"></GridView>-->
+
+            <!--<Button
+                android:id="@+id/select_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="选择图片"/>-->
+
+            <cn.finalteam.galleryfinal.widget.HorizontalListView
+                android:id="@+id/lv_photo"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="10dp"
+                android:cacheColorHint="@android:color/transparent"
+                android:clipToPadding="false"
+                android:fadingEdge="none"
+                android:horizontalSpacing="5dp"
+                android:numColumns="3"
+                android:verticalSpacing="2dp"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="16dp">
+
+                <Button
+                    android:id="@+id/send_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="@drawable/common_selector"
+                    android:text="@string/send_text"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!--<LinearLayout
+            android:id="@+id/show_type_select_layout"
+            android:layout_width="100dp"
+            android:layout_height="91dp"
+            android:layout_gravity="right"
+            android:background="@drawable/common_boder_bg"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/take_photo_self_tv"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:gravity="center"
+                android:text="@string/take_photo_self_text"
+                android:textColor="@color/forget_text_color"
+                android:textSize="16sp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/pop_line_color"></View>
+
+            <TextView
+                android:id="@+id/chat_tv"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:gravity="center"
+                android:text="@string/chat_text"
+                android:textColor="@color/forget_text_color"
+                android:textSize="16sp"/>
+        </LinearLayout>-->
+    </FrameLayout>
+</LinearLayout>

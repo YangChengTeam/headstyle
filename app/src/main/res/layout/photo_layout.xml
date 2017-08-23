@@ -1,0 +1,18 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/photo"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:scaleType="fitXY"
+        fresco:placeholderImage="@mipmap/empty_photo"
+        fresco:viewAspectRatio="1"
+        />
+
+</RelativeLayout>

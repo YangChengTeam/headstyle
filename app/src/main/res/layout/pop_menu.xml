@@ -1,0 +1,45 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/menu_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="right"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/menu_item_layout"
+        android:layout_width="150dp"
+        android:layout_height="130dp"
+        android:layout_gravity="right"
+        android:layout_marginTop="30dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/take_photo_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:drawableLeft="@mipmap/take_photo_icon"
+            android:drawablePadding="5dp"
+            android:gravity="center"
+            android:text="@string/take_photo_self_text"
+            android:textColor="@color/white"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/chat_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:drawableLeft="@mipmap/qq_friend_icon"
+            android:drawablePadding="5dp"
+            android:gravity="center"
+            android:text="@string/chat_text"
+            android:textColor="@color/white"
+            android:textSize="16sp"/>
+    </LinearLayout>
+
+</RelativeLayout>

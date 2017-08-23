@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#fb5161</color>
+    <color name="colorPrimaryDark">#fb5161</color>
+    <color name="colorAccent">#fb5161</color>
+    <color name="white">#ffffffff</color>
+
+    <color name="tab_text_selected">#fb5161</color>
+    <color name="tab_text_normal">#999999</color>
+
+    <drawable name="btn_selected">#d1e35555</drawable>
+    <drawable name="btn_normal">#d1fb5161</drawable>
+
+    <color name="home_bg">#f2edec</color>
+    <color name="black">#000000</color>
+    <color name="refresh_color">#999999</color>
+
+    <color name="common_color">#f2f2f2</color>
+    <color name="input_bg_color">#e8e8e8</color>
+    <color name="colorPrimary_below">#f28989</color>
+    <color name="register_text_color">#3385ff</color>
+    <color name="register_select_text_color">#999999</color>
+    <color name="forget_text_color">#555555</color>
+    <color name="line_color">#cccccc</color>
+    <color name="quick_text_color">#a5a5a5</color>
+    <color name="more_line_color">#eeeeee</color>
+    <color name="refresh_normal_color">#999999</color>
+    <color name="refresh_select_color">#f28989</color>
+
+    <color name="my_color">#333333</color>
+    <color name="my_bg_color">#f2edec</color>
+
+    <color name="dialog_title_color">#212121</color>
+    <color name="dialog_content_color">#757575</color>
+    <color name="pop_line_color">#f2f2f2</color>
+
+    <color name="image_list_bg_color">#4D4D4D</color>
+
+    <color name="ripple_bg_color">#ffcccccc</color>
+    <color name="loading_color">#d1fb5161</color>
+    <color name="tab_line_color">#ff8989</color>
+
+    <color name="article_line_color">#F8F8F8</color>
+
+    <color name="black_alpha_12">#1F000000</color>
+    <color name="black_alpha_30">#DFFFFFFF</color>
+
+    <color name="black_alpha_50">#B0000000</color>
+</resources>

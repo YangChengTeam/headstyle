@@ -1,0 +1,131 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/top_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/colorPrimary"
+        android:orientation="vertical">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/user_img"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="8dp"
+            fresco:placeholderImage="@mipmap/user_default_icon"
+            fresco:roundAsCircle="true"/>
+
+        <TextView
+            android:id="@+id/top_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:text="@string/tab_show_text"
+            android:textColor="@color/white"
+            android:textSize="20sp"/>
+
+        <ImageView
+            android:id="@+id/show_add_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/common_btn_selector"
+            android:paddingBottom="10dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="10dp"
+            android:paddingTop="10dp"
+            android:src="@mipmap/show_edit_normal_icon"/>
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/show_tabs_layout"
+                style="@style/MyCustomTabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tabSelectedTextColor="@color/colorPrimary"
+                app:tabTextColor="@color/my_color"/>
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/view_pager"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+            </android.support.v4.view.ViewPager>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/menu_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#00000000"
+            android:visibility="invisible">
+
+            <View
+                android:id="@+id/ground_view"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:background="@drawable/ground_oval"
+                android:visibility="invisible"/>
+
+            <RelativeLayout
+                android:id="@+id/menu_item_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginRight="20dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/qq_friend_tv"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="50dp"
+                    android:clickable="true"
+                    android:drawableLeft="@mipmap/qq_friend_icon"
+                    android:drawablePadding="4dp"
+                    android:gravity="center"
+                    android:text="@string/qq_friend_text"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:id="@+id/take_photo_tv"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@+id/qq_friend_tv"
+                    android:layout_marginTop="25dp"
+                    android:clickable="true"
+                    android:drawableLeft="@mipmap/take_photo_icon"
+                    android:drawablePadding="6dp"
+                    android:gravity="center"
+                    android:text="@string/take_photo_self_text"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"/>
+            </RelativeLayout>
+
+        </LinearLayout>
+    </FrameLayout>
+</LinearLayout>

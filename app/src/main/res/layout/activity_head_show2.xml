@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/title_layout"
+        layout="@layout/common_title"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/title_layout"
+        android:background="@color/home_bg"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="80dp"
+            android:layout_weight="1"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="50dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp">
+
+            <TextView
+                android:id="@+id/qq_auth_login_btn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawablePadding="10dp"
+                android:drawableTop="@drawable/qq_login_selector"
+                android:gravity="center"
+                android:text="设为QQ头像"
+                android:textColor="@color/black"/>
+
+            <TextView
+                android:id="@+id/keep_head_img"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawablePadding="10dp"
+                android:drawableTop="@drawable/keep_selector"
+                android:gravity="center"
+                android:text="收藏"
+                android:textColor="@color/black"/>
+
+            <TextView
+                android:id="@+id/down_img"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawablePadding="10dp"
+                android:drawableTop="@drawable/down_selector"
+                android:gravity="center"
+                android:text="下载"
+                android:textColor="@color/black"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

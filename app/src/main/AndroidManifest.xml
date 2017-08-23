@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.feiyou.headstyle"
+          android:versionCode="18"
+          android:versionName="2.5.2">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_LOGS" />
+    <!--<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />-->
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.SET_DEBUG_APP" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+    !-- 在sdcard中创建/删除文件的权限 -->
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <!-- 请求访问使用照相设备 -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <!-- 开启闪光灯权限 -->
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-feature android:name="android.hardware.camera.flash" />
+
+    <application
+        tools:replace="android:icon,android:theme"
+        android:name=".HeadStyleApplication"
+        android:icon="@drawable/logo"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:allowBackup="true"
+        android:hardwareAccelerated="true"
+        android:largeHeap="true">
+        <activity
+            android:name=".ui.activity.SplashActivity"
+            android:theme="@style/splash">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.activity.MainActivity"
+            android:theme="@style/CommonTheme">
+        </activity>
+        <activity
+            android:name=".ui.activity.HeadListActivity"
+            android:theme="@style/CommonTheme">
+        </activity>
+        <activity
+            android:name=".ui.activity.HeadShowActivity"
+            android:theme="@style/CommonTheme">
+        </activity>
+        <activity
+            android:name=".ui.activity.HeadShow1Activity"
+            android:theme="@style/CommonTheme">
+        </activity>
+        <activity
+            android:name=".ui.activity.HeadCreateShowActivity"
+            android:theme="@style/CommonTheme">
+        </activity>
+        <activity
+            android:name=".ui.activity.LoginActivity"
+            android:theme="@style/CommonTheme">
+        </activity>
+
+        <activity
+            android:name=".ui.activity.RegisterActivity"
+            android:theme="@style/CommonTheme">
+        </activity>
+
+        <activity
+            android:name=".ui.activity.MoreHeadTypeActivity"
+            android:theme="@style/CommonTheme">
+        </activity>
+
+        <activity
+            android:name=".ui.activity.ImageCropActivity"
+            android:theme="@style/CommonTheme">
+        </activity>
+
+        <activity
+            android:name=".ui.activity.SearchActivity"
+            android:theme="@style/CommonTheme">
+        </activity>
+
+        <activity
+            android:name=".ui.activity.SearchListActivity"
+            android:theme="@style/CommonTheme">
+        </activity>
+        <activity
+            android:name=".ui.activity.KeepListActivity"
+            android:theme="@style/CommonTheme">
+        </activity>
+
+        <activity
+            android:name=".ui.activity.ShowAddActivity"
+            android:theme="@style/CommonTheme">
+        </activity>
+
+        <activity
+            android:name=".ui.activity.ShowDetailActivity"
+            android:theme="@style/CommonTheme">
+        </activity>
+        <activity
+            android:name=".ui.activity.ShowImageListActivity"
+            android:theme="@style/imageShow">
+        </activity>
+
+        <activity
+            android:name=".ui.activity.MyArticleActivity"
+            android:theme="@style/CommonTheme">
+        </activity>
+
+        <activity
+            android:name=".ui.activity.MyCreateListActivity"
+            android:theme="@style/CommonTheme">
+        </activity>
+
+        <activity
+            android:name=".ui.activity.AboutActivity"
+            android:theme="@style/CommonTheme">
+        </activity>
+
+        <activity
+            android:name=".ui.activity.ArticleDetailActivity"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/CommonThemeBack">
+        </activity>
+
+        <activity
+            android:name="com.tencent.open.yyb.AppbarActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <activity android:name="com.tencent.connect.avatar.ImageActivity" />
+
+        <activity
+            android:name="com.umeng.socialize.editorpage.ShareActivity"
+            android:theme="@style/Theme.UMDefault"
+            android:excludeFromRecents="true"/>
+
+        <activity
+            android:name="org.lasque.tusdk.impl.activity.TuFragmentActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+
+        <service android:name=".net.service.UpdateService"></service>
+        <service android:name=".net.service.DownFightService"></service>
+        <service android:name=".net.service.DownLsddService"></service>
+        <activity
+            android:name="com.feiyou.headstyle.wxapi.WXEntryActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="57ccc92867e58e1e9e000763" >
+        </meta-data>
+
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="liurenjun">
+        </meta-data>
+
+        <activity
+            android:name="com.tencent.tauth.AuthActivity"
+            android:launchMode="singleTask"
+            android:noHistory="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="tencent1105592461" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.tencent.connect.common.AssistActivity"
+            android:screenOrientation="behind"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+    </application>
+
+</manifest>

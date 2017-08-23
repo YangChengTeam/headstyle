@@ -1,0 +1,106 @@
+<resources>
+    <string name="app_name">个性头像</string>
+    <string name="version_name">个性头像V2.4</string>
+    <string name="tab_home_text">首页</string>
+    <string name="tab_show_text">我秀</string>
+    <string name="tab_create_text">制作</string>
+    <string name="tab_my_text">我的</string>
+
+    <string name="type_lovers_text">情侣头像</string>
+    <string name="type_boy_text">男生头像</string>
+    <string name="type_girl_text">女生头像</string>
+    <string name="type_style_text">个性头像</string>
+    <string name="type_star_text">明星头像</string>
+    <string name="type_animation_text">动漫头像</string>
+    <string name="type_game_text">游戏头像</string>
+    <string name="type_more_text">更多头像</string>
+    <string name="type_dear_text">可爱头像</string>
+    <string name="type_battle_text">霸气头像</string>
+    <string name="type_europe_text">欧美头像</string>
+    <string name="type_word_text">文字头像</string>
+
+    <string name="fight_text">斗图神器</string>
+
+    <string name="new_image_text">最新头像</string>
+    <string name="refresh_text">换一换</string>
+    <string name="head_show_text">预览效果</string>
+    <string name="login_text">登 录</string>
+
+    <string name="hint_user_name_text">请输入手机号</string>
+    <string name="hint_password_text">请输入密码</string>
+    <string name="forget_password_text">忘记密码</string>
+    <string name="quick_login_text">快速登录</string>
+    <string name="register_text">立即注册</string>
+    <string name="have_account_text">已有账号，直接登录</string>
+    <string name="regester_btn_text">注册</string>
+    <string name="hint_register_name_text">请输入用户名</string>
+    <string name="hint_confirm_password_text">请再次输入密码</string>
+    <string name="more_head_text">更多头像</string>
+
+    <string name="sex_text">性别：</string>
+    <string name="boy_text">男</string>
+    <string name="girl_text">女</string>
+    <string name="image_crop_text">头像裁剪</string>
+
+    <string name="cancel_text">取消</string>
+    <string name="crop_select_text">选取</string>
+    <string name="crop_tip_text">移动和裁剪</string>
+
+    <string name="image_load_fail">图片加载失败</string>
+    <string name="qq_img">调用QQ头像设置</string>
+
+    <string name="search_text">搜索</string>
+    <string name="search_key_tip_text">请输入关键词搜索</string>
+    <string name="search_result_text">搜索结果</string>
+    <string name="no_more_result_text">未找到结果</string>
+
+    <string name="qq_login_text">直接用QQ登录</string>
+    <string name="my_keep_text">我的收藏</string>
+    <string name="my_create_text">我的制作</string>
+    <string name="my_article_text">我的发帖</string>
+    <string name="clear_text">清理缓存</string>
+    <string name="update_text">版本更新</string>
+    <string name="user_default_name_text">火星用户</string>
+
+    <string name="get_user_info_success">获取用户信息成功</string>
+    <string name="get_user_info_fail">获取用户信息失败</string>
+    <string name="get_user_info_cancel">授权取消</string>
+
+    <string name="head_keep_success">头像收藏成功</string>
+    <string name="head_keep_fail">头像收藏失败</string>
+
+    <string name="head_unkeep_success">取消收藏成功</string>
+    <string name="head_unkeep_fail">取消收藏失败</string>
+
+    <string name="no_more_keep_text">没有找到收藏记录</string>
+    <string name="not_login_text">用户未登录，请登录后查看</string>
+    <string name="not_login_and_use_qq_text">用户未登录,是否使用QQ登录</string>
+    <string name="cancel_login_text">取消</string>
+    <string name="to_login_text">去登录</string>
+
+    <string name="add_show_text">发帖</string>
+    <string name="take_photo_self_text">晒自拍</string>
+    <string name="chat_text">闲聊灌水</string>
+    <string name="qq_friend_text">处Q友</string>
+
+    <string name="show_tip_text">你就是下一个交友达人，发点照片吧!</string>
+    <string name="send_text">发布</string>
+
+    <string name="show_content_is_not_null_text">请填写发布内容</string>
+
+    <string name="version_update_text">版本更新</string>
+    <string name="version_update_content_text">检测到新版本,是否更新?</string>
+    <string name="confirm_update_text">更新</string>
+
+    <string name="head_create_text">头像制作</string>
+    <string name="continue_name">继续制作</string>
+
+    <string name="show_detail_text">发帖内容</string>
+    <string name="image_loading">图片加载中</string>
+
+    <string name="all_text">全部</string>
+    <string name="hot_text">热门</string>
+    <string name="comment_is_not_null_text">请填写评论内容</string>
+    <string name="about_text">关于我们</string>
+    <string name="save_text">保存</string>
+</resources>
