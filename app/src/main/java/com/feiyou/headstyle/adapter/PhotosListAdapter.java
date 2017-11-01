@@ -30,7 +30,6 @@ import com.feiyou.headstyle.ui.activity.MainActivity;
 import com.feiyou.headstyle.ui.activity.ShowImageListActivity;
 import com.feiyou.headstyle.util.AppUtils;
 import com.feiyou.headstyle.util.PreferencesUtils;
-import com.feiyou.headstyle.util.StringUtils;
 import com.feiyou.headstyle.util.ToastUtils;
 import com.orhanobut.logger.Logger;
 
@@ -38,6 +37,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.feiyou.headstyle.ui.fragment.Show1Fragment.showgGameImageUrlList;
 
 public class PhotosListAdapter extends RecyclerView.Adapter<PhotosListAdapter.MyViewHolder> implements View.OnClickListener {
 
@@ -78,8 +79,25 @@ public class PhotosListAdapter extends RecyclerView.Adapter<PhotosListAdapter.My
     public void addNewDatas(List<ArticleInfo> datas) {
         if (articleData != null) {
             articleData.addAll(datas);
+            createImageUrlList();
         } else {
             articleData = new ArrayList<ArticleInfo>();
+        }
+    }
+
+    public void createImageUrlList() {
+        if(articleData != null){
+            for (int i = 0; i < articleData.size(); i++) {
+                final String cimgs = articleData.get(i).cimg;
+                if (cimgs != null) {
+                    String[] imgs = cimgs.split("\\|");
+                    for (int m = imgs.length - 1; m >= 0; m--) {
+                        if(!showgGameImageUrlList.contains(imgs[m])){
+                            showgGameImageUrlList.add(imgs[m]);
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -103,7 +121,7 @@ public class PhotosListAdapter extends RecyclerView.Adapter<PhotosListAdapter.My
         holder.articleSendTimeTv.setText(articleData.get(position).addtime);
         holder.articleTitleTv.setText(articleData.get(position).scontent);
         holder.commentCountTv.setText(articleData.get(position).comment+"");
-        holder.praiseCountTv.setText(articleData.get(position).zan);
+        holder.praiseCountTv.setText(articleData.get(position).zan+"");
 
         if (articleData.get(position).sex.equals("1")) {
             holder.userGender.setImageResource(R.mipmap.boy_icon);
@@ -111,7 +129,7 @@ public class PhotosListAdapter extends RecyclerView.Adapter<PhotosListAdapter.My
             holder.userGender.setImageResource(R.mipmap.girl_icon);
         }
 
-        if (articleData.get(position).iszan.equals("0")) {
+        if (articleData.get(position).iszan == 0) {
             Drawable noZanDrawable = ContextCompat.getDrawable(mContext, R.mipmap.no_zan_icon);
             noZanDrawable.setBounds(0, 0, noZanDrawable.getMinimumWidth(), noZanDrawable.getMinimumHeight());
             holder.praiseCountTv.setCompoundDrawables(noZanDrawable, null, null, null);
@@ -134,13 +152,15 @@ public class PhotosListAdapter extends RecyclerView.Adapter<PhotosListAdapter.My
         final String cimgs = articleData.get(position).cimg;
         HeadWallAdapter gridViewAdapter = new HeadWallAdapter(mContext);
 
+        final List<HeadInfo> data = new ArrayList<HeadInfo>();
         if (cimgs != null) {
-            List<HeadInfo> data = new ArrayList<HeadInfo>();
             String[] imgs = cimgs.split("\\|");
-            for (int i = 0; i < imgs.length; i++) {
-                HeadInfo tempHeadInfo = new HeadInfo();
-                tempHeadInfo.hurl = imgs[i];
-                data.add(tempHeadInfo);
+            if(imgs != null){
+                for (int i = imgs.length -1; i >=0; i--) {
+                    HeadInfo tempHeadInfo = new HeadInfo();
+                    tempHeadInfo.setHurl(imgs[i]);
+                    data.add(tempHeadInfo);
+                }
             }
             gridViewAdapter.addItemDatas(data);
         }
@@ -149,13 +169,12 @@ public class PhotosListAdapter extends RecyclerView.Adapter<PhotosListAdapter.My
         holder.articlePhotoGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //ToastUtils.show(mContext,"选择图片---"+position);
 
                 Intent intent = new Intent(mContext, ShowImageListActivity.class);
-
-                //String imageList = "http://pic.qqtn.com/up/2016-9/2016090611122547066.jpg,http://pic.qqtn.com/up/2016-9/14749389135118192.jpg,http://pic.qqtn.com/up/2016-6/2016062917512971884.jpg";
-                intent.putExtra("imageList", cimgs);
+                intent.putStringArrayListExtra("imageList", (ArrayList<String>) showgGameImageUrlList);
                 intent.putExtra("position", position);
+                intent.putExtra("current_img_url", data.get(position).getHurl());
+
                 mContext.startActivity(intent);
                 //进入图片浏览时的动画
                 ((MainActivity) mContext).overridePendingTransition(R.anim.image_show_in, R.anim.image_show_out);
@@ -173,8 +192,8 @@ public class PhotosListAdapter extends RecyclerView.Adapter<PhotosListAdapter.My
             }
         });
 
-        final int iszan = StringUtils.isEmpty(articleData.get(position).iszan) == true ? 0 : Integer.parseInt(articleData.get(position).iszan);
-        final int zan = StringUtils.isEmpty(articleData.get(position).zan) == true ? 0 : Integer.parseInt(articleData.get(position).zan);
+        final int iszan = articleData.get(position).iszan;
+        final int zan = articleData.get(position).zan;
         holder.pariseLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -186,8 +205,8 @@ public class PhotosListAdapter extends RecyclerView.Adapter<PhotosListAdapter.My
                         UserInfo userInfo = (UserInfo) PreferencesUtils.getObject(mContext, Constant.USER_INFO, UserInfo.class);
                         params.put("sid", sid);
                         if (userInfo != null) {
-                            params.put("uid", userInfo.uid);
-                            params.put("oid", userInfo.openid);
+                            params.put("uid", userInfo != null ? userInfo.uid :"");
+                            params.put("oid", userInfo != null ? userInfo.openid:"");
                         }
 
                         okHttpRequest.aget(Server.UP_ZAN_DATA, params, new OnResponseListener() {

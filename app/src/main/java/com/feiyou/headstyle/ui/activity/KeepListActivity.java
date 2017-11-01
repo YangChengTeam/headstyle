@@ -1,13 +1,9 @@
 package com.feiyou.headstyle.ui.activity;
 
 import android.content.Intent;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.GridView;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.feiyou.headstyle.R;
@@ -21,7 +17,6 @@ import com.feiyou.headstyle.net.listener.OnResponseListener;
 import com.feiyou.headstyle.service.UserService;
 import com.feiyou.headstyle.util.PreferencesUtils;
 import com.feiyou.headstyle.util.StringUtils;
-import com.feiyou.headstyle.view.MyGridView;
 import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
@@ -230,8 +225,8 @@ public class KeepListActivity extends BaseActivity{
         Intent intent = new Intent(KeepListActivity.this, HeadShowActivity.class);
 
         if (data != null && data.size() > 0) {
-            intent.putExtra("cid", data.get(position).cid);
-            intent.putExtra("imageUrl", data.get(position).hurl);
+            intent.putExtra("cid", data.get(position).getCid());
+            intent.putExtra("imageUrl", data.get(position).getHurl());
         }
 
         startActivity(intent);

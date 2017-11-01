@@ -1,7 +1,9 @@
 package com.feiyou.headstyle.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +29,16 @@ public class CommentAdapter extends BaseAdapter {
     private List<CommentInfo> commentList;
 
    // private int[] typeNameList;
+
+    public interface AgreeListener {
+        void agreeComment(int pos);
+    }
+
+    public AgreeListener agreeListener;
+
+    public void setAgreeListener(AgreeListener agreeListener) {
+        this.agreeListener = agreeListener;
+    }
 
     public CommentAdapter(Context mContext, List<CommentInfo> commentList) {
         super();
@@ -54,7 +66,7 @@ public class CommentAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
 
         final ViewHolder holder;
         if (convertView == null) {
@@ -69,8 +81,45 @@ public class CommentAdapter extends BaseAdapter {
         holder.userName.setText(commentList.get(position).nickname);
         holder.articleSendTimeTv.setText(commentList.get(position).addtime);
         holder.commentTv.setText(commentList.get(position).scontent);
+        holder.agreeTextView.setText((commentList.get(position).zan) + "");
+        if(commentList.get(position).iszan == 0){
+            Drawable noZan = ContextCompat.getDrawable(mContext, R.mipmap.no_zan_icon);
+            noZan.setBounds(0, 0, noZan.getMinimumWidth(), noZan.getMinimumHeight());
+            holder.agreeTextView.setCompoundDrawables(noZan, null, null, null);
+            holder.agreeTextView.setClickable(true);
+
+            holder.agreeTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    agreeListener.agreeComment(position);
+                }
+            });
+        }else {
+            Drawable isZan = ContextCompat.getDrawable(mContext, R.mipmap.is_zan_icon);
+            isZan.setBounds(0, 0, isZan.getMinimumWidth(), isZan.getMinimumHeight());
+            holder.agreeTextView.setCompoundDrawables(isZan, null, null, null);
+            holder.agreeTextView.setClickable(false);
+        }
+
         return convertView;
     }
+
+    public void changeView(View cView, int pos) {
+        TextView agreeTextView = (TextView) cView.findViewById(R.id.tv_agree_count);
+        //String isPraise = this.getData().get(pos).getAgreed();
+        //if (isPraise.equals("1")) {
+        Drawable isZan = ContextCompat.getDrawable(mContext, R.mipmap.is_zan_icon);
+        isZan.setBounds(0, 0, isZan.getMinimumWidth(), isZan.getMinimumHeight());
+        agreeTextView.setCompoundDrawables(isZan, null, null, null);
+        agreeTextView.setText((commentList.get(pos).zan + 1) + "");
+        agreeTextView.setClickable(false);
+        /*} else {
+            Drawable isZan = ContextCompat.getDrawable(mContext, R.mipmap.no_zan_icon);
+            isZan.setBounds(0, 0, isZan.getMinimumWidth(), isZan.getMinimumHeight());
+            agreeTextView.setCompoundDrawables(isZan, null, null, null);
+        }*/
+    }
+
 
     class ViewHolder {
 
@@ -82,6 +131,8 @@ public class CommentAdapter extends BaseAdapter {
         TextView articleSendTimeTv;
         @BindView(R.id.comment_content_tv)
         TextView commentTv;
+        @BindView(R.id.tv_agree_count)
+        TextView agreeTextView;
 
         public ViewHolder(View view) {
             ButterKnife.bind(this, view);

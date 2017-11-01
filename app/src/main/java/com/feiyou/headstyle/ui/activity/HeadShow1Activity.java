@@ -258,8 +258,7 @@ public class HeadShow1Activity extends BaseActivity {
             Uri uri = Uri.parse(imageUrl);
 
             HeadInfo firstHeadInfo = new HeadInfo();
-            firstHeadInfo.hurl = imageUrl;
-
+            firstHeadInfo.setHurl(imageUrl);
             galleryImageAdapter.addNewData(firstHeadInfo);
 
             galleryImageAdapter.notifyDataSetChanged();

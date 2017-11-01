@@ -23,6 +23,7 @@ import com.feiyou.headstyle.net.OKHttpRequest;
 import com.feiyou.headstyle.net.listener.OnResponseListener;
 import com.feiyou.headstyle.service.ArticleService;
 import com.feiyou.headstyle.ui.fragment.CreateFragment;
+import com.feiyou.headstyle.ui.fragment.FunTestFragment;
 import com.feiyou.headstyle.ui.fragment.HomeFragment;
 import com.feiyou.headstyle.ui.fragment.MyFragment;
 import com.feiyou.headstyle.ui.fragment.Show1Fragment;
@@ -47,14 +48,14 @@ public class MainActivity extends BaseActivity {
     private LayoutInflater layoutInflater;
 
     //定义数组来存放Fragment界面
-    private Class fragmentArray[] = {HomeFragment.class, Show1Fragment.class, CreateFragment.class, MyFragment.class};
+    private Class fragmentArray[] = {HomeFragment.class, Show1Fragment.class, CreateFragment.class, FunTestFragment.class, MyFragment.class};
 
     //定义数组来存放按钮图片
-    private int mImageViewArray[] = {R.drawable.selector_home, R.drawable.selector_show, R.drawable.selector_create,
+    private int mImageViewArray[] = {R.drawable.selector_home, R.drawable.selector_show, R.drawable.selector_create, R.drawable.selector_test,
             R.drawable.selector_my};
 
     //Tab选项卡的文字
-    private int mTextviewArray[] = {R.string.tab_home_text, R.string.tab_show_text, R.string.tab_create_text, R.string.tab_my_text};
+    private int mTextviewArray[] = {R.string.tab_home_text, R.string.tab_show_text, R.string.tab_create_text, R.string.tab_fun_test_text, R.string.tab_my_text};
 
     private OKHttpRequest okHttpRequest = null;
 
@@ -73,7 +74,7 @@ public class MainActivity extends BaseActivity {
             super.handleMessage(msg);
             switch (msg.what) {
                 case 0:
-                    View currentView = mTabHost.getTabWidget().getChildTabViewAt(3);
+                    View currentView = mTabHost.getTabWidget().getChildTabViewAt(4);
                     ImageView redImageView = (ImageView) currentView.findViewById(R.id.message_red_point);
                     redImageView.setVisibility(View.VISIBLE);
                     HeadStyleApplication.isMessage = true;

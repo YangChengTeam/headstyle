@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -33,6 +32,7 @@ import com.feiyou.headstyle.bean.ArticleInfo;
 import com.feiyou.headstyle.bean.CommentInfo;
 import com.feiyou.headstyle.bean.CommentInfoRet;
 import com.feiyou.headstyle.bean.HeadInfo;
+import com.feiyou.headstyle.bean.Result;
 import com.feiyou.headstyle.bean.UserInfo;
 import com.feiyou.headstyle.common.Constant;
 import com.feiyou.headstyle.common.Server;
@@ -41,11 +41,13 @@ import com.feiyou.headstyle.net.listener.OnResponseListener;
 import com.feiyou.headstyle.service.ArticleService;
 import com.feiyou.headstyle.service.CommentService;
 import com.feiyou.headstyle.service.UserService;
+import com.feiyou.headstyle.ui.fragment.Show1Fragment;
 import com.feiyou.headstyle.util.AppUtils;
 import com.feiyou.headstyle.util.DialogUtils;
 import com.feiyou.headstyle.util.PreferencesUtils;
 import com.feiyou.headstyle.util.StringUtils;
 import com.feiyou.headstyle.util.ToastUtils;
+import com.orhanobut.logger.Logger;
 import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.bean.SHARE_MEDIA;
@@ -61,7 +63,7 @@ import butterknife.OnClick;
 import me.imid.swipebacklayout.lib.SwipeBackLayout;
 import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
 
-public class ArticleDetailActivity extends SwipeBackActivity {
+public class ArticleDetailActivity extends SwipeBackActivity implements CommentAdapter.AgreeListener {
 
     @BindView(R.id.comment_list)
     ListView listView;
@@ -122,7 +124,7 @@ public class ArticleDetailActivity extends SwipeBackActivity {
 
     private List<CommentInfo> commentData;
 
-    private String iszan = "";
+    private int iszan;
 
     private UMShareAPI mShareAPI = null;
 
@@ -142,11 +144,13 @@ public class ArticleDetailActivity extends SwipeBackActivity {
 
     private UserInfo userInfo;
 
-    private Handler handler = new Handler(){
+    private int showType;
+
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
+            switch (msg.what) {
                 case 0:
                     ToastUtils.show(ArticleDetailActivity.this, "登录成功");
                     break;
@@ -180,6 +184,7 @@ public class ArticleDetailActivity extends SwipeBackActivity {
         Bundle bundle = this.getIntent().getExtras();
         if (bundle != null && bundle.getString("sid") != null) {
             sid = bundle.getString("sid");
+            showType = bundle.getInt("show_type");
         }
         mService = new UserService();
         articleService = new ArticleService();
@@ -218,7 +223,7 @@ public class ArticleDetailActivity extends SwipeBackActivity {
     }
 
     public void initData() {
-
+        articleCommentListAdapter.setAgreeListener(this);
         mShareAPI = UMShareAPI.get(ArticleDetailActivity.this);
         initLoginDialog();
 
@@ -255,9 +260,9 @@ public class ArticleDetailActivity extends SwipeBackActivity {
                             if (cimgs != null) {
                                 data = new ArrayList<HeadInfo>();
                                 String[] imgs = cimgs.split("\\|");
-                                for (int i = 0; i < imgs.length; i++) {
+                                for (int i = imgs.length - 1; i >= 0; i--) {
                                     HeadInfo tempHeadInfo = new HeadInfo();
-                                    tempHeadInfo.hurl = imgs[i];
+                                    tempHeadInfo.setHurl(imgs[i]);
                                     data.add(tempHeadInfo);
                                 }
                                 gridViewAdapter.addItemDatas(data);
@@ -266,13 +271,19 @@ public class ArticleDetailActivity extends SwipeBackActivity {
                                 articlePhotoGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                     @Override
                                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                        //ToastUtils.show(mContext,"选择图片---"+position);
 
                                         Intent intent = new Intent(ArticleDetailActivity.this, ShowImageListActivity.class);
+                                        if (showType == 0) {
+                                            intent.putStringArrayListExtra("imageList", (ArrayList<String>) Show1Fragment.showImageUrlList);
+                                        } else if (showType == 1) {
+                                            intent.putStringArrayListExtra("imageList", (ArrayList<String>) Show1Fragment.showFriendsImageUrlList);
+                                        } else {
+                                            intent.putStringArrayListExtra("imageList", (ArrayList<String>) Show1Fragment.showgGameImageUrlList);
+                                        }
 
-                                        //String imageList = "http://pic.qqtn.com/up/2016-9/2016090611122547066.jpg,http://pic.qqtn.com/up/2016-9/14749389135118192.jpg,http://pic.qqtn.com/up/2016-6/2016062917512971884.jpg";
-                                        intent.putExtra("imageList", cimgs);
                                         intent.putExtra("position", position);
+                                        intent.putExtra("current_img_url", data.get(position).getHurl());
+
                                         ArticleDetailActivity.this.startActivity(intent);
                                         //进入图片浏览时的动画
                                         ArticleDetailActivity.this.overridePendingTransition(R.anim.image_show_in, R.anim.image_show_out);
@@ -286,11 +297,11 @@ public class ArticleDetailActivity extends SwipeBackActivity {
                             userImg.setImageURI(uri);
                             articleSendTimeTv.setText(articleInfo.addtime);
                             articleTitleTv.setText(articleInfo.scontent);
-                            commentCountTv.setText(articleInfo.comment+"");
-                            praiseCountTv.setText(articleInfo.zan);
+                            commentCountTv.setText(articleInfo.comment + "");
+                            praiseCountTv.setText(articleInfo.zan + "");
                             iszan = articleInfo.iszan;
 
-                            if (iszan.equals("0")) {
+                            if (iszan == 0) {
                                 Drawable noZanDrawable = ContextCompat.getDrawable(ArticleDetailActivity.this, R.mipmap.no_zan_icon);
                                 noZanDrawable.setBounds(0, 0, noZanDrawable.getMinimumWidth(), noZanDrawable.getMinimumHeight());
                                 praiseCountTv.setCompoundDrawables(noZanDrawable, null, null, null);
@@ -322,13 +333,15 @@ public class ArticleDetailActivity extends SwipeBackActivity {
                     }
                 });
             }
-        },500);
+        }, 500);
     }
 
     public void initCommentData() {
         final Map<String, String> params = new HashMap<String, String>();
         params.put("sid", sid);
-
+        if (userInfo != null) {
+            params.put("uid", userInfo.uid);
+        }
         okHttpRequest.aget(Server.COMMENT_DATA, params, new OnResponseListener() {
             @Override
             public void onSuccess(String response) {
@@ -371,7 +384,7 @@ public class ArticleDetailActivity extends SwipeBackActivity {
     public static void setListViewHeightBasedOnChildren(ListView listView) {
         if (listView == null) return;
         ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null) {
+        if (listAdapter == null || listAdapter.getCount() == 0) {
             // pre-condition
             return;
         }
@@ -382,14 +395,19 @@ public class ArticleDetailActivity extends SwipeBackActivity {
             totalHeight += listItem.getMeasuredHeight();
         }
         ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1)) + 150;
+        if (listAdapter.getCount() > 3) {
+            params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1)) + 150;
+        } else {
+            params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        }
+
         listView.setLayoutParams(params);
     }
 
     @OnClick(R.id.praise_layout)
     public void praise() {
         if (AppUtils.isLogin(this)) {
-            if (iszan.equals("0")) {
+            if (iszan == 0) {
                 final Map<String, String> params = new HashMap<String, String>();
                 params.put("sid", sid);
 
@@ -406,6 +424,7 @@ public class ArticleDetailActivity extends SwipeBackActivity {
                             Drawable isZanDrawable = ContextCompat.getDrawable(ArticleDetailActivity.this, R.mipmap.is_zan_icon);
                             isZanDrawable.setBounds(0, 0, isZanDrawable.getMinimumWidth(), isZanDrawable.getMinimumHeight());
                             praiseCountTv.setCompoundDrawables(isZanDrawable, null, null, null);
+                            praiseCountTv.setText((Integer.parseInt(praiseCountTv.getText().toString()) + 1) + "");
 
                         } else {
                             ToastUtils.show(ArticleDetailActivity.this, "操作失败，请稍后重试");
@@ -509,7 +528,7 @@ public class ArticleDetailActivity extends SwipeBackActivity {
                             if (materialDialog != null && materialDialog.isShowing()) {
                                 materialDialog.dismiss();
                             }
-                            if(!StringUtils.isEmpty(response)){
+                            if (!StringUtils.isEmpty(response)) {
                                 UserInfo userInfo = mService.login(response);
                                 if (userInfo != null) {
                                     PreferencesUtils.putObject(ArticleDetailActivity.this, Constant.USER_INFO, userInfo);
@@ -607,5 +626,43 @@ public class ArticleDetailActivity extends SwipeBackActivity {
         } else {
             loginDialog.show();
         }
+    }
+
+    @Override
+    public void agreeComment(final int pos) {
+
+        if (userInfo == null) {
+            loginDialog.show();
+            return;
+        }
+
+        final Map<String, String> params = new HashMap<String, String>();
+        params.put("uid", userInfo != null ? userInfo.uid : "");
+        params.put("oid", userInfo != null ? userInfo.openid : "");
+        params.put("commentid", commentData.get(pos).cid);
+
+        okHttpRequest.aget(Server.COMMENT_AGREE_DATA, params, new OnResponseListener() {
+            @Override
+            public void onSuccess(String response) {
+                Result result = commentService.getAgreeResult(response);
+                if (result != null && result.errCode == 0) {
+                    Logger.e("agree success--->");
+                    //articleCommentListAdapter.changeView(mLinearLayoutManager.findViewByPosition(pos + 1), pos);
+                    commentData.get(pos).iszan = 1;
+                    commentData.get(pos).zan = commentData.get(pos).zan + 1;
+                    articleCommentListAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+
+            @Override
+            public void onBefore() {
+
+            }
+        });
     }
 }

@@ -1,15 +1,13 @@
 package com.feiyou.headstyle.adapter;
 
 import android.content.Context;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.bumptech.glide.Glide;
 import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.bean.HeadInfo;
 import com.feiyou.headstyle.util.StringUtils;
@@ -19,7 +17,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
 
 
 public class HeadWallAdapter extends BaseAdapter {
@@ -99,9 +96,8 @@ public class HeadWallAdapter extends BaseAdapter {
         }
 
         if(dataList != null && dataList.get(position) != null){
-            if(!StringUtils.isEmpty(dataList.get(position).hurl)){
-                Uri uri = Uri.parse(dataList.get(position).hurl);
-                holder.headImage.setImageURI(uri);
+            if(!StringUtils.isEmpty(dataList.get(position).getHurl())){
+                Glide.with(mContext).load(dataList.get(position).getHurl()).into(holder.headImage);
             }
         }
 
@@ -110,7 +106,7 @@ public class HeadWallAdapter extends BaseAdapter {
 
     class ViewHolder {
         @BindView(R.id.photo)
-        SimpleDraweeView headImage;
+        ImageView headImage;
 
         public ViewHolder(View view) {
             ButterKnife.bind(this, view);

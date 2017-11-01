@@ -1,17 +1,12 @@
 package com.feiyou.headstyle.ui.activity;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.feiyou.headstyle.R;
@@ -22,10 +17,8 @@ import com.feiyou.headstyle.common.Constant;
 import com.feiyou.headstyle.common.Server;
 import com.feiyou.headstyle.net.OKHttpRequest;
 import com.feiyou.headstyle.net.listener.OnResponseListener;
-import com.feiyou.headstyle.net.service.DownFightService;
 import com.feiyou.headstyle.service.UserService;
 import com.feiyou.headstyle.util.ImageUtils;
-import com.feiyou.headstyle.util.NetWorkUtils;
 import com.feiyou.headstyle.util.PreferencesUtils;
 import com.feiyou.headstyle.util.StringUtils;
 import com.feiyou.headstyle.util.ToastUtils;
@@ -37,7 +30,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
@@ -266,8 +258,6 @@ public class ShowAddActivity extends BaseActivity {
                         ToastUtils.show(ShowAddActivity.this, "图片上传有误，请稍后重试");
                     }
                 });
-
-
 
             }else{
                 okHttpRequest.aget(Server.SEND_ARTICLE_NO_FILE_DATA, params, new OnResponseListener() {

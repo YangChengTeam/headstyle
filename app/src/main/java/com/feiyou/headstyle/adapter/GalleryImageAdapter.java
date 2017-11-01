@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.bean.HeadInfo;
-import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +73,7 @@ public class GalleryImageAdapter extends PagerAdapter {
         SimpleDraweeView squareDraweeView = (SimpleDraweeView) view.findViewById(R.id.square_head_image);
         SimpleDraweeView circleDraweeView = (SimpleDraweeView) view.findViewById(R.id.circle_head_image);
 
-        Uri uri = Uri.parse(images.get(position).hurl);
+        Uri uri = Uri.parse(images.get(position).getHurl());
         squareDraweeView.setImageURI(uri);
         circleDraweeView.setImageURI(uri);
 

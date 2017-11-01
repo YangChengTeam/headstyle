@@ -79,6 +79,8 @@ public class FriendsFragment extends BaseFragment implements FriendsListAdapter.
 
     public String showType = "1";
 
+    private int maxPage = 0;
+
     public FriendsFragment() {
     }
 
@@ -118,6 +120,7 @@ public class FriendsFragment extends BaseFragment implements FriendsListAdapter.
             @Override
             public void onItemClick(View view, int position) {
                 Intent intent = new Intent(getActivity(), ArticleDetailActivity.class);
+                intent.putExtra("show_type", 1);
                 intent.putExtra("sid", articleInfoList.get(position).sid);
                 startActivity(intent);
             }
@@ -129,7 +132,9 @@ public class FriendsFragment extends BaseFragment implements FriendsListAdapter.
                 super.onScrolled(recyclerView, dx, dy);
                 if (isSlideToBottom(recyclerView)) {
                     pageNum++;
-                    getNextData();
+                    if(pageNum <= maxPage){
+                        getNextData();
+                    }
                 }
             }
 
@@ -172,7 +177,9 @@ public class FriendsFragment extends BaseFragment implements FriendsListAdapter.
         Logger.e("init page---" + pageNum);
         params.put("p", String.valueOf(pageNum));
         params.put("t", showType);
+        params.put("ver",AppUtils.getVersionName(getActivity()));//版本号
         params.put("num", "10");//每页条数
+        //params.put("state", "1");
         return params;
     }
 
@@ -199,9 +206,9 @@ public class FriendsFragment extends BaseFragment implements FriendsListAdapter.
                     if(articleInfoList != null && articleInfoList.size() > 0){
                         articleInfoList.clear();
                     }
-
-                    articleInfoList.addAll(temp);
-                    //mAdapter.addNewDatas(temp);
+                    maxPage = Integer.parseInt(temp.get(0).maxpage);
+                    //articleInfoList.addAll(temp);
+                    mAdapter.addNewDatas(temp);
                     mAdapter.notifyDataSetChanged();
                 }
             }

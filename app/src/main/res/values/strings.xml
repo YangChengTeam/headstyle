@@ -1,10 +1,12 @@
 <resources>
     <string name="app_name">个性头像</string>
-    <string name="version_name">个性头像V2.4</string>
+    <string name="version_name">个性头像V3.0.3</string>
     <string name="tab_home_text">首页</string>
     <string name="tab_show_text">我秀</string>
     <string name="tab_create_text">制作</string>
+    <string name="tab_fun_test_text">测试</string>
     <string name="tab_my_text">我的</string>
+    <string name="tab_test_text">趣味测试</string>
 
     <string name="type_lovers_text">情侣头像</string>
     <string name="type_boy_text">男生头像</string>
@@ -77,11 +79,16 @@
     <string name="not_login_and_use_qq_text">用户未登录,是否使用QQ登录</string>
     <string name="cancel_login_text">取消</string>
     <string name="to_login_text">去登录</string>
+    <string name="give_up_text">确认放弃</string>
+
+    <string name="give_up_test_text">放弃测试</string>
+    <string name="continue_test_text">测试未完成,是否继续测试</string>
 
     <string name="add_show_text">发帖</string>
     <string name="take_photo_self_text">晒自拍</string>
     <string name="chat_text">闲聊灌水</string>
-    <string name="qq_friend_text">处Q友</string>
+    <string name="qq_friend_text">Q友圈</string>
+    <string name="game_friends_text">游戏圈</string>
 
     <string name="show_tip_text">你就是下一个交友达人，发点照片吧!</string>
     <string name="send_text">发布</string>

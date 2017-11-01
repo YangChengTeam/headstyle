@@ -6,19 +6,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
-import android.provider.MediaStore;
-import android.provider.SyncStateContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -27,7 +20,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,49 +40,33 @@ import com.feiyou.headstyle.net.listener.OnResponseListener;
 import com.feiyou.headstyle.service.UserService;
 import com.feiyou.headstyle.util.AppUtils;
 import com.feiyou.headstyle.util.DialogUtils;
-import com.feiyou.headstyle.util.FileUtils;
 import com.feiyou.headstyle.util.ImageUtils;
 import com.feiyou.headstyle.util.PreferencesUtils;
 import com.feiyou.headstyle.util.StringUtils;
-
 import com.feiyou.headstyle.util.TimeUtils;
 import com.feiyou.headstyle.util.ToastUtils;
 import com.feiyou.headstyle.view.SharePopupWindow;
 import com.feiyou.headstyle.view.qqhead.BaseUIListener;
 import com.orhanobut.logger.Logger;
 import com.tencent.connect.avatar.QQAvatar;
-
-import com.tencent.connect.share.QQShare;
-import com.tencent.tauth.AuthActivity;
-import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
-import com.tencent.tauth.UiError;
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.umeng.socialize.media.UMImage;
-import com.umeng.socialize.utils.BitmapUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.callback.BitmapCallback;
 import com.zhy.http.okhttp.callback.FileCallBack;
 
-import org.json.JSONObject;
-
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.BindString;
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
-
 import okhttp3.Call;
-import okhttp3.Request;
 
 public class HeadShowActivity extends BaseActivity {
 
@@ -107,6 +84,21 @@ public class HeadShowActivity extends BaseActivity {
     @BindView(R.id.circle_head_image)
     SimpleDraweeView circleHeadImage;
 
+    @BindView(R.id.high_square_head_image)
+    SimpleDraweeView highSquareHeadImage;
+
+    @BindView(R.id.high_circle_head_image)
+    SimpleDraweeView highCircleHeadImage;
+
+    @BindView(R.id.high_image)
+    SimpleDraweeView highImage;
+
+    @BindView(R.id.low_image_layout)
+    LinearLayout lowImageLayout;
+
+    @BindView(R.id.high_image_layout)
+    LinearLayout highImageLayout;
+
     @BindView(R.id.qq_auth_login_btn)
     TextView qqAuthImageBtn;
 
@@ -123,6 +115,8 @@ public class HeadShowActivity extends BaseActivity {
     private String cid;
 
     private String imageUrl;
+
+    private int isGaoQing = 0;
 
     /**
      * 是否收藏, 0:为收藏，1：已收藏
@@ -168,6 +162,8 @@ public class HeadShowActivity extends BaseActivity {
 
     private File saveFile;
 
+    private boolean isSetting = false;
+
     private Handler handler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -175,7 +171,7 @@ public class HeadShowActivity extends BaseActivity {
                     ToastUtils.show(HeadShowActivity.this, "图片已保存到图库");
 
                     // 最后通知图库更新
-                    if(saveFile.exists()){
+                    if (saveFile.exists()) {
                         Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
                         Uri uri = Uri.fromFile(saveFile);
                         intent.setData(uri);
@@ -205,6 +201,7 @@ public class HeadShowActivity extends BaseActivity {
         okHttpRequest = new OKHttpRequest();
         mTencent = Tencent.createInstance("1105592461", this.getApplicationContext());
         titleTv.setText(titleTextValue);
+        isSetting = false;
     }
 
     @Override
@@ -221,11 +218,14 @@ public class HeadShowActivity extends BaseActivity {
             cid = bundle.getString("cid");
         }
 
+        if (bundle != null && bundle.getString("gaoqing") != null) {
+            isGaoQing = Integer.parseInt(bundle.getString("gaoqing"));
+        }
+
         if (bundle != null && bundle.getString("imageUrl") != null) {
             imageUrl = bundle.getString("imageUrl");
-            Uri uri = Uri.parse(imageUrl);
-            squareHeadImage.setImageURI(uri);
-            circleHeadImage.setImageURI(uri);
+
+            setImage();
 
             OkHttpUtils.get().url(imageUrl).build().execute(new FileCallBack(savePath, fileName)//
             {
@@ -298,6 +298,26 @@ public class HeadShowActivity extends BaseActivity {
         if (Build.VERSION.SDK_INT >= 23) {
             String[] mPermissionList = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.CALL_PHONE, Manifest.permission.READ_LOGS, Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.SET_DEBUG_APP, Manifest.permission.SYSTEM_ALERT_WINDOW, Manifest.permission.GET_ACCOUNTS, Manifest.permission.WRITE_APN_SETTINGS};
             ActivityCompat.requestPermissions(this, mPermissionList, 123);
+        }
+    }
+
+
+    public void setImage() {
+        if (!StringUtils.isEmpty(imageUrl)) {
+            Uri uri = Uri.parse(imageUrl);
+
+            if (isGaoQing == 2) {
+                highImageLayout.setVisibility(View.VISIBLE);
+                lowImageLayout.setVisibility(View.GONE);
+                highSquareHeadImage.setImageURI(uri);
+                highCircleHeadImage.setImageURI(uri);
+                highImage.setImageURI(uri);
+            } else {
+                lowImageLayout.setVisibility(View.VISIBLE);
+                highImageLayout.setVisibility(View.GONE);
+                squareHeadImage.setImageURI(uri);
+                circleHeadImage.setImageURI(uri);
+            }
         }
     }
 
@@ -409,8 +429,10 @@ public class HeadShowActivity extends BaseActivity {
         operation = 1;
         //已经登录授权过，无需再次授权
         if (HeadStyleApplication.isLoginAuth) {
-            setUseCount();
+            userInfo = (UserInfo) PreferencesUtils.getObject(this, Constant.USER_INFO, UserInfo.class);
+            setUseCount(userInfo.uid);
             if (imagePath != null && imagePath.length() > 0) {
+                isSetting = true;
                 Uri uri = Uri.parse("file:///" + imagePath);
                 doSetAvatar(uri);
             } else {
@@ -423,7 +445,7 @@ public class HeadShowActivity extends BaseActivity {
 
     @OnClick(R.id.down_img)
     public void downImg(View view) {
-       saveImageToGallery();
+        saveImageToGallery();
     }
 
     // 其次把文件插入到系统图库
@@ -445,8 +467,7 @@ public class HeadShowActivity extends BaseActivity {
                 }
                 handler.sendMessage(message);
             } else {
-                OkHttpUtils.get().url(imageUrl).build().execute(new FileCallBack(savePath, fileName)
-                {
+                OkHttpUtils.get().url(imageUrl).build().execute(new FileCallBack(savePath, fileName) {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         Message message = new Message();
@@ -473,9 +494,16 @@ public class HeadShowActivity extends BaseActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (isSetting) {
+            shareHead();
+        }
+    }
 
     @OnClick(R.id.right_image)
-    public void shareHead(View view) {
+    public void shareHead() {
         final ViewGroup viewGroup = (ViewGroup) ((ViewGroup) this
                 .findViewById(android.R.id.content)).getChildAt(0);
         shareWindow = new SharePopupWindow(this, itemsOnClick);
@@ -501,6 +529,7 @@ public class HeadShowActivity extends BaseActivity {
         @Override
         public void onDismiss() {
             setBackgroundAlpha(HeadShowActivity.this, 1f);
+            isSetting = false;
         }
     }
 
@@ -508,59 +537,85 @@ public class HeadShowActivity extends BaseActivity {
     private View.OnClickListener itemsOnClick = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+
             switch (v.getId()) {
                 case R.id.cancel_layout:
                     if (shareWindow != null && shareWindow.isShowing()) {
                         shareWindow.dismiss();
+                        isSetting = false;
                     }
                     break;
                 case R.id.qq_layout:
-                    new ShareAction(HeadShowActivity.this)
+                    ShareAction shareAction = new ShareAction(HeadShowActivity.this)
                             .setPlatform(SHARE_MEDIA.QQ)
                             .setCallback(umShareListener)
-                            .withMedia(image)
-                            .share();
+                            .withMedia(image);
+
+                    if(isSetting){
+                        shareAction.withTitle("个性头像")
+                        .withText("换个头像，换种心情")
+                        .withTargetUrl("http://gx.qqtn.com/");
+                    }
+                    shareAction.share();
+
                     if (shareWindow != null && shareWindow.isShowing()) {
                         shareWindow.dismiss();
+                        isSetting = false;
                     }
                     break;
                 case R.id.qzone_layout:
-                    new ShareAction(HeadShowActivity.this)
+                    ShareAction shareActionqz = new ShareAction(HeadShowActivity.this)
                             .setPlatform(SHARE_MEDIA.QZONE)
                             .setCallback(umShareListener)
                             .withTitle("个性头像")
                             .withText("换个头像，换种心情")
-                            //.withTargetUrl("http://www.qqtn.com/tx/")
-                            .withMedia(image)
-                            .share();
+                            .withMedia(image);
+                    if(isSetting){
+                        shareActionqz.withTargetUrl("http://gx.qqtn.com/");
+                    }
+                    shareActionqz.share();
+
                     if (shareWindow != null && shareWindow.isShowing()) {
                         shareWindow.dismiss();
+                        isSetting = false;
                     }
                     break;
                 case R.id.wechat_layout:
-                    new ShareAction(HeadShowActivity.this)
+                   ShareAction shareActionwc = new ShareAction(HeadShowActivity.this)
                             .setPlatform(SHARE_MEDIA.WEIXIN)
                             .setCallback(umShareListener)
-                            .withMedia(image)
-                            .share();
+                            .withMedia(image);
+                    if(isSetting){
+                        shareActionwc.withTitle("个性头像")
+                                .withText("换个头像，换种心情")
+                                .withTargetUrl("http://gx.qqtn.com/");
+                    }
+                    shareActionwc.share();
+
                     if (shareWindow != null && shareWindow.isShowing()) {
                         shareWindow.dismiss();
+                        isSetting = false;
                     }
                     break;
                 case R.id.wxcircle_layout:
-                    new ShareAction(HeadShowActivity.this)
+                    ShareAction shareActioncr = new ShareAction(HeadShowActivity.this)
                             .setPlatform(SHARE_MEDIA.WEIXIN_CIRCLE)
                             .setCallback(umShareListener)
                             .withTitle("个性头像")
                             .withText("换个头像，换种心情")
-                            //.withTargetUrl("http://www.qqtn.com/tx/")
-                            .withMedia(image)
-                            .share();
+                            .withMedia(image);
+                    if(isSetting){
+                        shareActioncr.withTargetUrl("http://www.qqtn.com/");
+                    }
+                    shareActioncr.share();
+
                     if (shareWindow != null && shareWindow.isShowing()) {
                         shareWindow.dismiss();
+                        isSetting = false;
                     }
                     break;
                 default:
+                    isSetting = false;
                     break;
             }
         }
@@ -667,12 +722,13 @@ public class HeadShowActivity extends BaseActivity {
 
                                 if (operation == 1) {
                                     if (imagePath != null && imagePath.length() > 0) {
+                                        isSetting = true;
                                         Uri uri = Uri.parse("file:///" + imagePath);
                                         doSetAvatar(uri);
                                     } else {
                                         ToastUtils.show(HeadShowActivity.this, "图片地址有误，不能设置QQ头像");
                                     }
-                                    setUseCount();
+                                    setUseCount(userInfo.uid);
                                 } else {
                                     addKeep();
                                 }
@@ -707,9 +763,11 @@ public class HeadShowActivity extends BaseActivity {
         }
     };
 
-    public void setUseCount() {
+    public void setUseCount(String uid) {
         final Map<String, String> params = new HashMap<String, String>();
         params.put("imgid", cid);
+        params.put("uid", uid);
+        Logger.e("imgid--->" + cid + "uid--->" + uid);
         okHttpRequest.aget(Server.USE_COUNT_DATA, params, new OnResponseListener() {
             @Override
             public void onSuccess(String response) {

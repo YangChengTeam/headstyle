@@ -13,6 +13,7 @@
 
     <color name="home_bg">#f2edec</color>
     <color name="black">#000000</color>
+    <color name="black1">#333333</color>
     <color name="refresh_color">#999999</color>
 
     <color name="common_color">#f2f2f2</color>
@@ -27,7 +28,7 @@
     <color name="refresh_normal_color">#999999</color>
     <color name="refresh_select_color">#f28989</color>
 
-    <color name="my_color">#333333</color>
+    <color name="my_color">#6B6B6B</color>
     <color name="my_bg_color">#f2edec</color>
 
     <color name="dialog_title_color">#212121</color>
@@ -46,4 +47,16 @@
     <color name="black_alpha_30">#DFFFFFFF</color>
 
     <color name="black_alpha_50">#B0000000</color>
+    <color name="topic_item_bg_color">#fbdec0</color>
+
+    <color name="pre_topic_color">#73cd67</color>
+    <color name="next_topic_color">#fbf5f4</color>
+
+    <color name="topic_bg_color">#7ff1f1f1</color>
+    <color name="topic_result_color">#aaaaaa</color>
+    <color name="test_use_count_color">#B2fb5161</color>
+
+    <color name="fun_test_user_color">#262626</color>
+    <color name="fun_test_time_color">#b3b3b3</color>
+    <color name="list_line_color">#f5f5f5</color>
 </resources>

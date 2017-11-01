@@ -1,15 +1,14 @@
 package com.feiyou.headstyle.view.qqhead;
 
-import org.json.JSONObject;
-
-import com.tencent.tauth.IUiListener;
-import com.tencent.tauth.UiError;
-
-
 import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+
+import com.tencent.tauth.IUiListener;
+import com.tencent.tauth.UiError;
+
+import org.json.JSONObject;
 
 public class BaseUIListener implements IUiListener {
 	private Context mContext;

@@ -1,1 +1,1 @@
-include ':app', ':SwipeBack', ':TuSDKUI'
+include ':app', ':SwipeBack', ':TuSDKUI', ':rxbus'

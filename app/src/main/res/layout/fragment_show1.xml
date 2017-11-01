@@ -61,7 +61,7 @@
                 android:id="@+id/show_tabs_layout"
                 style="@style/MyCustomTabLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="36dp"
                 app:tabSelectedTextColor="@color/colorPrimary"
                 app:tabTextColor="@color/my_color"/>
 
@@ -111,7 +111,7 @@
                     android:textSize="16sp"/>
 
                 <TextView
-                    android:id="@+id/take_photo_tv"
+                    android:id="@+id/game_frends_tv"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
@@ -121,7 +121,7 @@
                     android:drawableLeft="@mipmap/take_photo_icon"
                     android:drawablePadding="6dp"
                     android:gravity="center"
-                    android:text="@string/take_photo_self_text"
+                    android:text="@string/game_friends_text"
                     android:textColor="@color/black"
                     android:textSize="16sp"/>
             </RelativeLayout>

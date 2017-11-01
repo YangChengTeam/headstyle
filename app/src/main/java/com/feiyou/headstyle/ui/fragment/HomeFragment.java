@@ -23,13 +23,14 @@ import com.bigkoo.convenientbanner.ConvenientBanner;
 import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
 import com.bigkoo.convenientbanner.holder.Holder;
 import com.bigkoo.convenientbanner.listener.OnItemClickListener;
+import com.bumptech.glide.Glide;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.feiyou.headstyle.HeadStyleApplication;
 import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.adapter.HeadTypeAdapter;
 import com.feiyou.headstyle.adapter.HeadWallAdapter;
-import com.feiyou.headstyle.bean.BannerInfo;
 import com.feiyou.headstyle.bean.HeadInfo;
+import com.feiyou.headstyle.bean.SpecialInfo;
 import com.feiyou.headstyle.bean.UserInfo;
 import com.feiyou.headstyle.bean.VersionInfo;
 import com.feiyou.headstyle.bean.VersionRet;
@@ -48,6 +49,7 @@ import com.feiyou.headstyle.ui.activity.HeadShowActivity;
 import com.feiyou.headstyle.ui.activity.MainActivity;
 import com.feiyou.headstyle.ui.activity.MoreHeadTypeActivity;
 import com.feiyou.headstyle.ui.activity.SearchActivity;
+import com.feiyou.headstyle.ui.activity.SpecialListActivity;
 import com.feiyou.headstyle.util.AppUtils;
 import com.feiyou.headstyle.util.NetWorkUtils;
 import com.feiyou.headstyle.util.PreferencesUtils;
@@ -112,7 +114,7 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
 
     private int mImageThumbSpacing;
 
-    private ArrayList<BannerInfo> bannerImages;
+    private ArrayList<SpecialInfo> bannerImages;
 
     public List<HeadInfo> data;
 
@@ -155,8 +157,14 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         articleService = new ArticleService();
         okHttpRequest = new OKHttpRequest();
         isRefresh = false;
-        data = new ArrayList<HeadInfo>();
-        bannerImages = new ArrayList<BannerInfo>();
+        List<HeadInfo> tHeadInfoList = mService.getHeadInfoListFromDB();
+        if (tHeadInfoList != null) {
+            data = tHeadInfoList;
+        } else {
+            data = new ArrayList<HeadInfo>();
+        }
+
+        bannerImages = new ArrayList<SpecialInfo>();
 
         mImageThumbSize = getResources().getDimensionPixelSize(
                 R.dimen.image_thumbnail_size);
@@ -282,14 +290,28 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
      */
     @Override
     public void loadData() {
-        loadDataByParams();
+        List<SpecialInfo> tSpecialInfoList = mService.getSpecialInfoListFromDB();
+        if (tSpecialInfoList != null) {
+            updataSpecialData(tSpecialInfoList);
+
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    loadDataByParams();
+                }
+            }, 1500);
+        } else {
+            loadDataByParams();
+        }
     }
 
     public void loadDataByParams() {
         final Map<String, String> params = new HashMap<String, String>();
         Logger.e("page---" + pageNum);
         params.put("p", String.valueOf(pageNum));
-
+        if (userInfo != null) {
+            params.put("uid", userInfo.uid);
+        }
         setRefreshState(params);
 
         if (nextData != null && nextData.size() > 0) {
@@ -304,15 +326,15 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
             getNextData();
         } else {
             //第一次默认加载显示加载框
-            swipeLayout.post(new Runnable() {
+            /*swipeLayout.post(new Runnable() {
                 @Override
                 public void run() {
                     swipeLayout.setRefreshing(true);
                 }
-            });
+            });*/
             okHttpRequest.aget(Server.HOME_DATA, params, new OnResponseListener() {
                 @Override
-                public void onSuccess(String response) {
+                public void onSuccess(final String response) {
 
                     swipeLayout.setRefreshing(false);
 
@@ -328,18 +350,37 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                     if (pageNum == 1) {
                         Logger.e("top---");
                         //设置banner数据
-                        List<BannerInfo> tempBanner = mService.getBannerInfos(response);
-                        if (tempBanner != null && tempBanner.size() > 0) {
-                            updataBannerData(mService.getBannerInfos(response));
+                        final List<SpecialInfo> tempSpecialInfos = mService.getSpecialInfos(response);
+                        if (tempSpecialInfos != null && tempSpecialInfos.size() > 0) {
+
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mService.deleteAllSpecialInfoList();
+                                    mService.saveSpecialInfoListToDB(tempSpecialInfos);
+                                }
+                            }).start();
+                            updataSpecialData(tempSpecialInfos);
                         }
                     }
 
                     //设置首页列表数据
-                    List<HeadInfo> temp = mService.getHeadInfos(response);
+                    final List<HeadInfo> temp = mService.getHeadInfos(response);
                     if (temp != null && temp.size() > 0) {
-                        Logger.e("first data ==" + temp.get(0).hurl);
+                        Logger.e("first data ==" + temp.get(0).getHurl());
                         data.addAll(temp);
                         mAdapter.addNewDatas(temp);
+
+                        //缓存第一页数据
+                        if (pageNum == 1) {
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mService.deleteAllHeadInfoList();
+                                    mService.saveHeadInfoListToDB(temp);
+                                }
+                            }).start();
+                        }
 
                         Message message = new Message();
                         message.what = 0;
@@ -522,14 +563,14 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     /**
      * 设置Banner数据
      */
-    public void updataBannerData(final List<BannerInfo> bannerInfos) {
+    public void updataSpecialData(final List<SpecialInfo> specialInfos) {
         convenientBanner.setPages(
                 new CBViewHolderCreator<LocalImageHolderView>() {
                     @Override
                     public LocalImageHolderView createHolder() {
                         return new LocalImageHolderView();
                     }
-                }, bannerInfos)
+                }, specialInfos)
                 .setPageIndicator(new int[]{R.mipmap.ic_page_indicator, R.mipmap.ic_page_indicator_focused});
         //设置两个点图片作为翻页指示器，不设置则没有指示器，可以根据自己需求自行配合自己的指示器,不需要圆点指示器可用不设
         convenientBanner.startTurning(4000);
@@ -539,15 +580,15 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
             @Override
             public void onItemClick(int position) {
 
-                if (bannerInfos != null && bannerInfos.size() > 0) {
-                    Intent intent = new Intent(getActivity(), HeadListActivity.class);
-                    BannerInfo bannerInfo = bannerInfos.get(position);
-                    if (!StringUtils.isEmpty(bannerInfo.sid)) {
-                        Logger.e("banner item cid ===" + bannerInfo.sid);
-                        intent.putExtra("cid", Integer.parseInt(bannerInfo.sid));
+                if (specialInfos != null && specialInfos.size() > 0) {
+                    Intent intent = new Intent(getActivity(), SpecialListActivity.class);
+                    SpecialInfo specialInfo = specialInfos.get(position);
+                    if (!StringUtils.isEmpty(specialInfo.getSid())) {
+                        Logger.e("banner item sid ===" + specialInfo.getSid());
+                        intent.putExtra("sid", Integer.parseInt(specialInfo.getSid()));
                     }
-                    if (!StringUtils.isEmpty(bannerInfo.sname)) {
-                        intent.putExtra("titleName", bannerInfo.sname);
+                    if (!StringUtils.isEmpty(specialInfo.getSname())) {
+                        intent.putExtra("titleName", specialInfo.getSname());
                     }
                     startActivity(intent);
                 }
@@ -555,29 +596,28 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         });
     }
 
-    public class LocalImageHolderView implements Holder<BannerInfo> {
-        private SimpleDraweeView imageView;
+    public class LocalImageHolderView implements Holder<SpecialInfo> {
+        private ImageView hImageView;
 
         @Override
         public View createView(Context context) {
-            imageView = new SimpleDraweeView(context);
-            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-            imageView.setLayoutParams(new ViewGroup.LayoutParams(580, 250));
-            return imageView;
+            hImageView = new ImageView(context);
+            hImageView.setScaleType(ImageView.ScaleType.FIT_XY);
+            hImageView.setLayoutParams(new ViewGroup.LayoutParams(580, 250));
+            return hImageView;
         }
 
         @Override
-        public void UpdateUI(Context context, final int position, BannerInfo data) {
-            if (data != null && !StringUtils.isEmpty(data.simg)) {
-                Uri uri = Uri.parse(data.simg);
-                imageView.setImageURI(uri);
+        public void UpdateUI(Context context, final int position, SpecialInfo data) {
+            if (data != null && !StringUtils.isEmpty(data.getSimg())) {
+                Glide.with(context).load(data.getSimg()).into(hImageView);
             }
         }
     }
 
     @OnClick(R.id.user_img)
     public void userInfo() {
-        ((MainActivity) getActivity()).setCurrentTab(3);
+        ((MainActivity) getActivity()).setCurrentTab(4);
     }
 
     @Override
@@ -611,8 +651,8 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
             case R.id.game_layout:
                 cid = 64;
                 titleName = getActivity().getString(R.string.type_game_text);
-                //typeListActivity(cid, titleName);
-                downLsdd(cid, titleName);
+                typeListActivity(cid, titleName);
+                //downLsdd(cid, titleName);
                 break;
             case R.id.more_layout:
                 Logger.e("toHeadMoreClick------");
@@ -625,7 +665,8 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
             case R.id.style_layout:
                 cid = 2;
                 titleName = getActivity().getString(R.string.type_style_text);
-                downFight(cid, titleName);
+                //downFight(cid, titleName);
+                typeListActivity(cid, titleName);
                 break;
             default:
                 break;
@@ -691,31 +732,31 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
             intent = packageManager.getLaunchIntentForPackage("com.fy.tnzbsq");
             startActivity(intent);*/
 
-            typeListActivity(mCid,mTitleName);
+            typeListActivity(mCid, mTitleName);
 
         } else {
             //if (!AppUtils.isServiceWork(getActivity(), "com.feiyou.headstyle.net.service.DownFightService")) {
 
-                //如果下载文件存在，直接启动安装
-                File downFile = new File(Constant.FIGHT_DOWN_FILE_PATH);
-                if (downFile.exists()) {
-                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.setDataAndType(Uri.fromFile(downFile),
-                            "application/vnd.android.package-archive");
-                    startActivity(intent);
-                } else {
-                    //启动服务重新下载
-                    //TODO 暂时注释
-                    //new DownAsyncTask().execute();
+            //如果下载文件存在，直接启动安装
+            File downFile = new File(Constant.FIGHT_DOWN_FILE_PATH);
+            if (downFile.exists()) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setDataAndType(Uri.fromFile(downFile),
+                        "application/vnd.android.package-archive");
+                startActivity(intent);
+            } else {
+                //启动服务重新下载
+                //TODO 暂时注释
+                //new DownAsyncTask().execute();
 
-                    //判断应用宝市场是否存在
-                    if (AppUtils.appInstalled(getActivity(), "com.tencent.android.qqdownloader")) {
-                        AppUtils.shareAppShop(getActivity(), "com.fy.tnzbsq");
-                    }else{
-                        new DownAsyncTask().execute();
-                    }
+                //判断应用宝市场是否存在
+                if (AppUtils.appInstalled(getActivity(), "com.tencent.android.qqdownloader")) {
+                    AppUtils.shareAppShop(getActivity(), "com.fy.tnzbsq");
+                } else {
+                    new DownAsyncTask().execute();
                 }
+            }
 
             /*} else {
                 ToastUtils.show(getActivity(), "斗图神器下载中");
@@ -742,7 +783,7 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
             intent = packageManager.getLaunchIntentForPackage("com.fy.tnzbsq");
             startActivity(intent);*/
 
-            typeListActivity(mCid,mTitleName);
+            typeListActivity(mCid, mTitleName);
 
         } else {
             //if (!AppUtils.isServiceWork(getActivity(), "com.feiyou.headstyle.net.service.DownFightService")) {
@@ -763,7 +804,7 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                 //判断应用宝市场是否存在
                 if (AppUtils.appInstalled(getActivity(), "com.tencent.android.qqdownloader")) {
                     AppUtils.shareAppShop(getActivity(), "com.whfeiyou.sound");
-                }else{
+                } else {
                     new DownLsddAsyncTask().execute();
                 }
             }
@@ -830,8 +871,9 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
 
         if (data != null && data.size() > 0 && position - 3 >= -1) {
             position = position - 3;
-            intent.putExtra("cid", data.get(position).cid);
-            intent.putExtra("imageUrl", data.get(position).hurl);
+            intent.putExtra("cid", data.get(position).getCid());
+            intent.putExtra("imageUrl", data.get(position).getHurl());
+            intent.putExtra("gaoqing", data.get(position).getGaoqing());
         }
 
         startActivity(intent);
@@ -858,7 +900,7 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         loadDataByParams();
 
         //刷新是否有最新的评论
-        ((MainActivity)getActivity()).initCommentCount();
+        ((MainActivity) getActivity()).initCommentCount();
     }
 
 }

@@ -92,14 +92,20 @@ public class Show1Fragment extends BaseFragment implements CustomWebViewDelegate
     @BindView(R.id.menu_item_layout)
     RelativeLayout menuItemLayout;
 
-    @BindView(R.id.take_photo_tv)
-    TextView takePhotoTv;
+    @BindView(R.id.game_frends_tv)
+    TextView gameFriendsTv;
 
     @BindView(R.id.qq_friend_tv)
     TextView qqFriendTv;
 
     @BindView(R.id.ground_view)
     View groundView;
+
+    public static List<String> showImageUrlList;
+
+    public static List<String> showFriendsImageUrlList;
+
+    public static List<String> showgGameImageUrlList;
 
     private List<BaseFragment> fragments;
 
@@ -167,6 +173,10 @@ public class Show1Fragment extends BaseFragment implements CustomWebViewDelegate
         Bundle sBundle = new Bundle();
         sBundle.putString("type","2");
 
+        showImageUrlList = new ArrayList<String>();//图片浏览时，全局变量
+        showFriendsImageUrlList = new ArrayList<String>();//Q友圈
+        showgGameImageUrlList = new ArrayList<String>();//游戏圈
+        
         fragments = new ArrayList<BaseFragment>();
 
         fragments.add(new AllArticleFragment());
@@ -217,7 +227,7 @@ public class Show1Fragment extends BaseFragment implements CustomWebViewDelegate
      */
     public void closeMenu() {
         qqFriendTv.startAnimation(qq_friend_out);
-        takePhotoTv.startAnimation(take_photo_out);
+        gameFriendsTv.startAnimation(take_photo_out);
 
         animationClose.setDuration(500);
         animationClose.setInterpolator(new DecelerateInterpolator());
@@ -325,7 +335,7 @@ public class Show1Fragment extends BaseFragment implements CustomWebViewDelegate
             groundView.startAnimation(animationOpen);
 
             qqFriendTv.startAnimation(qq_friend_in);
-            takePhotoTv.startAnimation(take_photo_in);
+            gameFriendsTv.startAnimation(take_photo_in);
 
             isShow = true;
             //showAddIv.setClickable(false);
@@ -465,7 +475,7 @@ public class Show1Fragment extends BaseFragment implements CustomWebViewDelegate
 
     @OnClick(R.id.user_img)
     public void userInfo() {
-        ((MainActivity) getActivity()).setCurrentTab(3);
+        ((MainActivity) getActivity()).setCurrentTab(4);
     }
 
     @Override
@@ -544,9 +554,9 @@ public class Show1Fragment extends BaseFragment implements CustomWebViewDelegate
         addArticle("1");
     }
 
-    @OnClick(R.id.take_photo_tv)
+    @OnClick(R.id.game_frends_tv)
     public void takePhoto(){
-        addArticle("2");
+        addArticle("3");
     }
 
     public void addArticle(String stype){

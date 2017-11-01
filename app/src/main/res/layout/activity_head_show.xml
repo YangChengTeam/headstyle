@@ -19,10 +19,72 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/high_image_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:background="@color/white"
+                    android:gravity="center">
+
+                    <com.facebook.drawee.view.SimpleDraweeView
+                        android:id="@+id/high_square_head_image"
+                        android:layout_width="66dp"
+                        android:layout_height="66dp"
+                        fresco:placeholderImage="@mipmap/empty_photo"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginLeft="40dp"
+                    android:gravity="center">
+
+                    <com.facebook.drawee.view.SimpleDraweeView
+                        android:id="@+id/high_circle_head_image"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        fresco:placeholderImage="@mipmap/empty_photo"
+                        fresco:roundAsCircle="true"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="26dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/high_image"
+                    android:layout_width="320dp"
+                    android:layout_height="320dp"
+                    android:layout_gravity="center"
+                    fresco:placeholderImage="@mipmap/empty_photo"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/low_image_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
+            android:visibility="gone"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -59,14 +121,14 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="50dp">
+            android:layout_marginBottom="16dp">
 
             <TextView
                 android:id="@+id/qq_auth_login_btn"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:drawablePadding="10dp"
+                android:drawablePadding="4dp"
                 android:drawableTop="@drawable/qq_login_selector"
                 android:gravity="center"
                 android:text="设为QQ头像"
@@ -77,7 +139,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:drawablePadding="10dp"
+                android:drawablePadding="4dp"
                 android:drawableTop="@drawable/keep_selector"
                 android:gravity="center"
                 android:text="收藏"
@@ -88,7 +150,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:drawablePadding="10dp"
+                android:drawablePadding="4dp"
                 android:drawableTop="@drawable/down_selector"
                 android:gravity="center"
                 android:text="下载"

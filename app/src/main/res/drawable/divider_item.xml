@@ -7,6 +7,6 @@
         android:height="1dp"/>
 
     <solid
-        android:color="@color/more_line_color"/>
+        android:color="@color/white"/>
 
 </shape>

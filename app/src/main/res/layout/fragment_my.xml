@@ -7,9 +7,8 @@
     android:orientation="vertical">
 
     <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="48dp"
         android:background="@color/colorPrimary"
         android:orientation="vertical">
 
@@ -21,8 +20,7 @@
             android:layout_centerVertical="true"
             android:text="@string/tab_my_text"
             android:textColor="@color/white"
-            android:textSize="20sp"/>
-
+            android:textSize="18sp"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -58,40 +56,41 @@
             android:layout_height="50dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
-            android:visibility="gone"
             android:layout_toRightOf="@+id/qq_login_icon"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/user_name_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:textColor="@color/my_color"
                 android:text="@string/user_default_name_text"
+                android:textColor="@color/my_color"
                 android:textSize="18sp"/>
 
             <ImageView
                 android:id="@+id/user_gender_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
                 android:layout_centerVertical="true"
-                android:layout_toRightOf="@+id/user_name_tv"
                 android:layout_gravity="center_vertical"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@+id/user_name_tv"
                 android:src="@mipmap/boy_icon"/>
+
             <Button
                 android:id="@+id/login_out_btn"
                 android:layout_width="50dp"
                 android:layout_height="25dp"
-                android:text="退出"
-                android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
-                android:gravity="center"
+                android:layout_centerVertical="true"
                 android:layout_marginRight="20dp"
-                android:textSize="12sp"
+                android:background="@mipmap/common_button_white"
+                android:gravity="center"
+                android:text="退出"
                 android:textColor="@color/black"
-                android:background="@mipmap/common_button_white"/>
+                android:textSize="12sp"/>
         </RelativeLayout>
 
     </RelativeLayout>
@@ -213,9 +212,9 @@
             android:layout_height="10dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="5dp"
-            android:visibility="gone"
             android:layout_toRightOf="@+id/article_text"
-            android:src="@mipmap/text_new_badge"/>
+            android:src="@mipmap/text_new_badge"
+            android:visibility="gone"/>
 
         <ImageView
             android:layout_width="15dp"
@@ -310,6 +309,7 @@
             android:layout_marginRight="15dp"
             android:src="@mipmap/to_right_icon"/>
     </RelativeLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0.5dp"

@@ -1,9 +1,12 @@
 package com.feiyou.headstyle;
 
 import android.app.Application;
+import android.content.Context;
 import android.graphics.Color;
+import android.support.multidex.MultiDex;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.feiyou.headstyle.common.DbHelper;
 import com.feiyou.headstyle.listener.FrescoPauseOnScrollListener;
 import com.feiyou.headstyle.util.FileUtils;
 import com.feiyou.headstyle.view.FrescoImageLoader;
@@ -37,6 +40,10 @@ public class HeadStyleApplication extends Application {
      */
     public static boolean isMessage = false;
 
+    public static int currentPage;
+
+    public static int typeId;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -68,7 +75,7 @@ public class HeadStyleApplication extends Application {
         }
         // 开发ID (请前往 http://tusdk.com 获取您的 APP 开发秘钥)
         TuSdk.init(this.getApplicationContext(), "9c6a7d8303d3c7c3-02-muczp1");
-
+        DbHelper.init(HeadStyleApplication.this);
         /*OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .connectTimeout(30000L, TimeUnit.MILLISECONDS)
                 .readTimeout(30000L, TimeUnit.MILLISECONDS)
@@ -77,4 +84,9 @@ public class HeadStyleApplication extends Application {
         OkHttpUtils.initClient(okHttpClient);*/
     }
 
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
 }

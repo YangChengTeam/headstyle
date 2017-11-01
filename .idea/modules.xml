@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/SwipeBack/SwipeBack.iml" filepath="$PROJECT_DIR$/SwipeBack/SwipeBack.iml" />
       <module fileurl="file://$PROJECT_DIR$/TuSDKUI/TuSDKUI.iml" filepath="$PROJECT_DIR$/TuSDKUI/TuSDKUI.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rxbus/rxbus.iml" filepath="$PROJECT_DIR$/rxbus/rxbus.iml" />
     </modules>
   </component>
 </project>

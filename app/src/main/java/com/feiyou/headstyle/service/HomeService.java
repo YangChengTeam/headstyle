@@ -3,9 +3,15 @@ package com.feiyou.headstyle.service;
 import com.feiyou.headstyle.bean.BannerInfo;
 import com.feiyou.headstyle.bean.HeadInfo;
 import com.feiyou.headstyle.bean.HeadListRet;
+import com.feiyou.headstyle.bean.SpecialInfo;
 import com.feiyou.headstyle.common.Constant;
+import com.feiyou.headstyle.common.DbHelper;
+import com.feiyou.headstyle.db.greendao.BannerInfoDao;
+import com.feiyou.headstyle.db.greendao.HeadInfoDao;
+import com.feiyou.headstyle.db.greendao.SpecialInfoDao;
 import com.feiyou.headstyle.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,6 +19,12 @@ import java.util.List;
  */
 public class HomeService extends BaseService {
     private HeadListRet result;
+
+    private BannerInfoDao bannerInfoDao = DbHelper.getDaoSession().getBannerInfoDao();
+
+    private HeadInfoDao headInfoDao = DbHelper.getDaoSession().getHeadInfoDao();
+
+    private SpecialInfoDao specialInfoDao = DbHelper.getDaoSession().getSpecialInfoDao();
 
     @Override
     public HeadListRet getData(String response) {
@@ -36,10 +48,65 @@ public class HomeService extends BaseService {
         return result.topslide;
     }
 
-    public int getMaxPage(String response){
+    public List<SpecialInfo> getSpecialInfos(String response) {
+        HeadListRet result = getData(response);
+        if (result == null || result.errCode == Constant.RESULT_FAIL) return null;
+        return result.special;
+    }
+
+    public int getMaxPage(String response) {
         HeadListRet result = getData(response);
         if (result == null || result.errCode == Constant.RESULT_FAIL) return 0;
         return result.maxpage;
+    }
+
+    public List<BannerInfo> getBannerInfoListFromDB() {
+        return (ArrayList<BannerInfo>) bannerInfoDao.queryBuilder().list();
+    }
+
+    public void saveBannerInfoListToDB(List<BannerInfo> list) {
+        if (list != null) {
+            for (BannerInfo info : list) {
+                bannerInfoDao.insertOrReplace(info);
+            }
+        }
+    }
+
+    public void deleteAllBannerInfoList() {
+        bannerInfoDao.deleteAll();
+    }
+
+    public List<HeadInfo> getHeadInfoListFromDB() {
+        return (ArrayList<HeadInfo>) headInfoDao.queryBuilder().list();
+    }
+
+    public void saveHeadInfoListToDB(List<HeadInfo> list) {
+        if (list != null) {
+            for (HeadInfo info : list) {
+                headInfoDao.insertOrReplace(info);
+            }
+        }
+    }
+
+    public void deleteAllHeadInfoList() {
+        headInfoDao.deleteAll();
+    }
+
+
+    public List<SpecialInfo> getSpecialInfoListFromDB() {
+        return (ArrayList<SpecialInfo>) specialInfoDao.queryBuilder().list();
+    }
+
+    public void saveSpecialInfoListToDB(List<SpecialInfo> list) {
+        if (list != null) {
+            for (SpecialInfo info : list) {
+                specialInfoDao.insertOrReplace(info);
+            }
+        }
+    }
+
+    public void deleteAllSpecialInfoList() {
+        specialInfoDao.deleteAll();
     }
 
 }

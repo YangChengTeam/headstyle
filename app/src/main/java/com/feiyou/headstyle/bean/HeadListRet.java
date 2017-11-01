@@ -12,5 +12,7 @@ public class HeadListRet extends Result implements Serializable {
 
     public List<BannerInfo> topslide;
 
+    public List<SpecialInfo> special;
+
     public int maxpage;
 }

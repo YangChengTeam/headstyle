@@ -77,7 +77,9 @@ public class PhotosFragment extends BaseFragment implements PhotosListAdapter.Lo
 
     private UserInfo userInfo;
 
-    public  String showType = "2";
+    public  String showType = "3";
+
+    private int maxPage = 0;
 
     public PhotosFragment() {
     }
@@ -118,6 +120,7 @@ public class PhotosFragment extends BaseFragment implements PhotosListAdapter.Lo
             @Override
             public void onItemClick(View view, int position) {
                 Intent intent = new Intent(getActivity(), ArticleDetailActivity.class);
+                intent.putExtra("show_type", 2);
                 intent.putExtra("sid", articleInfoList.get(position).sid);
                 startActivity(intent);
             }
@@ -129,7 +132,9 @@ public class PhotosFragment extends BaseFragment implements PhotosListAdapter.Lo
                 super.onScrolled(recyclerView, dx, dy);
                 if (isSlideToBottom(recyclerView)) {
                     pageNum++;
-                    getNextData();
+                    if(pageNum <= maxPage){
+                        getNextData();
+                    }
                 }
             }
 
@@ -171,8 +176,10 @@ public class PhotosFragment extends BaseFragment implements PhotosListAdapter.Lo
         Map<String, String> params = new HashMap<String, String>();
         Logger.e("init page---" + pageNum);
         params.put("p", String.valueOf(pageNum));
+        params.put("ver",AppUtils.getVersionName(getActivity()));//版本号
         params.put("t", showType);
         params.put("num", "10");//每页条数
+        //params.put("state", "1");
         return params;
     }
 
@@ -199,9 +206,10 @@ public class PhotosFragment extends BaseFragment implements PhotosListAdapter.Lo
                     if(articleInfoList != null && articleInfoList.size() > 0){
                         articleInfoList.clear();
                     }
+                    maxPage = Integer.parseInt(temp.get(0).maxpage);
 
-                    articleInfoList.addAll(temp);
-                    //mAdapter.addNewDatas(temp);
+                    //articleInfoList.addAll(temp);
+                    mAdapter.addNewDatas(temp);
                     mAdapter.notifyDataSetChanged();
                 }
             }

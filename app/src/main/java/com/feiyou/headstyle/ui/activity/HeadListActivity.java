@@ -216,6 +216,11 @@ public class HeadListActivity extends BaseActivity implements SwipeRefreshLayout
                     if (nextData != null) {
                         nextData.clear();
                     }
+                    HeadListRet headListRet = mService.getData(response);
+                    if (headListRet != null) {
+                        maxPage = headListRet.maxpage;
+                    }
+
                     nextData = mService.getHeadInfos(response);
                 }
 
@@ -237,8 +242,9 @@ public class HeadListActivity extends BaseActivity implements SwipeRefreshLayout
         Intent intent = new Intent(HeadListActivity.this, HeadShowActivity.class);
 
         if (data != null && data.size() > 0) {
-            intent.putExtra("cid", data.get(position).cid);
-            intent.putExtra("imageUrl", data.get(position).hurl);
+            intent.putExtra("cid", data.get(position).getCid());
+            intent.putExtra("imageUrl", data.get(position).getHurl());
+            intent.putExtra("gaoqing", data.get(position).getGaoqing());
         }
 
         startActivity(intent);

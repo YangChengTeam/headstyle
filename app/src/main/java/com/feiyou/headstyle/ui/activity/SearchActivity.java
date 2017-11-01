@@ -1,13 +1,10 @@
 package com.feiyou.headstyle.ui.activity;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.interfaces.CustomWebViewDelegate;
@@ -17,7 +14,6 @@ import com.feiyou.headstyle.view.CustomWebView;
 import com.orhanobut.logger.Logger;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class SearchActivity extends BaseActivity implements CustomWebViewDelegate {
@@ -51,9 +47,9 @@ public class SearchActivity extends BaseActivity implements CustomWebViewDelegat
     }
 
     @OnClick(R.id.search_btn)
-    public void toSearchList(View view){
-        if(searchKeyEv.getText()==null ||searchKeyEv.getText().toString().length()==0){
-            ToastUtils.show(SearchActivity.this,R.string.search_key_tip_text);
+    public void toSearchList(View view) {
+        if (searchKeyEv.getText() == null || searchKeyEv.getText().toString().length() == 0) {
+            ToastUtils.show(SearchActivity.this, R.string.search_key_tip_text);
             return;
         }
 
@@ -79,16 +75,16 @@ public class SearchActivity extends BaseActivity implements CustomWebViewDelegat
     @Override
     public void search(String searchKey) {
 
-        Logger.e("searchKey---"+searchKey);
+        Logger.e("searchKey---" + searchKey);
 
         String temp = searchKey.toString();
-        if(StringUtils.isEmpty(searchKey)){
-            ToastUtils.show(SearchActivity.this,R.string.search_key_tip_text);
+        if (StringUtils.isEmpty(searchKey)) {
+            ToastUtils.show(SearchActivity.this, R.string.search_key_tip_text);
             return;
         }
 
         //TODO 此处代码有问题，搜索的关键字不能加载到搜索历史中，待调整
-        customWebView.loadUrl("javascript:addHotWord('"+temp+"');");
+        customWebView.loadUrl("javascript:addHotWord('" + temp + "');");
 
         Intent intent = new Intent(SearchActivity.this, SearchListActivity.class);
         intent.putExtra("searchKey", searchKey.toString());
@@ -109,6 +105,7 @@ public class SearchActivity extends BaseActivity implements CustomWebViewDelegat
     public void isNotLogin() {
 
     }
+
     @Override
     public void addArticle() {
 

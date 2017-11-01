@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/white"
+              android:orientation="vertical">
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/topic_bg_color"></View>
+    <TextView
+        android:id="@+id/tv_fun_test_title"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:gravity="center"
+        android:minHeight="30dp"
+        android:text="趣味测试题目趣味测试题目趣味测试"
+        android:textColor="@color/black1"
+        android:textSize="14sp"/>
+</LinearLayout>

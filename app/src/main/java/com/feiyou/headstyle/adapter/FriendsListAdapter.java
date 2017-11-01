@@ -1,5 +1,6 @@
 package com.feiyou.headstyle.adapter;
 
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -30,7 +32,6 @@ import com.feiyou.headstyle.ui.activity.MainActivity;
 import com.feiyou.headstyle.ui.activity.ShowImageListActivity;
 import com.feiyou.headstyle.util.AppUtils;
 import com.feiyou.headstyle.util.PreferencesUtils;
-import com.feiyou.headstyle.util.StringUtils;
 import com.feiyou.headstyle.util.ToastUtils;
 import com.orhanobut.logger.Logger;
 
@@ -38,6 +39,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.feiyou.headstyle.ui.fragment.Show1Fragment.showFriendsImageUrlList;
 
 public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.MyViewHolder> implements View.OnClickListener {
 
@@ -78,8 +81,25 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
     public void addNewDatas(List<ArticleInfo> datas) {
         if (articleData != null) {
             articleData.addAll(datas);
+            createImageUrlList();
         } else {
             articleData = new ArrayList<ArticleInfo>();
+        }
+    }
+
+    public void createImageUrlList() {
+        if (articleData != null) {
+            for (int i = 0; i < articleData.size(); i++) {
+                final String cimgs = articleData.get(i).cimg;
+                if (cimgs != null) {
+                    String[] imgs = cimgs.split("\\|");
+                    for (int m = imgs.length - 1; m >= 0; m--) {
+                        if (!showFriendsImageUrlList.contains(imgs[m])) {
+                            showFriendsImageUrlList.add(imgs[m]);
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -92,7 +112,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
     }
 
     @Override
-    public void onBindViewHolder(final MyViewHolder holder, int position) {
+    public void onBindViewHolder(final MyViewHolder holder, final int position) {
 
         Logger.e("position---" + position);
 
@@ -102,8 +122,8 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
         holder.itemView.setTag(position);
         holder.articleSendTimeTv.setText(articleData.get(position).addtime);
         holder.articleTitleTv.setText(articleData.get(position).scontent);
-        holder.commentCountTv.setText(articleData.get(position).comment+"");
-        holder.praiseCountTv.setText(articleData.get(position).zan);
+        holder.commentCountTv.setText(articleData.get(position).comment + "");
+        holder.praiseCountTv.setText(articleData.get(position).zan+"");
 
         if (articleData.get(position).sex.equals("1")) {
             holder.userGender.setImageResource(R.mipmap.boy_icon);
@@ -111,7 +131,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
             holder.userGender.setImageResource(R.mipmap.girl_icon);
         }
 
-        if (articleData.get(position).iszan.equals("0")) {
+        if (articleData.get(position).iszan == 0) {
             Drawable noZanDrawable = ContextCompat.getDrawable(mContext, R.mipmap.no_zan_icon);
             noZanDrawable.setBounds(0, 0, noZanDrawable.getMinimumWidth(), noZanDrawable.getMinimumHeight());
             holder.praiseCountTv.setCompoundDrawables(noZanDrawable, null, null, null);
@@ -128,18 +148,18 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
         } else {
             holder.topTv.setVisibility(View.VISIBLE);
         }
-        
+
         holder.topTv.setTag(position);
 
         final String cimgs = articleData.get(position).cimg;
         HeadWallAdapter gridViewAdapter = new HeadWallAdapter(mContext);
 
+        final List<HeadInfo> data = new ArrayList<HeadInfo>();
         if (cimgs != null) {
-            List<HeadInfo> data = new ArrayList<HeadInfo>();
             String[] imgs = cimgs.split("\\|");
-            for (int i = 0; i < imgs.length; i++) {
+            for (int i = imgs.length - 1; i >= 0; i--) {
                 HeadInfo tempHeadInfo = new HeadInfo();
-                tempHeadInfo.hurl = imgs[i];
+                tempHeadInfo.setHurl(imgs[i]);
                 data.add(tempHeadInfo);
             }
             gridViewAdapter.addItemDatas(data);
@@ -150,12 +170,11 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //ToastUtils.show(mContext,"选择图片---"+position);
-
                 Intent intent = new Intent(mContext, ShowImageListActivity.class);
 
-                //String imageList = "http://pic.qqtn.com/up/2016-9/2016090611122547066.jpg,http://pic.qqtn.com/up/2016-9/14749389135118192.jpg,http://pic.qqtn.com/up/2016-6/2016062917512971884.jpg";
-                intent.putExtra("imageList", cimgs);
+                intent.putStringArrayListExtra("imageList", (ArrayList<String>) showFriendsImageUrlList);
                 intent.putExtra("position", position);
+                intent.putExtra("current_img_url", data.get(position).getHurl());
                 mContext.startActivity(intent);
                 //进入图片浏览时的动画
                 ((MainActivity) mContext).overridePendingTransition(R.anim.image_show_in, R.anim.image_show_out);
@@ -173,8 +192,18 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
             }
         });
 
-        final int iszan = StringUtils.isEmpty(articleData.get(position).iszan) == true ? 0 : Integer.parseInt(articleData.get(position).iszan);
-        final int zan = StringUtils.isEmpty(articleData.get(position).zan) == true ? 0 : Integer.parseInt(articleData.get(position).zan);
+        holder.articleTitleTv.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                ClipboardManager cm = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+                cm.setText(articleData.get(position).scontent);
+                ToastUtils.show(mContext, "已复制到粘贴板");
+                return false;
+            }
+        });
+
+        final int iszan = articleData.get(position).iszan;
+        final int zan = articleData.get(position).zan;
         holder.pariseLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -186,8 +215,8 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
                         UserInfo userInfo = (UserInfo) PreferencesUtils.getObject(mContext, Constant.USER_INFO, UserInfo.class);
                         params.put("sid", sid);
                         if (userInfo != null) {
-                            params.put("uid", userInfo.uid);
-                            params.put("oid", userInfo.openid);
+                            params.put("uid", userInfo != null ? userInfo.uid : "");
+                            params.put("oid", userInfo != null ? userInfo.openid : "");
                         }
 
                         okHttpRequest.aget(Server.UP_ZAN_DATA, params, new OnResponseListener() {
@@ -249,7 +278,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
         TextView topTv;//置顶
         ImageView userGender;
         TextView articleSendTimeTv;
-        TextView articleTitleTv;
+        EditText articleTitleTv;
         GridView articlePhotoGridView;
         TextView commentCountTv;
         TextView praiseCountTv;
@@ -264,7 +293,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
             topTv = (TextView) view.findViewById(R.id.top_tv);
             userGender = (ImageView) view.findViewById(R.id.user_gender_icon);
             articleSendTimeTv = (TextView) view.findViewById(R.id.article_send_time);
-            articleTitleTv = (TextView) view.findViewById(R.id.article_title);
+            articleTitleTv = (EditText) view.findViewById(R.id.article_title);
             articlePhotoGridView = (GridView) view.findViewById(R.id.article_photo_list);
             commentCountTv = (TextView) view.findViewById(R.id.comment_count_tv);
             praiseCountTv = (TextView) view.findViewById(R.id.praise_count_tv);

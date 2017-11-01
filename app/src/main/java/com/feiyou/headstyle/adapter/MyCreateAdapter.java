@@ -6,10 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.bumptech.glide.Glide;
 import com.feiyou.headstyle.R;
-import com.feiyou.headstyle.db.MyCreateInfo;
+import com.feiyou.headstyle.bean.MyCreateInfo;
 import com.feiyou.headstyle.util.StringUtils;
 
 import java.util.ArrayList;
@@ -80,7 +81,8 @@ public class MyCreateAdapter extends BaseAdapter {
         if (dataList != null && dataList.get(position) != null) {
             if (!StringUtils.isEmpty(dataList.get(position).getPhoto_id())) {
                 Uri uri = Uri.parse("file:///" + dataList.get(position).getPhoto_id());
-                holder.headImage.setImageURI(uri);
+                //holder.headImage.setImageURI(uri);
+                Glide.with(mContext).load(uri).into(holder.headImage);
             }
         }
 
@@ -89,7 +91,7 @@ public class MyCreateAdapter extends BaseAdapter {
 
     class ViewHolder {
         @BindView(R.id.photo)
-        SimpleDraweeView headImage;
+        ImageView headImage;
 
         public ViewHolder(View view) {
             ButterKnife.bind(this, view);

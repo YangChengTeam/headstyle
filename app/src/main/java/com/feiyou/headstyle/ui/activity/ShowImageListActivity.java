@@ -4,14 +4,12 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.feiyou.headstyle.R;
-import com.feiyou.headstyle.util.StringUtils;
 import com.feiyou.headstyle.util.ToastUtils;
 import com.feiyou.headstyle.view.GalleryWidget.BasePagerAdapter;
 import com.feiyou.headstyle.view.GalleryWidget.GalleryViewPager;
 import com.feiyou.headstyle.view.GalleryWidget.UrlPagerAdapter;
+import com.orhanobut.logger.Logger;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -22,6 +20,10 @@ public class ShowImageListActivity extends BaseActivity {
     GalleryViewPager viewPager;
 
     private int currentPosition;
+
+    private String currentImgUrl;
+
+    private List<String> imgUrlList;
 
     @Override
     public int getLayoutId() {
@@ -38,13 +40,15 @@ public class ShowImageListActivity extends BaseActivity {
 
         Bundle bundle = this.getIntent().getExtras();
 
-        if(bundle != null){
+        if (bundle != null) {
             currentPosition = bundle.getInt("position");
+            currentImgUrl = bundle.getString("current_img_url");
         }
 
-        if (bundle != null && bundle.getString("imageList") != null) {
-            String imageList = bundle.getString("imageList");
-            if(!StringUtils.isEmpty(imageList)){
+        if (bundle != null && bundle.getStringArrayList("imageList") != null) {
+
+            imgUrlList = bundle.getStringArrayList("imageList");
+            if (imgUrlList != null) {
                 /*String[] urls = {
                         "http://img3.imgtn.bdimg.com/it/u=4201345522,2791155945&fm=11&gp=0.jpg",
                         "http://uploads.xuexila.com/allimg/1608/704-160Q5103023.jpg",
@@ -54,12 +58,15 @@ public class ShowImageListActivity extends BaseActivity {
                         "http://img0.imgtn.bdimg.com/it/u=1012743149,55982983&fm=11&gp=0.jpg"
                 };*/
 
-                String[] urls = imageList.split("\\|");
+               /* String[] urls = imageList.split("\\|");
 
                 List<String> items = new ArrayList<String>();
-                Collections.addAll(items, urls);
+                //Collections.addAll(items, urls);
+                for (int i = urls.length -1; i >=0; i--) {
+                    items.add(urls[i]);
+                }*/
 
-                UrlPagerAdapter pagerAdapter = new UrlPagerAdapter(this, items);
+                UrlPagerAdapter pagerAdapter = new UrlPagerAdapter(this, imgUrlList);
                 pagerAdapter.setOnItemChangeListener(new BasePagerAdapter.OnItemChangeListener() {
                     @Override
                     public void onItemChange(int currentPosition) {
@@ -67,13 +74,15 @@ public class ShowImageListActivity extends BaseActivity {
                     }
                 });
 
+                int index = imgUrlList.lastIndexOf(currentImgUrl);
+                Logger.e("current index ---> " + index);
                 viewPager.setOffscreenPageLimit(3);
                 viewPager.setAdapter(pagerAdapter);
-                viewPager.setCurrentItem(currentPosition);
+                viewPager.setCurrentItem(index);
             }
 
-        }else{
-            ToastUtils.show(this,"图片地址有误，请稍后重试");
+        } else {
+            ToastUtils.show(this, "图片地址有误，请稍后重试");
         }
     }
 

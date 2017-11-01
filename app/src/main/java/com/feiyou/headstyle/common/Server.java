@@ -1,53 +1,83 @@
 package com.feiyou.headstyle.common;
 
 public class Server {
-	public final static String BASE_SERVER_IP = "http://tx.qqtn.com/apajax.asp?";
 
-	//获取首页数据
-	public final static String HOME_DATA = BASE_SERVER_IP + "action=0&ctype=0&num=60";
+    public final static boolean isDebug = false;
 
-	//搜索接口地址
-	public final static String SEARCH_DATA = BASE_SERVER_IP + "action=2&num=60";
+    public final static String BASE_SERVER_IP = isDebug ? "http://test.qqtn.com/" : "http://tx.qqtn.com/";
 
-	//登录接口地址
-	public final static String LOGIN_DATA = BASE_SERVER_IP + "action=3";
+    //获取首页数据
+    public final static String HOME_DATA = BASE_SERVER_IP + "apajax.asp?action=0&ctype=0&num=50";
 
-	//用户添加/取消收藏
-	public final static String HEAD_KEEP_DATA = BASE_SERVER_IP + "action=4";
+    //搜索接口地址
+    public final static String SEARCH_DATA = BASE_SERVER_IP + "apajax.asp?action=2&num=50";
 
-	//用户收藏列表接口地址
-	public final static String KEEP_LIST_DATA = BASE_SERVER_IP + "action=5&num=60&selkeep=1";
+    //登录接口地址
+    public final static String LOGIN_DATA = BASE_SERVER_IP + "apajax.asp?action=3";
 
-	//发帖
-	public final static String SEND_ARTICLE_DATA = "http://tx.qqtn.com/txapp/sajax.asp?action=upload";
+    //用户添加/取消收藏
+    public final static String HEAD_KEEP_DATA = BASE_SERVER_IP + "apajax.asp?action=4";
 
-	//发帖(无文件)
-	public final static String SEND_ARTICLE_NO_FILE_DATA = "http://tx.qqtn.com/txapp/sajax.asp?action=addshow";
+    //用户收藏列表接口地址
+    public final static String KEEP_LIST_DATA = BASE_SERVER_IP + "apajax.asp?action=5&num=50&selkeep=1";
 
-	//版本检测
-	public final static String CHECK_VERSION_DATA = "http://tx.qqtn.com/txapp/apk/up.asp?action=up";
+    //发帖
+    public final static String SEND_ARTICLE_DATA = BASE_SERVER_IP + "txapp/sajax.asp?action=upload";
 
-	//设置使用次数
-	public final static String USE_COUNT_DATA = BASE_SERVER_IP + "action=7";
+    //发帖(无文件)
+    public final static String SEND_ARTICLE_NO_FILE_DATA = BASE_SERVER_IP + "txapp/sajax.asp?action=addshow";
 
-	//获取头像详情页滚动时提前加载的数据
-	public final static String PRE_LOAD_DATA = BASE_SERVER_IP + "action=0&ctype=0&num=10";
+    //版本检测
+    public final static String CHECK_VERSION_DATA = BASE_SERVER_IP + "txapp/apk/up.asp?action=up";
 
-	//获取广场页所有数据
-	public final static String ARTICLE_ALL_DATA =  "http://tx.qqtn.com/txapp/sajax.asp?action=show";
+    //设置使用次数
+    public final static String USE_COUNT_DATA = BASE_SERVER_IP + "apajax.asp?action=7";
 
-	//帖子详情
-	public final static String ARTICLE_DETAIL_DATA = "http://tx.qqtn.com/txapp/sajax.asp?action=showinfo";
+    //获取头像详情页滚动时提前加载的数据
+    public final static String PRE_LOAD_DATA = BASE_SERVER_IP + "apajax.asp?action=0&ctype=0&num=10";
 
-	//评论详情
-	public final static String COMMENT_DATA = "http://tx.qqtn.com/txapp/sajax.asp?action=cinfolist&num=10&p=1";
+    //获取广场页所有数据
+    public final static String ARTICLE_ALL_DATA = BASE_SERVER_IP + "txapp/sajax.asp?action=show";
 
-	//点赞
-	public final static String UP_ZAN_DATA =  "http://tx.qqtn.com/txapp/sajax.asp?action=upzan";
+    //帖子详情
+    public final static String ARTICLE_DETAIL_DATA = BASE_SERVER_IP + "txapp/sajax.asp?action=showinfo";
 
-	//评论
-	public final static String ADD_COMMENT_DATA =  "http://tx.qqtn.com/txapp/sajax.asp?action=adcomment";
+    //评论详情
+    public final static String COMMENT_DATA = BASE_SERVER_IP + "txapp/sajax.asp?action=cinfolist&num=10&p=1";
 
-	//我的发帖
-	public final static String MY_ARTICLE_DATA =  "http://tx.qqtn.com/txapp/sajax.asp?action=myshow";
+    //点赞
+    public final static String UP_ZAN_DATA = BASE_SERVER_IP + "txapp/sajax.asp?action=upzan";
+
+    //评论
+    public final static String ADD_COMMENT_DATA = BASE_SERVER_IP + "txapp/sajax.asp?action=adcomment";
+
+    //我的发帖
+    public final static String MY_ARTICLE_DATA = BASE_SERVER_IP + "txapp/sajax.asp?action=myshow";
+
+    //专题列表数据
+    public final static String SPECIAL_LIST_DATA = BASE_SERVER_IP + "apajax.asp?action=8";
+
+    //测试列表数据
+    public final static String FUN_TEST_LIST_DATA = BASE_SERVER_IP + "apajax.asp?action=10";
+
+    //测试问题及答案
+    public final static String FUN_TOPIC_ITEM_DATA = BASE_SERVER_IP + "apajax.asp?action=11";
+
+    //测试结果
+    public final static String FUN_TEST_RESULT_LIST_DATA = BASE_SERVER_IP + "apajax.asp?action=12";
+
+    //更新分享及测试人数
+    public final static String FUN_TEST_COUNT_DATA = BASE_SERVER_IP + "apajax.asp?action=13";
+
+    //查询测试的评论列表
+    public final static String FUN_TEST_COMMENT_LIST_DATA = BASE_SERVER_IP + "apajax.asp?action=14";
+
+    //测试添加评论
+    public final static String FUN_TEST_ADD_COMMENT_DATA = BASE_SERVER_IP + "apajax.asp?action=14";
+
+    //测试-评论点赞
+    public final static String FUN_TEST_AGREE_DATA = BASE_SERVER_IP + "apajax.asp?action=15";
+
+    //帖子-评论点赞
+    public final static String COMMENT_AGREE_DATA = BASE_SERVER_IP + "txapp/sajax.asp?action=upcommentzan";
 }

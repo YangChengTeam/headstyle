@@ -1,8 +1,5 @@
 package com.feiyou.headstyle.service;
 
-import com.feiyou.headstyle.bean.ArticleInfo;
-import com.feiyou.headstyle.bean.ArticleInfoRet;
-import com.feiyou.headstyle.bean.ArticleListRet;
 import com.feiyou.headstyle.bean.CommentInfoRet;
 import com.feiyou.headstyle.bean.Result;
 import com.feiyou.headstyle.common.Constant;
@@ -35,5 +32,13 @@ public class CommentService extends BaseService {
             flag = false;
         }
         return flag;
+    }
+
+    public Result getAgreeResult(String response) {
+        if (!StringUtils.isEmpty(response)) {
+            Result uResult = Constant.GSON.fromJson(response, Result.class);
+            return uResult;
+        }
+        return null;
     }
 }

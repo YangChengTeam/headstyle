@@ -6,7 +6,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.GridView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.feiyou.headstyle.R;
@@ -17,7 +16,6 @@ import com.feiyou.headstyle.net.OKHttpRequest;
 import com.feiyou.headstyle.net.listener.OnResponseListener;
 import com.feiyou.headstyle.service.HomeService;
 import com.feiyou.headstyle.util.StringUtils;
-import com.feiyou.headstyle.view.MyGridView;
 import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
@@ -135,8 +133,8 @@ public class SearchListActivity extends BaseActivity implements SwipeRefreshLayo
         Intent intent = new Intent(this, HeadShowActivity.class);
 
         if (data != null && data.size() > 0) {
-            intent.putExtra("cid", data.get(position).cid);
-            intent.putExtra("imageUrl", data.get(position).hurl);
+            intent.putExtra("cid", data.get(position).getCid());
+            intent.putExtra("imageUrl", data.get(position).getHurl());
         }
 
         startActivity(intent);

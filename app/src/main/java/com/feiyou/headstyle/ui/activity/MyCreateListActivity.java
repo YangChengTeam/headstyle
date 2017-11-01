@@ -2,19 +2,16 @@ package com.feiyou.headstyle.ui.activity;
 
 import android.content.Intent;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.view.MotionEvent;
-import android.view.View;
 import android.widget.AbsListView;
 import android.widget.GridView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.adapter.MyCreateAdapter;
+import com.feiyou.headstyle.bean.MyCreateInfo;
 import com.feiyou.headstyle.bean.UserInfo;
 import com.feiyou.headstyle.common.Constant;
-import com.feiyou.headstyle.db.MyCreateInfo;
 import com.feiyou.headstyle.db.greendao.DaoSession;
 import com.feiyou.headstyle.net.OKHttpRequest;
 import com.feiyou.headstyle.service.HomeService;
@@ -22,7 +19,6 @@ import com.feiyou.headstyle.util.AppUtils;
 import com.feiyou.headstyle.util.DbUtil;
 import com.feiyou.headstyle.util.PreferencesUtils;
 import com.feiyou.headstyle.util.ToastUtils;
-import com.feiyou.headstyle.view.MyGridView;
 
 import java.util.ArrayList;
 import java.util.List;
