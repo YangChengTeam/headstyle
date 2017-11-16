@@ -19,9 +19,7 @@ import com.feiyou.headstyle.util.StringUtils;
 import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -140,7 +138,6 @@ public class HeadListActivity extends BaseActivity implements SwipeRefreshLayout
             data.addAll(nextData);
             mAdapter.addNewDatas(nextData);
             mAdapter.notifyDataSetChanged();
-            pageNum++;
             getNextData();
         } else {
             swipeLayout.post(new Runnable() {
@@ -150,14 +147,16 @@ public class HeadListActivity extends BaseActivity implements SwipeRefreshLayout
                 }
             });
 
-            final Map<String, String> params = new HashMap<String, String>();
-            Logger.e("init page---" + pageNum);
-            params.put("p", String.valueOf(pageNum));
+            StringBuffer homeUrl = new StringBuffer(Server.NEW_HOME_DATA);
+            homeUrl.append("/").append("0").append("/").append("0");
             if (cid > 0) {
-                params.put("cid", cid + "");
+                homeUrl.append("/").append(cid + "");
+            } else {
+                homeUrl.append("/").append("0");
             }
-
-            okHttpRequest.aget(Server.HOME_DATA, params, new OnResponseListener() {
+            homeUrl.append("/").append(String.valueOf(pageNum)).append(".html");
+            Logger.e("first url--->" + homeUrl.toString());
+            okHttpRequest.aget(homeUrl.toString(), null, new OnResponseListener() {
                 @Override
                 public void onSuccess(String response) {
                     swipeLayout.setRefreshing(false);
@@ -174,7 +173,6 @@ public class HeadListActivity extends BaseActivity implements SwipeRefreshLayout
 
                             mAdapter.notifyDataSetChanged();
 
-                            pageNum++;
                             if (pageNum <= maxPage) {
                                 getNextData();
                             }
@@ -200,16 +198,20 @@ public class HeadListActivity extends BaseActivity implements SwipeRefreshLayout
      * 加载下一页数据
      */
     public void getNextData() {
-        final Map<String, String> params = new HashMap<String, String>();
-        Logger.e("next-page---" + pageNum);
-        params.put("p", String.valueOf(pageNum));
-        if (cid > 0) {
-            params.put("cid", cid + "");
-        }
 
-        if (pageNum <= maxPage) {
+        pageNum++;
+        if (pageNum <= maxPage || maxPage == 1) {
+            StringBuffer homeUrl = new StringBuffer(Server.NEW_HOME_DATA);
+            homeUrl.append("/").append("0").append("/").append("0");
+            if (cid > 0) {
+                homeUrl.append("/").append(cid + "");
+            } else {
+                homeUrl.append("/").append("0");
+            }
+            homeUrl.append("/").append(String.valueOf(pageNum)).append(".html");
+            Logger.e("next url--->" + homeUrl.toString());
 
-            okHttpRequest.aget(Server.HOME_DATA, params, new OnResponseListener() {
+            okHttpRequest.aget(homeUrl.toString(), null, new OnResponseListener() {
                 @Override
                 public void onSuccess(String response) {
                     //设置首页列表数据

@@ -306,13 +306,6 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     }
 
     public void loadDataByParams() {
-        final Map<String, String> params = new HashMap<String, String>();
-        Logger.e("page---" + pageNum);
-        params.put("p", String.valueOf(pageNum));
-        if (userInfo != null) {
-            params.put("uid", userInfo.uid);
-        }
-        setRefreshState(params);
 
         if (nextData != null && nextData.size() > 0) {
             data.addAll(nextData);
@@ -325,14 +318,24 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
             pageNum++;
             getNextData();
         } else {
-            //第一次默认加载显示加载框
-            /*swipeLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    swipeLayout.setRefreshing(true);
-                }
-            });*/
-            okHttpRequest.aget(Server.HOME_DATA, params, new OnResponseListener() {
+            StringBuffer homeUrl = new StringBuffer(Server.NEW_HOME_DATA);
+            if (userInfo != null) {
+                homeUrl.append("/").append(userInfo.uid);
+            }else{
+                homeUrl.append("/").append("0");
+            }
+
+            if (isRefresh) {
+                homeUrl.append("/").append("4");
+            }else{
+                homeUrl.append("/").append("0");
+            }
+
+            homeUrl.append("/").append(String.valueOf(pageNum)).append(".html");
+
+            Logger.e("first url--->" + homeUrl);
+
+            okHttpRequest.aget(homeUrl.toString(), null, new OnResponseListener() {
                 @Override
                 public void onSuccess(final String response) {
 
@@ -520,13 +523,25 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
      * 加载下一页数据
      */
     public void getNextData() {
-        final Map<String, String> params = new HashMap<String, String>();
-        Logger.e("page---" + pageNum);
-        params.put("p", String.valueOf(pageNum));
 
-        setRefreshState(params);
+        StringBuffer homeUrl = new StringBuffer(Server.NEW_HOME_DATA);
+        if (userInfo != null) {
+            homeUrl.append("/").append(userInfo.uid);
+        }else{
+            homeUrl.append("/").append("0");
+        }
 
-        okHttpRequest.aget(Server.HOME_DATA, params, new OnResponseListener() {
+        if (isRefresh) {
+            homeUrl.append("/").append("4");
+        }else{
+            homeUrl.append("/").append("0");
+        }
+
+        homeUrl.append("/").append(String.valueOf(pageNum)).append(".html");
+
+        Logger.e("next url --->" + homeUrl.toString());
+
+        okHttpRequest.aget(homeUrl.toString(), null, new OnResponseListener() {
             @Override
             public void onSuccess(String response) {
                 if (isRefresh) {

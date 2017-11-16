@@ -9,6 +9,9 @@ public class Server {
     //获取首页数据
     public final static String HOME_DATA = BASE_SERVER_IP + "apajax.asp?action=0&ctype=0&num=50";
 
+    //获取首页数据
+    public final static String NEW_HOME_DATA = BASE_SERVER_IP + "gxtx/0";
+
     //搜索接口地址
     public final static String SEARCH_DATA = BASE_SERVER_IP + "apajax.asp?action=2&num=50";
 

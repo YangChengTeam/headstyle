@@ -22,10 +22,10 @@ public class OKHttpRequest {
 
     public void aget(String url, Map<String, String> params, final OnResponseListener onResponseListener) {
 
-        OkHttpUtils.post().params(params).url(url).build().execute(new StringCallback() {
+        OkHttpUtils.get().params(params).url(url).build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                Logger.e("---data error---");
+                Logger.e("--- onError data aget---");
                 onResponseListener.onError(e);
                 e.printStackTrace();
             }
