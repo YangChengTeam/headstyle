@@ -45,7 +45,7 @@ import com.feiyou.headstyle.service.ArticleService;
 import com.feiyou.headstyle.service.HomeService;
 import com.feiyou.headstyle.service.UserService;
 import com.feiyou.headstyle.ui.activity.HeadListActivity;
-import com.feiyou.headstyle.ui.activity.HeadShowActivity;
+import com.feiyou.headstyle.ui.activity.HeadShow3Activity;
 import com.feiyou.headstyle.ui.activity.MainActivity;
 import com.feiyou.headstyle.ui.activity.MoreHeadTypeActivity;
 import com.feiyou.headstyle.ui.activity.SearchActivity;
@@ -64,6 +64,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -116,13 +117,9 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
 
     private ArrayList<SpecialInfo> bannerImages;
 
-    public List<HeadInfo> data;
-
     private View view;
 
     private int pageNum = 1;
-
-    private List<HeadInfo> nextData;
 
     private int cid;
 
@@ -141,6 +138,8 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
 
     ArticleService articleService = null;
 
+    private int rPageNum = 1;
+
     public HomeFragment() {
     }
 
@@ -157,12 +156,6 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         articleService = new ArticleService();
         okHttpRequest = new OKHttpRequest();
         isRefresh = false;
-        List<HeadInfo> tHeadInfoList = mService.getHeadInfoListFromDB();
-        if (tHeadInfoList != null) {
-            data = tHeadInfoList;
-        } else {
-            data = new ArrayList<HeadInfo>();
-        }
 
         bannerImages = new ArrayList<SpecialInfo>();
 
@@ -170,6 +163,12 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                 R.dimen.image_thumbnail_size);
         mImageThumbSpacing = getResources().getDimensionPixelSize(
                 R.dimen.image_thumbnail_spacing);
+
+
+        int a1 = 55;
+        int a2 = 50;
+        Logger.e("test1---" + a1 % a2 + "test2--->" + a1 / a2);
+
     }
 
     @Override
@@ -209,8 +208,9 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         //添加头部控件
         mPhotoWall.addHeaderView(headView);
 
-        nextData = new ArrayList<HeadInfo>();
-        mAdapter = new HeadWallAdapter(getActivity(), data);
+        List<HeadInfo> tHeadInfoList = mService.getHeadInfoListFromDB();
+        mAdapter = new HeadWallAdapter(getActivity(), tHeadInfoList);
+
         mPhotoWall.setAdapter(mAdapter);
 
         swipeLayout.setColorSchemeResources(
@@ -306,105 +306,88 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     }
 
     public void loadDataByParams() {
+        StringBuffer homeUrl = new StringBuffer(Server.NEW_HOME_DATA);
 
-        if (nextData != null && nextData.size() > 0) {
-            data.addAll(nextData);
-            mAdapter.addNewDatas(nextData);
+        homeUrl.append("/").append("0");
 
-            Message message = new Message();
-            message.what = 0;
-            handler.sendMessage(message);
+        homeUrl.append("/").append("0");
 
-            pageNum++;
-            getNextData();
-        } else {
-            StringBuffer homeUrl = new StringBuffer(Server.NEW_HOME_DATA);
-            if (userInfo != null) {
-                homeUrl.append("/").append(userInfo.uid);
-            }else{
-                homeUrl.append("/").append("0");
-            }
+        homeUrl.append("/").append(String.valueOf(pageNum)).append(".html");
 
-            if (isRefresh) {
-                homeUrl.append("/").append("4");
-            }else{
-                homeUrl.append("/").append("0");
-            }
+        Logger.e("first url111--->" + homeUrl);
 
-            homeUrl.append("/").append(String.valueOf(pageNum)).append(".html");
+        okHttpRequest.aget(homeUrl.toString(), null, new OnResponseListener() {
+            @Override
+            public void onSuccess(final String response) {
 
-            Logger.e("first url--->" + homeUrl);
+                swipeLayout.setRefreshing(false);
 
-            okHttpRequest.aget(homeUrl.toString(), null, new OnResponseListener() {
-                @Override
-                public void onSuccess(final String response) {
-
-                    swipeLayout.setRefreshing(false);
-
-                    if (isRefresh) {
-                        if (refreshBar.getVisibility() == View.VISIBLE) {
-                            refreshBar.setVisibility(View.GONE);
-                        }
-                        if (refreshIcon.getVisibility() == View.GONE) {
-                            refreshIcon.setVisibility(View.VISIBLE);
-                        }
+                if (isRefresh) {
+                    if (refreshBar.getVisibility() == View.VISIBLE) {
+                        refreshBar.setVisibility(View.GONE);
                     }
+                    if (refreshIcon.getVisibility() == View.GONE) {
+                        refreshIcon.setVisibility(View.VISIBLE);
+                    }
+                }
+
+                if (pageNum == 1) {
+                    Logger.e("top---");
+                    //设置banner数据
+                    final List<SpecialInfo> tempSpecialInfos = mService.getSpecialInfos(response);
+                    if (tempSpecialInfos != null && tempSpecialInfos.size() > 0) {
+
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mService.deleteAllSpecialInfoList();
+                                mService.saveSpecialInfoListToDB(tempSpecialInfos);
+                            }
+                        }).start();
+                        updataSpecialData(tempSpecialInfos);
+                    }
+                }
+
+                //设置首页列表数据
+                final List<HeadInfo> temp = mService.getHeadInfos(response);
+                if (temp != null && temp.size() > 0) {
+                    Logger.e("first data ==" + temp.get(0).getHurl());
 
                     if (pageNum == 1) {
-                        Logger.e("top---");
-                        //设置banner数据
-                        final List<SpecialInfo> tempSpecialInfos = mService.getSpecialInfos(response);
-                        if (tempSpecialInfos != null && tempSpecialInfos.size() > 0) {
-
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    mService.deleteAllSpecialInfoList();
-                                    mService.saveSpecialInfoListToDB(tempSpecialInfos);
-                                }
-                            }).start();
-                            updataSpecialData(tempSpecialInfos);
-                        }
-                    }
-
-                    //设置首页列表数据
-                    final List<HeadInfo> temp = mService.getHeadInfos(response);
-                    if (temp != null && temp.size() > 0) {
-                        Logger.e("first data ==" + temp.get(0).getHurl());
-                        data.addAll(temp);
-                        mAdapter.addNewDatas(temp);
+                        mAdapter.addItemDatas(temp);
 
                         //缓存第一页数据
-                        if (pageNum == 1) {
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    mService.deleteAllHeadInfoList();
-                                    mService.saveHeadInfoListToDB(temp);
-                                }
-                            }).start();
-                        }
-
-                        Message message = new Message();
-                        message.what = 0;
-                        handler.sendMessage(message);
-
-                        pageNum++;
-                        getNextData();
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mService.deleteAllHeadInfoList();
+                                mService.saveHeadInfoListToDB(temp);
+                            }
+                        }).start();
+                    } else {
+                        mAdapter.addNewDatas(temp);
                     }
-                }
 
-                @Override
-                public void onError(Exception e) {
-                    swipeLayout.setRefreshing(false);
-                }
+                    pageNum++;
+                    Logger.e("加载最新页码page--->" + pageNum);
 
-                @Override
-                public void onBefore() {
-
+                    Message message = new Message();
+                    message.what = 0;
+                    handler.sendMessage(message);
                 }
-            });
-        }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                swipeLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void onBefore() {
+
+            }
+        });
+
     }
 
     /**
@@ -518,54 +501,6 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
             }
         }
     };
-
-    /**
-     * 加载下一页数据
-     */
-    public void getNextData() {
-
-        StringBuffer homeUrl = new StringBuffer(Server.NEW_HOME_DATA);
-        if (userInfo != null) {
-            homeUrl.append("/").append(userInfo.uid);
-        }else{
-            homeUrl.append("/").append("0");
-        }
-
-        if (isRefresh) {
-            homeUrl.append("/").append("4");
-        }else{
-            homeUrl.append("/").append("0");
-        }
-
-        homeUrl.append("/").append(String.valueOf(pageNum)).append(".html");
-
-        Logger.e("next url --->" + homeUrl.toString());
-
-        okHttpRequest.aget(homeUrl.toString(), null, new OnResponseListener() {
-            @Override
-            public void onSuccess(String response) {
-                if (isRefresh) {
-                    refreshBar.setVisibility(View.GONE);
-                    refreshIcon.setVisibility(View.VISIBLE);
-                }
-                //设置首页列表数据
-                if (nextData != null) {
-                    nextData.clear();
-                }
-                nextData = mService.getHeadInfos(response);
-            }
-
-            @Override
-            public void onError(Exception e) {
-
-            }
-
-            @Override
-            public void onBefore() {
-
-            }
-        });
-    }
 
     /**
      * 下拉刷新
@@ -881,14 +816,23 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
      */
     @OnItemClick(R.id.photo_wall)
     public void onHeadItemClick(int position) {
+        Intent intent = new Intent(getActivity(), HeadShow3Activity.class);
 
-        Intent intent = new Intent(getActivity(), HeadShowActivity.class);
-
-        if (data != null && data.size() > 0 && position - 3 >= -1) {
+        if (mAdapter.getDataList() != null && mAdapter.getDataList().size() > 0 && position - 3 >= -1) {
             position = position - 3;
-            intent.putExtra("cid", data.get(position).getCid());
-            intent.putExtra("imageUrl", data.get(position).getHurl());
-            intent.putExtra("gaoqing", data.get(position).getGaoqing());
+            Logger.e("url isRefresh--->" + isRefresh + "---position----" + position);
+            intent.putExtra("pos", position);
+            if (isRefresh) {
+                int tempPage = (position / 50) + 1;
+                intent.putExtra("page", tempPage + rPageNum - 1);
+            } else {
+                int tempPage = (position / 50) + 1;
+                intent.putExtra("page", tempPage);
+            }
+
+            intent.putExtra("cid", mAdapter.getDataList().get(position).getCid());
+            intent.putExtra("imageUrl", mAdapter.getDataList().get(position).getHurl());
+            intent.putExtra("gaoqing", mAdapter.getDataList().get(position).getGaoqing());
         }
 
         startActivity(intent);
@@ -901,16 +845,15 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         startActivity(intent);
     }
 
-
     public void refreshData() {
-        if (nextData != null) {
-            nextData.clear();
-        }
-        if (data != null) {
-            data.clear();
-        }
         mAdapter.clear();
-        pageNum = 1;
+        Random random = new Random();
+        int result = random.nextInt(10);
+        rPageNum = result + 1;
+        pageNum = rPageNum;
+
+        Logger.e("随机产生的页码url--->" + rPageNum);
+
         isRefresh = true;
         loadDataByParams();
 

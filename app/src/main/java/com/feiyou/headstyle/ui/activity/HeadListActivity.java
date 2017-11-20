@@ -241,9 +241,13 @@ public class HeadListActivity extends BaseActivity implements SwipeRefreshLayout
 
     @OnItemClick(R.id.photo_wall)
     public void onHeadItemClick(int position) {
-        Intent intent = new Intent(HeadListActivity.this, HeadShowActivity.class);
+        Intent intent = new Intent(HeadListActivity.this, HeadShow3Activity.class);
 
         if (data != null && data.size() > 0) {
+            intent.putExtra("tid", cid);
+            intent.putExtra("pos", position);
+            int tempPage = (position / 50) + 1;
+            intent.putExtra("page", tempPage);
             intent.putExtra("cid", data.get(position).getCid());
             intent.putExtra("imageUrl", data.get(position).getHurl());
             intent.putExtra("gaoqing", data.get(position).getGaoqing());

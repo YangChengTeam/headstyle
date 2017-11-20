@@ -57,6 +57,10 @@ public class HeadWallAdapter extends BaseAdapter {
         return dataList.get(pos);
     }
 
+    public List<HeadInfo> getDataList() {
+        return dataList;
+    }
+
     @Override
     public long getItemId(int arg0) {
         return 0;
