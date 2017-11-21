@@ -52,7 +52,7 @@
         </activity>
         <activity
             android:name=".ui.activity.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/MainAppTheme">
         </activity>
         <activity
             android:name=".ui.activity.HeadListActivity"

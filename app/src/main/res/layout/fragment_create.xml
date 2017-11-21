@@ -6,6 +6,11 @@
     android:background="@mipmap/create_bg"
     android:orientation="vertical">
 
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:background="@color/colorPrimary">
+    </View>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -52,14 +57,14 @@
                 android:id="@+id/circle_head_image"
                 android:layout_width="146dp"
                 android:layout_height="146dp"
-                fresco:roundedCornerRadius="5dp"
+                fresco:placeholderImage="@mipmap/example_square"
+                fresco:roundAsCircle="true"
                 fresco:roundBottomLeft="false"
                 fresco:roundBottomRight="false"
                 fresco:roundWithOverlayColor="@color/white"
-                fresco:roundingBorderWidth="3dp"
+                fresco:roundedCornerRadius="5dp"
                 fresco:roundingBorderColor="@color/more_line_color"
-                fresco:placeholderImage="@mipmap/example_square"
-                fresco:roundAsCircle="true"/>
+                fresco:roundingBorderWidth="3dp"/>
         </LinearLayout>
 
     </LinearLayout>

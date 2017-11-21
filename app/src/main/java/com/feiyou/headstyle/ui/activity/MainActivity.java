@@ -25,7 +25,7 @@ import com.feiyou.headstyle.service.ArticleService;
 import com.feiyou.headstyle.ui.fragment.CreateFragment;
 import com.feiyou.headstyle.ui.fragment.FunTestFragment;
 import com.feiyou.headstyle.ui.fragment.HomeFragment;
-import com.feiyou.headstyle.ui.fragment.MyFragment;
+import com.feiyou.headstyle.ui.fragment.MyFragment1;
 import com.feiyou.headstyle.ui.fragment.Show1Fragment;
 import com.feiyou.headstyle.util.AppUtils;
 import com.feiyou.headstyle.util.PreferencesUtils;
@@ -48,7 +48,7 @@ public class MainActivity extends BaseActivity {
     private LayoutInflater layoutInflater;
 
     //定义数组来存放Fragment界面
-    private Class fragmentArray[] = {HomeFragment.class, Show1Fragment.class, CreateFragment.class, FunTestFragment.class, MyFragment.class};
+    private Class fragmentArray[] = {HomeFragment.class, Show1Fragment.class, CreateFragment.class, FunTestFragment.class, MyFragment1.class};
 
     //定义数组来存放按钮图片
     private int mImageViewArray[] = {R.drawable.selector_home, R.drawable.selector_show, R.drawable.selector_create, R.drawable.selector_test,
