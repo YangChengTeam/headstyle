@@ -14,7 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.feiyou.headstyle.HeadStyleApplication;
+import com.feiyou.headstyle.App;
 import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.bean.FunTestInfo;
 import com.feiyou.headstyle.bean.Result;
@@ -103,7 +103,7 @@ public class FunTestDetailActivity extends BaseActivity {
         Bundle bundle = getIntent().getExtras();
         funTestInfo = (FunTestInfo) bundle.getSerializable("fun_test_data_info");
         if (funTestInfo != null) {
-            HeadStyleApplication.typeId = funTestInfo.cid;
+            App.typeId = funTestInfo.cid;
             mTestCountTextView.setText(funTestInfo.shareperson + "人参与测试");
             mShareCountTextView.setText(funTestInfo.sharetotal + "人转发");
             mFunTestTitleTextView.setText(funTestInfo.title);

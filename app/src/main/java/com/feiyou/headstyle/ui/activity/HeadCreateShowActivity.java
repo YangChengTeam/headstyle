@@ -23,7 +23,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.feiyou.headstyle.HeadStyleApplication;
+import com.feiyou.headstyle.App;
 import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.bean.MyCreateInfo;
 import com.feiyou.headstyle.bean.UserInfo;
@@ -42,6 +42,7 @@ import com.feiyou.headstyle.util.StringUtils;
 import com.feiyou.headstyle.util.ToastUtils;
 import com.feiyou.headstyle.view.SharePopupWindow;
 import com.feiyou.headstyle.view.qqhead.BaseUIListener;
+import com.hwangjr.rxbus.RxBus;
 import com.orhanobut.logger.Logger;
 import com.tencent.connect.avatar.QQAvatar;
 import com.tencent.tauth.Tencent;
@@ -259,7 +260,7 @@ public class HeadCreateShowActivity extends BaseActivity {
     public void toAuth(View view) {
         operation = 1;
         //已经登录授权过，无需再次授权
-        if (HeadStyleApplication.isLoginAuth) {
+        if (App.isLoginAuth) {
             if (imagePath != null && imagePath.length() > 0) {
                 Uri uri = Uri.parse("file:///" + imagePath);
                 doSetAvatar(uri);
@@ -455,7 +456,7 @@ public class HeadCreateShowActivity extends BaseActivity {
                                 Logger.e("登录成功");
 
                                 PreferencesUtils.putObject(HeadCreateShowActivity.this, Constant.USER_INFO, userInfo);
-                                HeadStyleApplication.isLoginAuth = true;
+                                App.isLoginAuth = true;
 
 
                                 if (operation == 1) {
@@ -468,6 +469,7 @@ public class HeadCreateShowActivity extends BaseActivity {
                                 } else {
                                     addArticle();
                                 }
+                                RxBus.get().post(Constant.LOGIN_SUCCESS,"loginSuccess");
                             }
                         }
 

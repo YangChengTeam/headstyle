@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.feiyou.headstyle.HeadStyleApplication;
+import com.feiyou.headstyle.App;
 import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.adapter.ArticleListAdapter;
 import com.feiyou.headstyle.bean.ArticleInfo;
@@ -29,6 +29,7 @@ import com.feiyou.headstyle.util.DialogUtils;
 import com.feiyou.headstyle.util.PreferencesUtils;
 import com.feiyou.headstyle.util.StringUtils;
 import com.feiyou.headstyle.util.ToastUtils;
+import com.hwangjr.rxbus.RxBus;
 import com.orhanobut.logger.Logger;
 import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.UMShareAPI;
@@ -48,7 +49,7 @@ public class MyArticleActivity extends BaseActivity implements ArticleListAdapte
     @BindView(R.id.title_text)
     TextView titleTv;
 
-    @BindString(R.string.show_detail_text)
+    @BindString(R.string.my_article_text)
     String titleTextValue;
 
     @BindView(R.id.pull_to_refresh)
@@ -149,11 +150,8 @@ public class MyArticleActivity extends BaseActivity implements ArticleListAdapte
         mShareAPI = UMShareAPI.get(this);
         initLoginDialog();
 
-        /*if (AppUtils.isLogin(this)) {
-            userInfo = (UserInfo) PreferencesUtils.getObject(this, Constant.USER_INFO, UserInfo.class);
-        }*/
-        if(HeadStyleApplication.isMessage){
-            HeadStyleApplication.isMessage = false;
+        if(App.isMessage){
+            App.isMessage = false;
         }
     }
 
@@ -365,10 +363,11 @@ public class MyArticleActivity extends BaseActivity implements ArticleListAdapte
                                 ToastUtils.show(MyArticleActivity.this, "登录成功");
 
                                 PreferencesUtils.putObject(MyArticleActivity.this, Constant.USER_INFO, tempUserInfo);
-                                HeadStyleApplication.isLoginAuth = true;
+                                App.isLoginAuth = true;
 
                                 pageNum = 1;
                                 loadData();
+                                RxBus.get().post(Constant.LOGIN_SUCCESS,"loginSuccess");
                             }
                         }
 

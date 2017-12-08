@@ -14,7 +14,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.feiyou.headstyle.HeadStyleApplication;
+import com.feiyou.headstyle.App;
 import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.bean.UserInfo;
 import com.feiyou.headstyle.common.Constant;
@@ -34,6 +34,7 @@ import com.feiyou.headstyle.util.TimeUtils;
 import com.feiyou.headstyle.util.ToastUtils;
 import com.feiyou.headstyle.view.CustomWebView;
 import com.github.ybq.android.spinkit.SpinKitView;
+import com.hwangjr.rxbus.RxBus;
 import com.orhanobut.logger.Logger;
 import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.UMShareAPI;
@@ -256,8 +257,8 @@ public class ShowFragment extends BaseFragment implements CustomWebViewDelegate,
                     oid = userInfo.openid;
                 }
 
-                if (HeadStyleApplication.userImgPath != null) {
-                    Uri uri = Uri.parse("file:///" + HeadStyleApplication.userImgPath);
+                if (App.userImgPath != null) {
+                    Uri uri = Uri.parse("file:///" + App.userImgPath);
                     userImg.setImageURI(uri);
                 } else if (userInfo.userimg != null) {
                     Uri uri = Uri.parse(userInfo.userimg);
@@ -375,19 +376,20 @@ public class ShowFragment extends BaseFragment implements CustomWebViewDelegate,
                                         @Override
                                         public void onResponse(File file, int id) {
                                             String imagePath = file.getAbsolutePath();
-                                            HeadStyleApplication.userImgPath = imagePath;
+                                            App.userImgPath = imagePath;
                                         }
                                     });
                                 }
 
                                 PreferencesUtils.putObject(getActivity(), Constant.USER_INFO, userInfo);
-                                HeadStyleApplication.isLoginAuth = true;
+                                App.isLoginAuth = true;
                                 if (isAdd) {
                                     Intent intent = new Intent(getActivity(), ShowAddActivity.class);
                                     startActivity(intent);
                                 } else {
                                     onResume();
                                 }
+                                RxBus.get().post(Constant.LOGIN_SUCCESS,"loginSuccess");
                             }
                         }
 

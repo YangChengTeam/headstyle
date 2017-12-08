@@ -1,30 +1,37 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:eng="http://schemas.android.com/apk/res-auto"
     android:id="@+id/head_list_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/topic_bg_color"
     android:gravity="center"
     android:orientation="vertical">
 
-    <com.bigkoo.convenientbanner.ConvenientBanner
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/convenientBanner"
+    <com.youth.banner.Banner
+        android:id="@+id/banner"
         android:layout_width="match_parent"
         android:layout_height="125dp"
-        android:layout_gravity="center_horizontal"
-        app:canLoop="true"/>
+        eng:indicator_height="8dp"
+        eng:indicator_margin="5dp"
+        eng:indicator_width="8dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:gravity="center"
-        android:layout_marginTop="16dp">
+        android:layout_marginBottom="12dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="12dp"
+        android:gravity="center">
 
         <LinearLayout
             android:id="@+id/lovers_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
@@ -38,8 +45,10 @@
                 style="@style/Home_TextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="2dp"
                 android:text="@string/type_lovers_text"
+                android:textColor="@color/black1"
+                android:textSize="12sp"
                 />
         </LinearLayout>
 
@@ -47,6 +56,8 @@
             android:id="@+id/boy_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
@@ -60,8 +71,10 @@
                 style="@style/Home_TextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="2dp"
                 android:text="@string/type_boy_text"
+                android:textColor="@color/black1"
+                android:textSize="12sp"
                 />
         </LinearLayout>
 
@@ -69,6 +82,8 @@
             android:id="@+id/girl_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
@@ -82,8 +97,10 @@
                 style="@style/Home_TextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="2dp"
                 android:text="@string/type_girl_text"
+                android:textColor="@color/black1"
+                android:textSize="12sp"
                 />
         </LinearLayout>
 
@@ -91,6 +108,8 @@
             android:id="@+id/style_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
@@ -104,8 +123,10 @@
                 style="@style/Home_TextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/fight_text"
+                android:layout_marginTop="2dp"
+                android:text="@string/type_style_text"
+                android:textColor="@color/black1"
+                android:textSize="12sp"
                 />
         </LinearLayout>
     </LinearLayout>
@@ -113,13 +134,16 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginTop="20dp">
+        android:layout_marginBottom="12dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp">
 
         <LinearLayout
             android:id="@+id/star_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
@@ -133,8 +157,10 @@
                 style="@style/Home_TextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="2dp"
                 android:text="@string/type_star_text"
+                android:textColor="@color/black1"
+                android:textSize="12sp"
                 />
         </LinearLayout>
 
@@ -142,6 +168,8 @@
             android:id="@+id/animation_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
@@ -155,8 +183,10 @@
                 style="@style/Home_TextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="2dp"
                 android:text="@string/type_animation_text"
+                android:textColor="@color/black1"
+                android:textSize="12sp"
                 />
         </LinearLayout>
 
@@ -164,6 +194,8 @@
             android:id="@+id/game_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
@@ -177,15 +209,18 @@
                 style="@style/Home_TextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="2dp"
                 android:text="@string/type_game_text"
-                />
+                android:textColor="@color/black1"
+                android:textSize="12sp"/>
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/more_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
@@ -199,8 +234,10 @@
                 style="@style/Home_TextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="2dp"
                 android:text="@string/type_more_text"
+                android:textColor="@color/black1"
+                android:textSize="12sp"
                 />
         </LinearLayout>
     </LinearLayout>
@@ -214,7 +251,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="8dp"
             android:background="@color/white">
 
             <ImageView
@@ -223,7 +260,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="8dp"
                 android:src="@mipmap/new_icon"/>
 
             <TextView
@@ -231,7 +268,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="6dp"
+                android:layout_marginLeft="8dp"
                 android:layout_toRightOf="@+id/new_icon"
                 android:text="@string/new_image_text"
                 android:textColor="@color/black"
@@ -262,8 +299,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="6dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
                 android:text="@string/refresh_text"
                 android:textColor="@color/word_btn_selector"
                 android:textSize="14sp"/>

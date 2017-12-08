@@ -1,6 +1,5 @@
 package com.feiyou.headstyle.ui.fragment;
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -10,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -19,13 +17,6 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.bigkoo.convenientbanner.ConvenientBanner;
-import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
-import com.bigkoo.convenientbanner.holder.Holder;
-import com.bigkoo.convenientbanner.listener.OnItemClickListener;
-import com.bumptech.glide.Glide;
-import com.facebook.drawee.view.SimpleDraweeView;
-import com.feiyou.headstyle.HeadStyleApplication;
 import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.adapter.HeadTypeAdapter;
 import com.feiyou.headstyle.adapter.HeadWallAdapter;
@@ -51,13 +42,17 @@ import com.feiyou.headstyle.ui.activity.MoreHeadTypeActivity;
 import com.feiyou.headstyle.ui.activity.SearchActivity;
 import com.feiyou.headstyle.ui.activity.SpecialListActivity;
 import com.feiyou.headstyle.util.AppUtils;
+import com.feiyou.headstyle.util.GlideHelper;
 import com.feiyou.headstyle.util.NetWorkUtils;
 import com.feiyou.headstyle.util.PreferencesUtils;
 import com.feiyou.headstyle.util.StringUtils;
 import com.feiyou.headstyle.util.TimeUtils;
 import com.feiyou.headstyle.util.ToastUtils;
+import com.feiyou.headstyle.view.BannerImageLoader;
 import com.feiyou.headstyle.view.HeaderGridView;
 import com.orhanobut.logger.Logger;
+import com.youth.banner.Banner;
+import com.youth.banner.listener.OnBannerListener;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -77,12 +72,12 @@ import butterknife.OnItemClick;
 public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener, View.OnClickListener {
 
     @BindView(R.id.user_img)
-    SimpleDraweeView userImg;
+    ImageView userImg;
 
     @BindView(R.id.search_icon)
     ImageView searchBtn;
 
-    ConvenientBanner convenientBanner;
+    Banner mBanner;
 
     @BindView(R.id.photo_wall)
     HeaderGridView mPhotoWall;
@@ -140,6 +135,8 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
 
     private int rPageNum = 1;
 
+    private List<SpecialInfo> specialInfos;
+
     public HomeFragment() {
     }
 
@@ -164,11 +161,6 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         mImageThumbSpacing = getResources().getDimensionPixelSize(
                 R.dimen.image_thumbnail_spacing);
 
-
-        int a1 = 55;
-        int a2 = 50;
-        Logger.e("test1---" + a1 % a2 + "test2--->" + a1 / a2);
-
     }
 
     @Override
@@ -179,7 +171,7 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         View headView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_home_header, null);
 
         //轮播控件
-        convenientBanner = ButterKnife.findById(headView, R.id.convenientBanner);
+        mBanner = ButterKnife.findById(headView, R.id.banner);
         //分类对应控件
         loversLayout = ButterKnife.findById(headView, R.id.lovers_layout);
         boyLayout = ButterKnife.findById(headView, R.id.boy_layout);
@@ -259,6 +251,27 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                 }
             }).start();
         }
+
+
+        mBanner.setOnBannerListener(new OnBannerListener() {
+            @Override
+            public void OnBannerClick(int position) {
+
+                if (specialInfos != null && specialInfos.size() > 0) {
+                    Intent intent = new Intent(getActivity(), SpecialListActivity.class);
+                    SpecialInfo specialInfo = specialInfos.get(position);
+                    if (!StringUtils.isEmpty(specialInfo.getSid())) {
+                        Logger.e("banner item sid ===" + specialInfo.getSid());
+                        intent.putExtra("sid", Integer.parseInt(specialInfo.getSid()));
+                    }
+                    if (!StringUtils.isEmpty(specialInfo.getSname())) {
+                        intent.putExtra("titleName", specialInfo.getSname());
+                    }
+                    startActivity(intent);
+                }
+            }
+        });
+
     }
 
     /**
@@ -283,6 +296,18 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                 refreshIcon.setVisibility(View.VISIBLE);
             }
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mBanner.startAutoPlay();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mBanner.stopAutoPlay();
     }
 
     /**
@@ -473,20 +498,8 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         if (AppUtils.isLogin(getActivity())) {
             userInfo = (UserInfo) PreferencesUtils.getObject(getActivity(), Constant.USER_INFO, UserInfo.class);
             if (userInfo != null) {
-                if (HeadStyleApplication.userImgPath != null) {
-                    Uri uri = Uri.parse("file:///" + HeadStyleApplication.userImgPath);
-                    userImg.setImageURI(uri);
-                } else if (userInfo.userimg != null) {
-                    Uri uri = Uri.parse(userInfo.userimg);
-                    userImg.setImageURI(uri);
-                } else {
-                    Uri uri = Uri.parse("res://mipmap/" + R.mipmap.user_default_icon);
-                    userImg.setImageURI(uri);
-                }
+                GlideHelper.circleImageView(getActivity(), userImg, userInfo.getUserimg(), R.mipmap.user_head_def_icon);
             }
-        } else {
-            Uri uri = Uri.parse("res://mipmap/" + R.mipmap.user_default_icon);
-            userImg.setImageURI(uri);
         }
     }
 
@@ -513,56 +526,18 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     /**
      * 设置Banner数据
      */
-    public void updataSpecialData(final List<SpecialInfo> specialInfos) {
-        convenientBanner.setPages(
-                new CBViewHolderCreator<LocalImageHolderView>() {
-                    @Override
-                    public LocalImageHolderView createHolder() {
-                        return new LocalImageHolderView();
-                    }
-                }, specialInfos)
-                .setPageIndicator(new int[]{R.mipmap.ic_page_indicator, R.mipmap.ic_page_indicator_focused});
-        //设置两个点图片作为翻页指示器，不设置则没有指示器，可以根据自己需求自行配合自己的指示器,不需要圆点指示器可用不设
-        convenientBanner.startTurning(4000);
-        //convenientBanner.setScrollDuration(3000);
-        convenientBanner.setCanLoop(true);
-        convenientBanner.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-
-                if (specialInfos != null && specialInfos.size() > 0) {
-                    Intent intent = new Intent(getActivity(), SpecialListActivity.class);
-                    SpecialInfo specialInfo = specialInfos.get(position);
-                    if (!StringUtils.isEmpty(specialInfo.getSid())) {
-                        Logger.e("banner item sid ===" + specialInfo.getSid());
-                        intent.putExtra("sid", Integer.parseInt(specialInfo.getSid()));
-                    }
-                    if (!StringUtils.isEmpty(specialInfo.getSname())) {
-                        intent.putExtra("titleName", specialInfo.getSname());
-                    }
-                    startActivity(intent);
-                }
-            }
-        });
-    }
-
-    public class LocalImageHolderView implements Holder<SpecialInfo> {
-        private ImageView hImageView;
-
-        @Override
-        public View createView(Context context) {
-            hImageView = new ImageView(context);
-            hImageView.setScaleType(ImageView.ScaleType.FIT_XY);
-            hImageView.setLayoutParams(new ViewGroup.LayoutParams(580, 250));
-            return hImageView;
+    public void updataSpecialData(List<SpecialInfo> list) {
+        specialInfos = list;
+        List<String> imgUrls = new ArrayList<String>();
+        for (int i = 0; i < list.size(); i++) {
+            imgUrls.add(list.get(i).getSimg());
         }
 
-        @Override
-        public void UpdateUI(Context context, final int position, SpecialInfo data) {
-            if (data != null && !StringUtils.isEmpty(data.getSimg())) {
-                Glide.with(context).load(data.getSimg()).into(hImageView);
-            }
-        }
+        mBanner.isAutoPlay(true)
+                .setDelayTime(3000)
+                .setImageLoader(new BannerImageLoader())
+                .setImages(imgUrls)
+                .start();
     }
 
     @OnClick(R.id.user_img)
@@ -858,7 +833,7 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         loadDataByParams();
 
         //刷新是否有最新的评论
-        ((MainActivity) getActivity()).initCommentCount();
+        ((MainActivity) getActivity()).getUserInfo();
     }
 
 }

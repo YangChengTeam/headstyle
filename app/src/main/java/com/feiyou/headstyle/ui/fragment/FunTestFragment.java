@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.feiyou.headstyle.HeadStyleApplication;
+import com.feiyou.headstyle.App;
 import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.adapter.FunTestAdapter;
 import com.feiyou.headstyle.bean.FunTestInfo;
@@ -146,8 +146,8 @@ public class FunTestFragment extends BaseFragment implements SwipeRefreshLayout.
         mFunTestAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                HeadStyleApplication.currentPage = currentPage;
-                HeadStyleApplication.typeId = 0;
+                App.currentPage = currentPage;
+                App.typeId = 0;
                 Intent intent = new Intent(getActivity(), FunTestDetailActivity.class);
                 intent.putExtra("fun_test_data_info", mFunTestAdapter.getData().get(position));
                 startActivity(intent);
@@ -164,7 +164,7 @@ public class FunTestFragment extends BaseFragment implements SwipeRefreshLayout.
         RxView.clicks(mLoveLayout).throttleFirst(200, TimeUnit.MILLISECONDS).subscribe(new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
-                HeadStyleApplication.typeId = 1;
+                App.typeId = 1;
                 Intent intent = new Intent(getActivity(), FunTestCategoryActivity.class);
                 intent.putExtra("class_id", 1);
                 startActivity(intent);
@@ -174,7 +174,7 @@ public class FunTestFragment extends BaseFragment implements SwipeRefreshLayout.
         RxView.clicks(mCharacterLayout).throttleFirst(200, TimeUnit.MILLISECONDS).subscribe(new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
-                HeadStyleApplication.typeId = 2;
+                App.typeId = 2;
                 Intent intent = new Intent(getActivity(), FunTestCategoryActivity.class);
                 intent.putExtra("class_id", 2);
                 startActivity(intent);
@@ -184,7 +184,7 @@ public class FunTestFragment extends BaseFragment implements SwipeRefreshLayout.
         RxView.clicks(mAbilityLayout).throttleFirst(200, TimeUnit.MILLISECONDS).subscribe(new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
-                HeadStyleApplication.typeId = 3;
+                App.typeId = 3;
                 Intent intent = new Intent(getActivity(), FunTestCategoryActivity.class);
                 intent.putExtra("class_id", 3);
                 startActivity(intent);
@@ -194,7 +194,7 @@ public class FunTestFragment extends BaseFragment implements SwipeRefreshLayout.
         RxView.clicks(mFunLayout).throttleFirst(200, TimeUnit.MILLISECONDS).subscribe(new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
-                HeadStyleApplication.typeId = 4;
+                App.typeId = 4;
                 Intent intent = new Intent(getActivity(), FunTestCategoryActivity.class);
                 intent.putExtra("class_id", 4);
                 startActivity(intent);

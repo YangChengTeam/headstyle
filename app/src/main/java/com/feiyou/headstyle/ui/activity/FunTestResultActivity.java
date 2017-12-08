@@ -22,7 +22,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.feiyou.headstyle.HeadStyleApplication;
+import com.feiyou.headstyle.App;
 import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.adapter.FunMoreTestAdapter;
 import com.feiyou.headstyle.adapter.FunTestCommentAdapter;
@@ -50,6 +50,7 @@ import com.feiyou.headstyle.util.StringUtils;
 import com.feiyou.headstyle.util.TimeUtils;
 import com.feiyou.headstyle.util.ToastUtils;
 import com.feiyou.headstyle.view.SharePopupWindow;
+import com.hwangjr.rxbus.RxBus;
 import com.jakewharton.rxbinding.view.RxView;
 import com.orhanobut.logger.Logger;
 import com.umeng.socialize.ShareAction;
@@ -192,7 +193,7 @@ public class FunTestResultActivity extends BaseActivity implements FunTestCommen
     @Override
     public void initViews() {
         super.initViews();
-        moreTestPage = HeadStyleApplication.currentPage;
+        moreTestPage = App.currentPage;
         okHttpRequest = new OKHttpRequest();
         mTestService = new FunTestService();
         mService = new FunTestResultService();
@@ -781,14 +782,15 @@ public class FunTestResultActivity extends BaseActivity implements FunTestCommen
                                         @Override
                                         public void onResponse(File file, int id) {
                                             String imagePath = file.getAbsolutePath();
-                                            HeadStyleApplication.userImgPath = imagePath;
+                                            App.userImgPath = imagePath;
                                         }
                                     });
                                 }
 
                                 PreferencesUtils.putObject(FunTestResultActivity.this, Constant.USER_INFO, userInfo);
-                                HeadStyleApplication.isLoginAuth = true;
+                                App.isLoginAuth = true;
                                 onResume();
+                                RxBus.get().post(Constant.LOGIN_SUCCESS,"loginSuccess");
                             }
                         }
 
@@ -826,8 +828,8 @@ public class FunTestResultActivity extends BaseActivity implements FunTestCommen
         params.put("p", String.valueOf(moreTestPage));
         params.put("num", "5");
         params.put("israndom", "1");
-        if (HeadStyleApplication.typeId > 0) {
-            params.put("cid", HeadStyleApplication.typeId + "");
+        if (App.typeId > 0) {
+            params.put("cid", App.typeId + "");
         }
         okHttpRequest.aget(Server.FUN_TEST_LIST_DATA, params, new OnResponseListener() {
             @Override

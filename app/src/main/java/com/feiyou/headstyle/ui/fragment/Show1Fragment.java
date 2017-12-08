@@ -3,7 +3,6 @@ package com.feiyou.headstyle.ui.fragment;
 
 import android.content.Intent;
 import android.graphics.Matrix;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
@@ -24,8 +23,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.facebook.drawee.view.SimpleDraweeView;
-import com.feiyou.headstyle.HeadStyleApplication;
+import com.feiyou.headstyle.App;
 import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.adapter.SimpleFragmentPagerAdapter;
 import com.feiyou.headstyle.bean.UserInfo;
@@ -42,11 +40,13 @@ import com.feiyou.headstyle.ui.fragment.subfragment.FriendsFragment;
 import com.feiyou.headstyle.ui.fragment.subfragment.PhotosFragment;
 import com.feiyou.headstyle.util.AppUtils;
 import com.feiyou.headstyle.util.DialogUtils;
+import com.feiyou.headstyle.util.GlideHelper;
 import com.feiyou.headstyle.util.PreferencesUtils;
 import com.feiyou.headstyle.util.StringUtils;
 import com.feiyou.headstyle.util.TimeUtils;
 import com.feiyou.headstyle.util.ToastUtils;
 import com.feiyou.headstyle.view.MenuPopupWindow;
+import com.hwangjr.rxbus.RxBus;
 import com.orhanobut.logger.Logger;
 import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.UMShareAPI;
@@ -70,7 +70,7 @@ import okhttp3.Call;
 public class Show1Fragment extends BaseFragment implements CustomWebViewDelegate {
 
     @BindView(R.id.user_img)
-    SimpleDraweeView userImg;
+    ImageView userImg;
 
     @BindView(R.id.top_layout)
     RelativeLayout topLayout;
@@ -300,22 +300,9 @@ public class Show1Fragment extends BaseFragment implements CustomWebViewDelegate
         if (AppUtils.isLogin(getActivity())) {
             userInfo = (UserInfo) PreferencesUtils.getObject(getActivity(), Constant.USER_INFO, UserInfo.class);
             if (userInfo != null) {
-                if (HeadStyleApplication.userImgPath != null) {
-                    Uri uri = Uri.parse("file:///" + HeadStyleApplication.userImgPath);
-                    userImg.setImageURI(uri);
-                } else if (userInfo.userimg != null) {
-                    Uri uri = Uri.parse(userInfo.userimg);
-                    userImg.setImageURI(uri);
-                } else {
-                    Uri uri = Uri.parse("res://mipmap/"+R.mipmap.user_default_icon);
-                    userImg.setImageURI(uri);
-                }
+                GlideHelper.circleImageView(getActivity(), userImg, userInfo.getUserimg(), R.mipmap.user_head_def_icon);
             }
-        } else {
-            Uri uri = Uri.parse("res://mipmap/"+R.mipmap.user_default_icon);
-            userImg.setImageURI(uri);
         }
-
     }
 
     @OnClick(R.id.show_add_icon)
@@ -429,13 +416,14 @@ public class Show1Fragment extends BaseFragment implements CustomWebViewDelegate
                                         @Override
                                         public void onResponse(File file, int id) {
                                             String imagePath = file.getAbsolutePath();
-                                            HeadStyleApplication.userImgPath = imagePath;
+                                            App.userImgPath = imagePath;
                                         }
                                     });
                                 }
 
                                 PreferencesUtils.putObject(getActivity(), Constant.USER_INFO, userInfo);
-                                HeadStyleApplication.isLoginAuth = true;
+                                App.isLoginAuth = true;
+                                RxBus.get().post(Constant.LOGIN_SUCCESS,"loginSuccess");
                                 if (isAdd) {
                                     Intent intent = new Intent(getActivity(), ShowAddActivity.class);
                                     startActivity(intent);

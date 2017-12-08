@@ -42,7 +42,7 @@
                 android:layout_marginLeft="5dp"
                 android:layout_toRightOf="@+id/article_user_img"
                 android:text="@string/user_default_name_text"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 />
 
             <TextView

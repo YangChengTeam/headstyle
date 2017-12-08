@@ -8,8 +8,10 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.bean.HeadInfo;
+import com.feiyou.headstyle.util.ScreenUtils;
 import com.feiyou.headstyle.util.StringUtils;
 
 import java.util.ArrayList;
@@ -27,7 +29,7 @@ public class HeadWallAdapter extends BaseAdapter {
 
     private List<HeadInfo> dataList;
 
-    public HeadWallAdapter(Context mContext){
+    public HeadWallAdapter(Context mContext) {
         super();
         this.mContext = mContext;
         dataList = new ArrayList<HeadInfo>();
@@ -36,9 +38,9 @@ public class HeadWallAdapter extends BaseAdapter {
     public HeadWallAdapter(Context mContext, List<HeadInfo> data) {
         super();
         this.mContext = mContext;
-        if(data != null && data.size() >0){
+        if (data != null && data.size() > 0) {
             this.dataList = data;
-        }else{
+        } else {
             dataList = new ArrayList<HeadInfo>();
         }
     }
@@ -66,22 +68,22 @@ public class HeadWallAdapter extends BaseAdapter {
         return 0;
     }
 
-    public void addNewDatas(List<HeadInfo> datas){
-        if(dataList != null){
+    public void addNewDatas(List<HeadInfo> datas) {
+        if (dataList != null) {
             dataList.addAll(datas);
-        }else{
+        } else {
             dataList = new ArrayList<HeadInfo>();
         }
     }
 
-    public void addItemDatas(List<HeadInfo> datas){
-        if(dataList != null){
+    public void addItemDatas(List<HeadInfo> datas) {
+        if (dataList != null) {
             dataList.clear();
             dataList.addAll(datas);
-        }else{
-            if(datas != null){
+        } else {
+            if (datas != null) {
                 dataList = datas;
-            }else{
+            } else {
                 dataList = new ArrayList<HeadInfo>();
             }
         }
@@ -99,9 +101,13 @@ public class HeadWallAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        if(dataList != null && dataList.get(position) != null){
-            if(!StringUtils.isEmpty(dataList.get(position).getHurl())){
-                Glide.with(mContext).load(dataList.get(position).getHurl()).into(holder.headImage);
+        if (dataList != null && dataList.get(position) != null) {
+            if (!StringUtils.isEmpty(dataList.get(position).getHurl())) {
+                RequestOptions options = new RequestOptions();
+                options.placeholder(R.mipmap.example_square);
+                int width = ScreenUtils.getWidth(mContext) / 3;
+                options.override(width, width);
+                Glide.with(mContext).load(dataList.get(position).getHurl()).apply(options).into(holder.headImage);
             }
         }
 

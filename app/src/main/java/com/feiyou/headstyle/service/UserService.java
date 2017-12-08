@@ -3,6 +3,7 @@ package com.feiyou.headstyle.service;
 import com.feiyou.headstyle.bean.HeadInfo;
 import com.feiyou.headstyle.bean.HeadListRet;
 import com.feiyou.headstyle.bean.Result;
+import com.feiyou.headstyle.bean.TokenInfo;
 import com.feiyou.headstyle.bean.UserInfo;
 import com.feiyou.headstyle.bean.UserInfoRet;
 import com.feiyou.headstyle.bean.UserKeepInfo;
@@ -89,6 +90,17 @@ public class UserService extends BaseService {
             }
             return versionRet;
         }
+        return null;
+    }
+
+    public TokenInfo getTokenInfo(String response) {
+        /*if (!StringUtils.isEmpty(response)) {
+            TokenInfo tokenInfo = Constant.GSON.fromJson(response, TokenInfo.class);
+            if (tokenInfo == null || tokenInfo.errCode == Constant.RESULT_FAIL) {
+                return null;
+            }
+            return versionRet;
+        }*/
         return null;
     }
 

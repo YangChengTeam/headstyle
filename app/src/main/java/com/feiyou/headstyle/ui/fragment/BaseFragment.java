@@ -1,16 +1,13 @@
 package com.feiyou.headstyle.ui.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.orhanobut.logger.Logger;
+import com.hwangjr.rxbus.RxBus;
 
 import butterknife.ButterKnife;
 
@@ -26,6 +23,7 @@ public abstract class BaseFragment extends Fragment {
                              Bundle savedInstanceState) {
         if (mView == null) {
             mView = inflater.inflate(getLayoutId(), null);
+            RxBus.get().register(this);
             initVars();
             initViews();
             loadData();

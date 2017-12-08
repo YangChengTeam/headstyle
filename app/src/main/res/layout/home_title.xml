@@ -3,19 +3,18 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
+    android:layout_height="48dp"
     android:background="@color/colorPrimary"
     android:orientation="vertical">
 
-    <com.facebook.drawee.view.SimpleDraweeView
+    <ImageView
         android:id="@+id/user_img"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="8dp"
-        fresco:placeholderImage="@mipmap/user_default_icon"
-        fresco:roundAsCircle="true"/>
+        android:src="@mipmap/user_head_def_icon"
+        android:layout_marginLeft="8dp"/>
 
     <ImageView
         android:id="@+id/top_title"
@@ -24,7 +23,6 @@
         android:layout_centerInParent="true"
         android:layout_centerVertical="true"
         android:src="@mipmap/home_title_icon"/>
-
 
     <ImageView
         android:id="@+id/search_icon"

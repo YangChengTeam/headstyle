@@ -1,18 +1,21 @@
 package com.feiyou.headstyle.ui.activity;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
+import android.support.design.widget.BottomSheetDialog;
+import android.support.design.widget.TabLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -23,10 +26,14 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.feiyou.headstyle.HeadStyleApplication;
+import com.feiyou.headstyle.App;
 import com.feiyou.headstyle.R;
+import com.feiyou.headstyle.adapter.AgreeItemAdapter;
+import com.feiyou.headstyle.adapter.ArticlePagerAdapter;
 import com.feiyou.headstyle.adapter.CommentAdapter;
+import com.feiyou.headstyle.adapter.CommentReplyItemAdapter;
 import com.feiyou.headstyle.adapter.HeadWallAdapter;
 import com.feiyou.headstyle.bean.ArticleInfo;
 import com.feiyou.headstyle.bean.CommentInfo;
@@ -44,29 +51,40 @@ import com.feiyou.headstyle.service.UserService;
 import com.feiyou.headstyle.ui.fragment.Show1Fragment;
 import com.feiyou.headstyle.util.AppUtils;
 import com.feiyou.headstyle.util.DialogUtils;
+import com.feiyou.headstyle.util.GlideHelper;
 import com.feiyou.headstyle.util.PreferencesUtils;
+import com.feiyou.headstyle.util.ScreenUtils;
 import com.feiyou.headstyle.util.StringUtils;
 import com.feiyou.headstyle.util.ToastUtils;
+import com.feiyou.headstyle.view.CommentDialog;
+import com.feiyou.headstyle.view.NoScrollViewPager;
+import com.hwangjr.rxbus.RxBus;
+import com.jakewharton.rxbinding.view.RxView;
 import com.orhanobut.logger.Logger;
 import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import me.imid.swipebacklayout.lib.SwipeBackLayout;
-import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
+import rx.functions.Action1;
 
-public class ArticleDetailActivity extends SwipeBackActivity implements CommentAdapter.AgreeListener {
 
-    @BindView(R.id.comment_list)
+public class ArticleDetailActivity extends BaseActivity implements CommentAdapter.AgreeListener, CommentDialog.SendBackListener {
+
     ListView listView;
+
+    ListView mAgreeListView;
 
     @BindView(R.id.article_user_img)
     SimpleDraweeView userImg;
@@ -92,25 +110,23 @@ public class ArticleDetailActivity extends SwipeBackActivity implements CommentA
     @BindView(R.id.comment_count_tv)
     TextView commentCountTv;
 
-    @BindView(R.id.praise_count_tv)
-    TextView praiseCountTv;
+    @BindView(R.id.iv_praise)
+    ImageView mPraiseImageView;
 
     @BindView(R.id.praise_layout)
     LinearLayout praiseLayout;
 
-    @BindView(R.id.comment_content)
-    EditText commentContent;
+    @BindView(R.id.view_pager)
+    NoScrollViewPager viewPager;
 
-    @BindView(R.id.send_btn)
-    TextView sendTv;
+    @BindView(R.id.show_tabs_layout)
+    TabLayout tabLayout;
 
     private HeadWallAdapter gridViewAdapter;
 
     public List<HeadInfo> data;
 
-    private CommentAdapter articleCommentListAdapter;
-
-    private SwipeBackLayout mSwipeBackLayout;
+    private CommentAdapter acAdapter;
 
     ArticleService articleService = null;
 
@@ -145,6 +161,52 @@ public class ArticleDetailActivity extends SwipeBackActivity implements CommentA
     private UserInfo userInfo;
 
     private int showType;
+
+    BottomSheetDialog commitReplyDialog;
+
+    private View replyView;
+
+    private LinearLayout mReplyLayout;
+
+    private TextView mReplyTitleTextView;
+
+    private TextView mReplyCountTextView;
+
+    private ImageView mArticleUserHead;
+
+    private ImageView mCloseImageView;
+
+    private TextView mArticleUserName;
+
+    private TextView mArticleSendTime;
+
+    private RecyclerView mCommentReplyRecyclerView;
+
+    private CommentReplyItemAdapter replyItemAdapter;
+
+    private TextView mAllCommentTextView;
+
+    private TextView mReplySendTextView;
+
+    CommentDialog commentDialog;
+
+    private String oneLevel;
+
+    private String atUserName = "";
+
+    List<View> views;
+
+    List<String> titles;
+
+    private ArticlePagerAdapter pagerAdapter;
+
+    private View commentView;
+
+    private ArticleInfo articleInfo;
+
+    private AgreeItemAdapter agreeItemAdapter;
+
+    private int currentOnePosition = -1;
 
     private Handler handler = new Handler() {
         @Override
@@ -194,12 +256,82 @@ public class ArticleDetailActivity extends SwipeBackActivity implements CommentA
 
     public void initViews() {
         ButterKnife.bind(this);
-        articleCommentListAdapter = new CommentAdapter(this, commentData);
-        listView.setAdapter(articleCommentListAdapter);
-        mSwipeBackLayout = getSwipeBackLayout();
 
-        //mSwipeBackLayout.setSwipeMode(SwipeBackLayout.FULL_SCREEN_LEFT);//作用:可实现全屏滑动返回上一页(通过修改源码实现)
-        mSwipeBackLayout.setEdgeTrackingEnabled(SwipeBackLayout.EDGE_ALL);
+        commitReplyDialog = new BottomSheetDialog(this);
+        replyView = LayoutInflater.from(ArticleDetailActivity.this).inflate(R.layout.comment_reply_view, null);
+        mReplyTitleTextView = ButterKnife.findById(replyView, R.id.tv_reply_title);
+        mReplyCountTextView = ButterKnife.findById(replyView, R.id.tv_reply_count);
+        mArticleUserHead = ButterKnife.findById(replyView, R.id.iv_article_user_head);
+        mArticleUserName = ButterKnife.findById(replyView, R.id.tv_article_user_name);
+        mCloseImageView = ButterKnife.findById(replyView, R.id.iv_close);
+        mArticleSendTime = ButterKnife.findById(replyView, R.id.tv_article_send_time);
+        mCommentReplyRecyclerView = ButterKnife.findById(replyView, R.id.rv_reply_list);
+        mAllCommentTextView = ButterKnife.findById(replyView, R.id.tv_all_comment);
+        mReplySendTextView = ButterKnife.findById(replyView, R.id.tv_reply_send);
+        replyView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ScreenUtils.getHeight(this)));
+        commitReplyDialog.setContentView(replyView);
+
+        mCommentReplyRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        replyItemAdapter = new CommentReplyItemAdapter(this, null);
+        mCommentReplyRecyclerView.setAdapter(replyItemAdapter);
+
+        mReplySendTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                atUserName = "";
+                commentDialog = new CommentDialog(ArticleDetailActivity.this, 2);
+                commentDialog.setSendBackListener(ArticleDetailActivity.this);
+                commentDialog.show(getFragmentManager(), "replyDialog");
+            }
+        });
+
+        replyItemAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                atUserName = "//@<font color='#3385ff' size='+1'>" + replyItemAdapter.getData().get(position).nickname + "</font>";
+                commentDialog = new CommentDialog(ArticleDetailActivity.this, 2);
+                commentDialog.setSendBackListener(ArticleDetailActivity.this);
+                commentDialog.show(getFragmentManager(), "replyDialog");
+            }
+        });
+
+        views = new ArrayList<>();
+        titles = new ArrayList<>();
+
+        titles = new ArrayList<String>();
+        titles.add("评论");
+        titles.add("点赞");
+
+        commentView = View.inflate(this, R.layout.article_comment_list, null);
+        View agreeView = View.inflate(this, R.layout.article_agree_list, null);
+        listView = ButterKnife.findById(commentView, R.id.comment_list);
+        mAgreeListView = ButterKnife.findById(agreeView, R.id.agree_list);
+
+        acAdapter = new CommentAdapter(this, commentData);
+        listView.setAdapter(acAdapter);
+
+        agreeItemAdapter = new AgreeItemAdapter(this, null);
+        mAgreeListView.setAdapter(agreeItemAdapter);
+
+        views.add(commentView);
+        views.add(agreeView);
+
+        pagerAdapter = new ArticlePagerAdapter(views, titles);
+        viewPager.setAdapter(pagerAdapter);
+        tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setTabMode(TabLayout.MODE_FIXED);
+
+        RxView.clicks(userImg).throttleFirst(200, TimeUnit.MILLISECONDS).subscribe(new Action1<Void>() {
+            @Override
+            public void call(Void aVoid) {
+                if (articleInfo != null) {
+                    Intent intent = new Intent(ArticleDetailActivity.this, FriendInfoActivity.class);
+                    intent.putExtra("fuid", articleInfo.uid);
+                    startActivity(intent);
+                }
+            }
+        });
+
     }
 
     /**
@@ -223,7 +355,7 @@ public class ArticleDetailActivity extends SwipeBackActivity implements CommentA
     }
 
     public void initData() {
-        articleCommentListAdapter.setAgreeListener(this);
+        acAdapter.setAgreeListener(this);
         mShareAPI = UMShareAPI.get(ArticleDetailActivity.this);
         initLoginDialog();
 
@@ -254,7 +386,7 @@ public class ArticleDetailActivity extends SwipeBackActivity implements CommentA
                             materialDialog.dismiss();
                         }
 
-                        ArticleInfo articleInfo = articleService.getArticleInfoBySID(response);
+                        articleInfo = articleService.getArticleInfoBySID(response);
                         if (articleInfo != null) {
                             cimgs = articleInfo.cimg;
                             if (cimgs != null) {
@@ -298,17 +430,13 @@ public class ArticleDetailActivity extends SwipeBackActivity implements CommentA
                             articleSendTimeTv.setText(articleInfo.addtime);
                             articleTitleTv.setText(articleInfo.scontent);
                             commentCountTv.setText(articleInfo.comment + "");
-                            praiseCountTv.setText(articleInfo.zan + "");
+                            //praiseCountTv.setText(articleInfo.zan + "");
                             iszan = articleInfo.iszan;
 
                             if (iszan == 0) {
-                                Drawable noZanDrawable = ContextCompat.getDrawable(ArticleDetailActivity.this, R.mipmap.no_zan_icon);
-                                noZanDrawable.setBounds(0, 0, noZanDrawable.getMinimumWidth(), noZanDrawable.getMinimumHeight());
-                                praiseCountTv.setCompoundDrawables(noZanDrawable, null, null, null);
+                                mPraiseImageView.setImageResource(R.mipmap.detail_no_zan_icon);
                             } else {
-                                Drawable isZanDrawable = ContextCompat.getDrawable(ArticleDetailActivity.this, R.mipmap.is_zan_icon);
-                                isZanDrawable.setBounds(0, 0, isZanDrawable.getMinimumWidth(), isZanDrawable.getMinimumHeight());
-                                praiseCountTv.setCompoundDrawables(isZanDrawable, null, null, null);
+                                mPraiseImageView.setImageResource(R.mipmap.detail_is_zan_icon);
                             }
 
                             if (articleInfo.sex.equals("1")) {
@@ -316,6 +444,20 @@ public class ArticleDetailActivity extends SwipeBackActivity implements CommentA
                             } else {
                                 userGender.setImageResource(R.mipmap.girl_icon);
                             }
+
+                            if (articleInfo.getZanlist() != null && articleInfo.getZanlist().size() > 0) {
+                                agreeItemAdapter.setAgreeList(articleInfo.getZanlist());
+                                agreeItemAdapter.notifyDataSetChanged();
+
+                                setListViewHeightBasedOnChildren(mAgreeListView);
+                            }
+
+                            titles = new ArrayList<String>();
+                            titles.add("评论 " + articleInfo.comment);
+                            titles.add("点赞 " + articleInfo.zan);
+                            pagerAdapter.setTitiles(titles);
+                            pagerAdapter.notifyDataSetChanged();
+
                             initCommentData();
                         }
                     }
@@ -334,11 +476,69 @@ public class ArticleDetailActivity extends SwipeBackActivity implements CommentA
                 });
             }
         }, 500);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (commitReplyDialog != null && !commitReplyDialog.isShowing()) {
+                    currentOnePosition = position;
+                    commitReplyDialog.show();
+                    if (acAdapter.getCommentList() != null && acAdapter.getCommentList().size() > 0) {
+                        CommentInfo commentInfo = acAdapter.getCommentList().get(position);
+                        mArticleUserName.setText(commentInfo.nickname);
+                        GlideHelper.circleImageView(ArticleDetailActivity.this, mArticleUserHead, commentInfo.simg, R.mipmap.user_head_def_icon);
+                        try {
+                            mReplyTitleTextView.setText(Html.fromHtml(URLDecoder.decode(commentInfo.scontent, "UTF-8")));
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                        if (commentInfo.commentnum > 0) {
+                            mReplyCountTextView.setText(commentInfo.commentnum + "条回复");
+                        } else {
+                            mReplyCountTextView.setText("暂无回复");
+                        }
+                        mArticleSendTime.setText(commentInfo.addtime);
+
+                        if (commentInfo.getReplylist() != null && commentInfo.getReplylist().size() > 0) {
+                            mAllCommentTextView.setText("全部回复");
+                        } else {
+                            mAllCommentTextView.setText("暂无回复");
+                        }
+                        replyItemAdapter.setNewData(commentInfo.getReplylist());
+                        //一级评论的ID
+                        oneLevel = commentInfo.cid;
+                    }
+                }
+            }
+        });
+
+
+        mAgreeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (agreeItemAdapter.getAgreeList() != null && agreeItemAdapter.getAgreeList().size() > 0) {
+                    Intent intent = new Intent(ArticleDetailActivity.this, FriendInfoActivity.class);
+                    intent.putExtra("fuid", agreeItemAdapter.getAgreeList().get(position).uid);
+                    startActivity(intent);
+                }
+            }
+        });
+
+        mCloseImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (commitReplyDialog != null && commitReplyDialog.isShowing()) {
+                    commitReplyDialog.dismiss();
+                }
+            }
+        });
     }
 
     public void initCommentData() {
         final Map<String, String> params = new HashMap<String, String>();
         params.put("sid", sid);
+        params.put("num", "1000");
+        params.put("p", "1");
         if (userInfo != null) {
             params.put("uid", userInfo.uid);
         }
@@ -349,15 +549,12 @@ public class ArticleDetailActivity extends SwipeBackActivity implements CommentA
                 if (result != null && result.data != null) {
                     List<CommentInfo> temp = result.data;
                     if (temp != null && temp.size() > 0) {
-                        if (commentData != null && commentData.size() > 0) {
-                            commentData.clear();
-                        }
-                        commentData.addAll(temp);
-
-                        articleCommentListAdapter.notifyDataSetChanged();
-                        listView.setAdapter(articleCommentListAdapter);
-                        //loadData();
+                        acAdapter.setCommentList(temp);
+                        acAdapter.notifyDataSetChanged();
                         setListViewHeightBasedOnChildren(listView);
+                        if (currentOnePosition > -1) {
+                            replyItemAdapter.setNewData(acAdapter.getCommentList().get(currentOnePosition).getReplylist());
+                        }
                     }
                 }
             }
@@ -381,7 +578,7 @@ public class ArticleDetailActivity extends SwipeBackActivity implements CommentA
         setListViewHeightBasedOnChildren(listView);
     }
 
-    public static void setListViewHeightBasedOnChildren(ListView listView) {
+    public void setListViewHeightBasedOnChildren(ListView listView) {
         if (listView == null) return;
         ListAdapter listAdapter = listView.getAdapter();
         if (listAdapter == null || listAdapter.getCount() == 0) {
@@ -398,10 +595,23 @@ public class ArticleDetailActivity extends SwipeBackActivity implements CommentA
         if (listAdapter.getCount() > 3) {
             params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1)) + 150;
         } else {
-            params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+            params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1)) + 300;
         }
 
         listView.setLayoutParams(params);
+
+    }
+
+    /**
+     * 点击发表评论框
+     *
+     * @param v
+     */
+    @OnClick(R.id.layout_bottom)
+    public void showDialog(View v) {
+        commentDialog = new CommentDialog(ArticleDetailActivity.this, 1);
+        commentDialog.setSendBackListener(this);
+        commentDialog.show(getFragmentManager(), "dialog");
     }
 
     @OnClick(R.id.praise_layout)
@@ -421,11 +631,8 @@ public class ArticleDetailActivity extends SwipeBackActivity implements CommentA
                     public void onSuccess(String response) {
                         boolean result = articleService.praise(response);
                         if (result) {
-                            Drawable isZanDrawable = ContextCompat.getDrawable(ArticleDetailActivity.this, R.mipmap.is_zan_icon);
-                            isZanDrawable.setBounds(0, 0, isZanDrawable.getMinimumWidth(), isZanDrawable.getMinimumHeight());
-                            praiseCountTv.setCompoundDrawables(isZanDrawable, null, null, null);
-                            praiseCountTv.setText((Integer.parseInt(praiseCountTv.getText().toString()) + 1) + "");
-
+                            mPraiseImageView.setImageResource(R.mipmap.detail_is_zan_icon);
+                            RxBus.get().post(Constant.PRAISE_SUCCESS, showType + "");
                         } else {
                             ToastUtils.show(ArticleDetailActivity.this, "操作失败，请稍后重试");
                         }
@@ -532,11 +739,12 @@ public class ArticleDetailActivity extends SwipeBackActivity implements CommentA
                                 UserInfo userInfo = mService.login(response);
                                 if (userInfo != null) {
                                     PreferencesUtils.putObject(ArticleDetailActivity.this, Constant.USER_INFO, userInfo);
-                                    HeadStyleApplication.isLoginAuth = true;
+                                    App.isLoginAuth = true;
 
                                     Message message = new Message();
                                     message.what = 0;
                                     handler.sendMessage(message);
+                                    RxBus.get().post(Constant.LOGIN_SUCCESS, "loginSuccess");
                                 }
                             }
                         }
@@ -576,58 +784,6 @@ public class ArticleDetailActivity extends SwipeBackActivity implements CommentA
         mShareAPI.onActivityResult(requestCode, resultCode, data);
     }
 
-    @OnClick(R.id.send_btn)
-    public void sendComment() {
-        if (AppUtils.isLogin(this)) {
-
-            final Map<String, String> params = new HashMap<String, String>();
-            params.put("sid", sid);
-
-            if (userInfo != null) {
-                params.put("uid", userInfo.uid);
-                params.put("oid", userInfo.openid);
-            }
-
-            if (StringUtils.isEmpty(commentContent.getText())) {
-                ToastUtils.show(ArticleDetailActivity.this, R.string.comment_is_not_null_text);
-                return;
-            }
-
-            params.put("content", commentContent.getText().toString());
-
-            okHttpRequest.aget(Server.ADD_COMMENT_DATA, params, new OnResponseListener() {
-                @Override
-                public void onSuccess(String response) {
-                    boolean result = commentService.addComment(response);
-                    if (result) {
-                        ToastUtils.show(ArticleDetailActivity.this, "评论成功");
-                        commentContent.setText("");
-                        //评论数+1
-                        if (!StringUtils.isEmpty(commentCountTv.getText())) {
-                            int tempCount = Integer.parseInt(commentCountTv.getText().toString()) + 1;
-                            commentCountTv.setText(tempCount + "");
-                        }
-                        initCommentData();
-                    } else {
-                        ToastUtils.show(ArticleDetailActivity.this, "操作失败，请稍后重试");
-                    }
-                }
-
-                @Override
-                public void onError(Exception e) {
-
-                }
-
-                @Override
-                public void onBefore() {
-                }
-            });
-
-        } else {
-            loginDialog.show();
-        }
-    }
-
     @Override
     public void agreeComment(final int pos) {
 
@@ -639,7 +795,7 @@ public class ArticleDetailActivity extends SwipeBackActivity implements CommentA
         final Map<String, String> params = new HashMap<String, String>();
         params.put("uid", userInfo != null ? userInfo.uid : "");
         params.put("oid", userInfo != null ? userInfo.openid : "");
-        params.put("commentid", commentData.get(pos).cid);
+        params.put("commentid", acAdapter.getCommentList().get(pos).cid);
 
         okHttpRequest.aget(Server.COMMENT_AGREE_DATA, params, new OnResponseListener() {
             @Override
@@ -647,10 +803,10 @@ public class ArticleDetailActivity extends SwipeBackActivity implements CommentA
                 Result result = commentService.getAgreeResult(response);
                 if (result != null && result.errCode == 0) {
                     Logger.e("agree success--->");
-                    //articleCommentListAdapter.changeView(mLinearLayoutManager.findViewByPosition(pos + 1), pos);
-                    commentData.get(pos).iszan = 1;
-                    commentData.get(pos).zan = commentData.get(pos).zan + 1;
-                    articleCommentListAdapter.notifyDataSetChanged();
+                    //acAdapter.changeView(mLinearLayoutManager.findViewByPosition(pos + 1), pos);
+                    acAdapter.getCommentList().get(pos).iszan = 1;
+                    acAdapter.getCommentList().get(pos).zan = acAdapter.getCommentList().get(pos).zan + 1;
+                    acAdapter.notifyDataSetChanged();
                 }
             }
 
@@ -664,5 +820,76 @@ public class ArticleDetailActivity extends SwipeBackActivity implements CommentA
 
             }
         });
+    }
+
+    @Override
+    public void sendContent(String content, final int type) {
+        if (AppUtils.isLogin(this)) {
+
+            final Map<String, String> params = new HashMap<String, String>();
+            params.put("sid", sid);
+
+            if (userInfo != null) {
+                params.put("uid", userInfo.uid);
+                params.put("oid", userInfo.openid);
+            }
+
+            try {
+                if (type == 1) {
+                    params.put("content", URLEncoder.encode(content, "UTF-8"));
+                } else {
+                    if (!StringUtils.isEmpty(atUserName)) {
+                        content += atUserName;
+                    }
+                    content = URLEncoder.encode(content, "UTF-8");
+                    params.put("content", content);
+                    if (!StringUtils.isEmpty(oneLevel)) {
+                        params.put("cid", oneLevel);
+                    }
+                    params.put("stype", "incom");
+                }
+            } catch (UnsupportedEncodingException e) {
+                Logger.e(e.getMessage());
+            }
+
+            okHttpRequest.aget(Server.ADD_COMMENT_DATA, params, new OnResponseListener() {
+                @Override
+                public void onSuccess(String response) {
+                    boolean result = commentService.addComment(response);
+                    if (result) {
+                        if (commentDialog != null) {
+                            commentDialog.hideProgressDialog();
+                            commentDialog.dismiss();
+                        }
+                        ToastUtils.show(ArticleDetailActivity.this, "评论成功");
+                        //评论数+1
+                        if (!StringUtils.isEmpty(commentCountTv.getText())) {
+                            int tempCount = Integer.parseInt(commentCountTv.getText().toString()) + 1;
+                            commentCountTv.setText(tempCount + "");
+                        }
+
+                        initCommentData();
+
+                    } else {
+                        ToastUtils.show(ArticleDetailActivity.this, "操作失败，请稍后重试");
+                    }
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    if (commentDialog != null) {
+                        commentDialog.hideProgressDialog();
+                        commentDialog.dismiss();
+                    }
+                }
+
+                @Override
+                public void onBefore() {
+                }
+            });
+
+        } else {
+            loginDialog.show();
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.feiyou.headstyle.bean;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by admin on 2016/9/5.
@@ -22,5 +23,13 @@ public class ArticleInfo implements Serializable {
     public String pagenow;
     public String type;
     public String nickname;
+    public List<AgreeInfo> zanlist;
 
+    public List<AgreeInfo> getZanlist() {
+        return zanlist;
+    }
+
+    public void setZanlist(List<AgreeInfo> zanlist) {
+        this.zanlist = zanlist;
+    }
 }

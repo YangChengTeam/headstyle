@@ -1,6 +1,5 @@
 package com.feiyou.headstyle.ui.activity;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -8,12 +7,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Gravity;
@@ -28,7 +25,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.feiyou.headstyle.HeadStyleApplication;
+import com.feiyou.headstyle.App;
 import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.adapter.HeadShowItemAdapter;
 import com.feiyou.headstyle.bean.HeadListRet;
@@ -44,6 +41,7 @@ import com.feiyou.headstyle.service.UserService;
 import com.feiyou.headstyle.util.AppUtils;
 import com.feiyou.headstyle.util.DialogUtils;
 import com.feiyou.headstyle.util.ImageUtils;
+import com.feiyou.headstyle.util.NavgationBarUtils;
 import com.feiyou.headstyle.util.PreferencesUtils;
 import com.feiyou.headstyle.util.StringUtils;
 import com.feiyou.headstyle.util.TimeUtils;
@@ -51,6 +49,7 @@ import com.feiyou.headstyle.util.ToastUtils;
 import com.feiyou.headstyle.view.SharePopupWindow;
 import com.feiyou.headstyle.view.flingswipe.SwipeFlingAdapterView;
 import com.feiyou.headstyle.view.qqhead.BaseUIListener;
+import com.hwangjr.rxbus.RxBus;
 import com.orhanobut.logger.Logger;
 import com.tencent.connect.avatar.QQAvatar;
 import com.tencent.tauth.Tencent;
@@ -307,11 +306,6 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
             isKeep = "0";
         }
 
-        if (Build.VERSION.SDK_INT >= 23) {
-            String[] mPermissionList = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.CALL_PHONE, Manifest.permission.READ_LOGS, Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.SET_DEBUG_APP, Manifest.permission.SYSTEM_ALERT_WINDOW, Manifest.permission.GET_ACCOUNTS, Manifest.permission.WRITE_APN_SETTINGS};
-            ActivityCompat.requestPermissions(this, mPermissionList, 123);
-        }
-
     }
 
     @Override
@@ -505,7 +499,7 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
     public void toAuth(View view) {
         operation = 1;
         //已经登录授权过，无需再次授权
-        if (HeadStyleApplication.isLoginAuth) {
+        if (App.isLoginAuth) {
             userInfo = (UserInfo) PreferencesUtils.getObject(this, Constant.USER_INFO, UserInfo.class);
             setUseCount(userInfo.uid);
             if (imagePath != null && imagePath.length() > 0) {
@@ -581,7 +575,7 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
                 .findViewById(android.R.id.content)).getChildAt(0);
         shareWindow = new SharePopupWindow(this, itemsOnClick);
 
-        shareWindow.showAtLocation(viewGroup, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+        shareWindow.showAtLocation(viewGroup, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, NavgationBarUtils.getNavigationBarHeight(HeadShow3Activity.this));
         setBackgroundAlpha(HeadShow3Activity.this, 0.5f);
         shareWindow.setOnDismissListener(new HeadShow3Activity.PoponDismissListener());
     }
@@ -791,7 +785,7 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
                                 Logger.e("登录成功");
 
                                 PreferencesUtils.putObject(HeadShow3Activity.this, Constant.USER_INFO, userInfo);
-                                HeadStyleApplication.isLoginAuth = true;
+                                App.isLoginAuth = true;
 
                                 if (operation == 1) {
                                     if (imagePath != null && imagePath.length() > 0) {
@@ -805,6 +799,7 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
                                 } else {
                                     //addKeep();
                                 }
+                                RxBus.get().post(Constant.LOGIN_SUCCESS, "loginSuccess");
                             }
                         }
 

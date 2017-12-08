@@ -19,7 +19,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.feiyou.headstyle.HeadStyleApplication;
+import com.feiyou.headstyle.App;
 import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.bean.ArticleInfo;
 import com.feiyou.headstyle.bean.ArticleListRet;
@@ -43,6 +43,7 @@ import com.feiyou.headstyle.util.PreferencesUtils;
 import com.feiyou.headstyle.util.StringUtils;
 import com.feiyou.headstyle.util.TimeUtils;
 import com.feiyou.headstyle.util.ToastUtils;
+import com.hwangjr.rxbus.RxBus;
 import com.orhanobut.logger.Logger;
 import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.UMShareAPI;
@@ -123,7 +124,7 @@ public class MyFragment extends BaseFragment {
             switch (msg.what) {
                 case 0:
                     //设置"我的发帖"未读消息提醒
-                    if (HeadStyleApplication.isMessage) {
+                    if (App.isMessage) {
                         messageRedImage.setVisibility(View.VISIBLE);
                     } else {
                         messageRedImage.setVisibility(View.INVISIBLE);
@@ -197,6 +198,7 @@ public class MyFragment extends BaseFragment {
         if (AppUtils.isLogin(getActivity())) {
             loginUserInfo = (UserInfo) PreferencesUtils.getObject(getActivity(), Constant.USER_INFO, UserInfo.class);
             if (loginUserInfo != null) {
+                Logger.e("oid--->" + loginUserInfo.getOpenid());
 
                 loginTipTv.setVisibility(View.GONE);
                 usreInfoLayout.setVisibility(View.VISIBLE);
@@ -213,8 +215,8 @@ public class MyFragment extends BaseFragment {
                 }
 
                 //设置QQ头像
-                if (HeadStyleApplication.userImgPath != null) {
-                    Uri uri = Uri.parse("file:///" + HeadStyleApplication.userImgPath);
+                if (App.userImgPath != null) {
+                    Uri uri = Uri.parse("file:///" + App.userImgPath);
                     userImg.setImageURI(uri);
                 } else if (imgUrl != null) {
                     Uri uri = Uri.parse(imgUrl);
@@ -263,7 +265,7 @@ public class MyFragment extends BaseFragment {
 
                     if (commentCount > 0 && commentCount > lastComment) {
                         if(lastComment > -1){
-                            HeadStyleApplication.isMessage = true;
+                            App.isMessage = true;
                             Message mes = new Message();
                             mes.what = 0;
                             handler.sendMessage(mes);
@@ -304,7 +306,7 @@ public class MyFragment extends BaseFragment {
             usreInfoLayout.setVisibility(View.GONE);
             userImg.setImageResource(R.mipmap.qq_login_select_icon);
             PreferencesUtils.putObject(getActivity(), Constant.USER_INFO, null);
-            HeadStyleApplication.isLoginAuth = false;
+            App.isLoginAuth = false;
         }
     }
 
@@ -416,15 +418,16 @@ public class MyFragment extends BaseFragment {
                                         @Override
                                         public void onResponse(File file, int id) {
                                             String imagePath = file.getAbsolutePath();
-                                            HeadStyleApplication.userImgPath = imagePath;
+                                            App.userImgPath = imagePath;
                                         }
                                     });
                                 }
                                 PreferencesUtils.putObject(getActivity(), Constant.USER_INFO, userInfo);
-                                HeadStyleApplication.isLoginAuth = true;
+                                App.isLoginAuth = true;
 
                                 //刷新消息评论
                                 initCommentCount();
+                                RxBus.get().post(Constant.LOGIN_SUCCESS,"loginSuccess");
                             }
                         }
 

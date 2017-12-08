@@ -14,7 +14,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.widget.Toast;
+import android.provider.Settings;
 
 import com.feiyou.headstyle.bean.UserInfo;
 import com.feiyou.headstyle.common.Constant;
@@ -239,5 +239,15 @@ public class AppUtils {
                 return true;
             }
         }
+    }
+
+    /**
+     * 获取设备 AndroidID
+     *
+     * @return AndroidID
+     */
+    @SuppressLint("HardwareIds")
+    public static String getAndroidID(Context context) {
+        return Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 }

@@ -5,12 +5,6 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-    <View
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/bar_height"
-        android:background="@color/colorPrimary">
-    </View>
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="48dp"
@@ -25,7 +19,7 @@
             android:layout_centerVertical="true"
             android:text="@string/tab_fun_test_text"
             android:textColor="@color/white"
-            android:textSize="18sp"/>
+            android:textSize="20sp"/>
 
         <ImageView
             android:id="@+id/search_icon"

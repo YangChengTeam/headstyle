@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.hwangjr.rxbus.RxBus;
 import com.umeng.analytics.MobclickAgent;
 
 import butterknife.ButterKnife;
@@ -21,6 +22,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
+        RxBus.get().register(this);
         initVars();
         initViews();
         loadData();
@@ -35,7 +37,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         ViewGroup contentFrameLayout = (ViewGroup) findViewById(Window.ID_ANDROID_CONTENT);
         View parentView = contentFrameLayout.getChildAt(0);
         if (parentView != null && Build.VERSION.SDK_INT >= 14) {
-            parentView.setFitsSystemWindows(true);
+            //parentView.setFitsSystemWindows(true);
         }
     }
 
@@ -65,5 +67,11 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         MobclickAgent.onResume(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        RxBus.get().unregister(this);
     }
 }

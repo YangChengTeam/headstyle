@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.feiyou.headstyle.HeadStyleApplication;
+import com.feiyou.headstyle.App;
 import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.adapter.ArticleListAdapter;
 import com.feiyou.headstyle.bean.ArticleInfo;
@@ -29,6 +29,10 @@ import com.feiyou.headstyle.util.DialogUtils;
 import com.feiyou.headstyle.util.PreferencesUtils;
 import com.feiyou.headstyle.util.StringUtils;
 import com.feiyou.headstyle.util.ToastUtils;
+import com.hwangjr.rxbus.RxBus;
+import com.hwangjr.rxbus.annotation.Subscribe;
+import com.hwangjr.rxbus.annotation.Tag;
+import com.hwangjr.rxbus.thread.EventThread;
 import com.orhanobut.logger.Logger;
 import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.UMShareAPI;
@@ -41,7 +45,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 
-public class AllArticleFragment extends BaseFragment implements ArticleListAdapter.LoginShowListener, SwipeRefreshLayout.OnRefreshListener{
+public class AllArticleFragment extends BaseFragment implements ArticleListAdapter.LoginShowListener, SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.pull_to_refresh)
     SwipeRefreshLayout swipeLayout;
@@ -81,6 +85,8 @@ public class AllArticleFragment extends BaseFragment implements ArticleListAdapt
 
     private int maxPage = 0;
 
+    private int lastItemPosition = -1;
+
     public AllArticleFragment() {
     }
 
@@ -119,6 +125,7 @@ public class AllArticleFragment extends BaseFragment implements ArticleListAdapt
         mAdapter.setOnItemClickListener(new ArticleListAdapter.OnRecyclerViewItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
+                lastItemPosition = position;
                 Intent intent = new Intent(getActivity(), ArticleDetailActivity.class);
                 intent.putExtra("show_type", 0);
                 intent.putExtra("sid", articleInfoList.get(position).sid);
@@ -132,7 +139,7 @@ public class AllArticleFragment extends BaseFragment implements ArticleListAdapt
                 super.onScrolled(recyclerView, dx, dy);
                 if (isSlideToBottom(recyclerView)) {
                     pageNum++;
-                    if(pageNum <= maxPage){
+                    if (pageNum <= maxPage) {
                         getNextData();
                     }
                 }
@@ -177,7 +184,7 @@ public class AllArticleFragment extends BaseFragment implements ArticleListAdapt
         Logger.e("init page---" + pageNum);
         params.put("p", String.valueOf(pageNum));
         params.put("t", showType);
-        params.put("ver",AppUtils.getVersionName(getActivity()));//版本号
+        params.put("ver", AppUtils.getVersionName(getActivity()));//版本号
         params.put("num", "10");//每页条数
         //params.put("state", "1");
         return params;
@@ -189,7 +196,7 @@ public class AllArticleFragment extends BaseFragment implements ArticleListAdapt
 
         final Map<String, String> params = setParams();
 
-        Logger.e("loadData---showtype---"+showType);
+        Logger.e("loadData---showtype---" + showType);
 
         if (userInfo != null) {
             params.put("uid", userInfo.uid);
@@ -203,7 +210,7 @@ public class AllArticleFragment extends BaseFragment implements ArticleListAdapt
                 //设置首页列表数据
                 List<ArticleInfo> temp = articleService.getData(response).data;
                 if (temp != null && temp.size() > 0) {
-                    if(articleInfoList != null && articleInfoList.size() > 0){
+                    if (articleInfoList != null && articleInfoList.size() > 0) {
                         articleInfoList.clear();
                     }
                     maxPage = Integer.parseInt(temp.get(0).maxpage);
@@ -227,7 +234,7 @@ public class AllArticleFragment extends BaseFragment implements ArticleListAdapt
     public void getNextData() {
         final Map<String, String> params = setParams();
 
-        Logger.e("next---showtype---"+showType);
+        Logger.e("next---showtype---" + showType);
 
         if (userInfo != null) {
             params.put("uid", userInfo.uid);
@@ -353,10 +360,10 @@ public class AllArticleFragment extends BaseFragment implements ArticleListAdapt
                                 ToastUtils.show(getActivity(), "登录成功");
 
                                 PreferencesUtils.putObject(getActivity(), Constant.USER_INFO, tempUserInfo);
-                                HeadStyleApplication.isLoginAuth = true;
+                                App.isLoginAuth = true;
 
                                 ToastUtils.show(getActivity(), "登录成功");
-
+                                RxBus.get().post(Constant.LOGIN_SUCCESS, "loginSuccess");
                             }
                         }
 
@@ -398,5 +405,21 @@ public class AllArticleFragment extends BaseFragment implements ArticleListAdapt
     public void onRefresh() {
         pageNum = 1;
         loadData();
+    }
+
+    @Subscribe(
+            thread = EventThread.MAIN_THREAD,
+            tags = {
+                    @Tag(Constant.PRAISE_SUCCESS)
+            }
+    )
+    public void praiseSuccess(String type) {
+        if (lastItemPosition > -1 && type.equals("0")) {
+            if (mAdapter.getArticleData() != null && mAdapter.getArticleData().size() > 0) {
+                mAdapter.getArticleData().get(lastItemPosition).iszan = 1;
+                mAdapter.getArticleData().get(lastItemPosition).zan = +1;
+                mAdapter.notifyDataSetChanged();
+            }
+        }
     }
 }

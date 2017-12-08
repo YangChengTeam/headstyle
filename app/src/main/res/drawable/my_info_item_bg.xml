@@ -3,10 +3,10 @@
 
     <solid android:color="#ffffff"/>
 
-    <corners android:radius="8dp"/>
+    <corners android:radius="1dp"/>
 
     <stroke
         android:width="0.5dp"
-        android:color="@color/input_bg_color"></stroke>
+        android:color="#f1f1f1"></stroke>
 
 </shape>

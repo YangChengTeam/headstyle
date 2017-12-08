@@ -26,6 +26,7 @@ import com.feiyou.headstyle.net.OKHttpRequest;
 import com.feiyou.headstyle.net.listener.OnResponseListener;
 import com.feiyou.headstyle.service.ArticleService;
 import com.feiyou.headstyle.ui.activity.ArticleDetailActivity;
+import com.feiyou.headstyle.ui.activity.FriendInfoActivity;
 import com.feiyou.headstyle.ui.activity.MainActivity;
 import com.feiyou.headstyle.ui.activity.ShowImageListActivity;
 import com.feiyou.headstyle.util.AppUtils;
@@ -77,12 +78,24 @@ public class PhotosListAdapter extends RecyclerView.Adapter<PhotosListAdapter.My
     }
 
     public void addNewDatas(List<ArticleInfo> datas) {
-        if (articleData != null) {
+        if (articleData == null) {
+            articleData = new ArrayList<ArticleInfo>();
+        }
+
+        if (datas != null) {
             articleData.addAll(datas);
             createImageUrlList();
         } else {
-            articleData = new ArrayList<ArticleInfo>();
+            articleData.clear();
         }
+    }
+
+    public List<ArticleInfo> getArticleData() {
+        return articleData;
+    }
+
+    public void setArticleData(List<ArticleInfo> articleData) {
+        this.articleData = articleData;
     }
 
     public void createImageUrlList() {
@@ -110,7 +123,7 @@ public class PhotosListAdapter extends RecyclerView.Adapter<PhotosListAdapter.My
     }
 
     @Override
-    public void onBindViewHolder(final MyViewHolder holder, int position) {
+    public void onBindViewHolder(final MyViewHolder holder, final int position) {
 
         Logger.e("position---" + position);
 
@@ -141,6 +154,16 @@ public class PhotosListAdapter extends RecyclerView.Adapter<PhotosListAdapter.My
 
         holder.praiseCountTv.setTag(position);
 
+        holder.userImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (articleData.get(position) != null) {
+                    Intent intent = new Intent(mContext, FriendInfoActivity.class);
+                    intent.putExtra("fuid", articleData.get(position).uid);
+                    mContext.startActivity(intent);
+                }
+            }
+        });
         if (!articleData.get(position).ding.equals("1")) {
             holder.topTv.setVisibility(View.GONE);
         } else {

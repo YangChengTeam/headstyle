@@ -6,12 +6,6 @@
     android:background="@mipmap/create_bg"
     android:orientation="vertical">
 
-    <View
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/bar_height"
-        android:background="@color/colorPrimary">
-    </View>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="25dp"
         android:layout_marginRight="25dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="40dp"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -74,7 +68,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="50dp">
+        android:layout_marginTop="20dp">
 
         <LinearLayout
             android:layout_width="wrap_content"

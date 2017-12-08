@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:id="@+id/head_type_layout"
     android:layout_width="match_parent"
@@ -15,13 +16,17 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/title_layout"
-        android:background="@color/white">
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="50dp"
+        android:background="@color/white"
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/common_color"
+            android:background="@color/white"
             android:orientation="vertical">
 
             <LinearLayout
@@ -37,17 +42,16 @@
 
                     <com.facebook.drawee.view.SimpleDraweeView
                         android:id="@+id/article_user_img"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
+                        android:layout_width="52dp"
+                        android:layout_height="52dp"
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="10dp"
-                        android:padding="5dp"
-                        fresco:placeholderImage="@mipmap/qq_icon"
+                        android:layout_marginLeft="6dp"
+                        android:padding="4dp"
+                        fresco:placeholderImage="@mipmap/user_head_def_icon"
                         fresco:roundAsCircle="true"
                         fresco:roundingBorderWidth="1dp"
-                        fresco:viewAspectRatio="1"
-                        />
+                        fresco:viewAspectRatio="1"/>
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -58,7 +62,8 @@
 
                         <RelativeLayout
                             android:layout_width="wrap_content"
-                            android:layout_height="match_parent">
+                            android:layout_height="match_parent"
+                            android:minHeight="28dp">
 
                             <TextView
                                 android:id="@+id/article_user_name"
@@ -66,7 +71,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"
                                 android:layout_marginLeft="5dp"
-                                android:textSize="16sp"
+                                android:textSize="14sp"
                                 />
 
                             <TextView
@@ -103,14 +108,20 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"
+                                android:layout_gravity="left|bottom"
                                 android:layout_marginLeft="5dp"
-                                android:layout_marginTop="3dp"
+                                android:layout_marginTop="5dp"
                                 android:text="2016-10-13  09:18"
-                                android:textSize="12sp"
-                                />
+                                android:textSize="12sp"/>
                         </LinearLayout>
                     </LinearLayout>
                 </RelativeLayout>
+
+                <View
+                    android:id="@+id/view_top_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/common_color"></View>
 
                 <TextView
                     android:id="@+id/article_title"
@@ -141,7 +152,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:id="@+id/comment_layout"
@@ -154,9 +166,9 @@
                             android:id="@+id/comment_count_tv"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:gravity="center"
                             android:drawableLeft="@mipmap/comment_icon"
                             android:drawablePadding="3dp"
+                            android:gravity="center"
                             android:text="85"
                             android:textSize="12sp"/>
                     </LinearLayout>
@@ -167,19 +179,19 @@
                         android:background="@color/more_line_color"></View>
 
                     <LinearLayout
-                        android:id="@+id/praise_layout"
+                        android:id="@+id/praise_layout1"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center">
 
                         <TextView
-                            android:id="@+id/praise_count_tv"
+                            android:id="@+id/praise_count_tv1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:gravity="center"
                             android:layout_gravity="center_vertical"
                             android:drawableLeft="@mipmap/no_zan_icon"
+                            android:gravity="center"
                             android:text="85"
                             android:textSize="12sp"/>
                     </LinearLayout>
@@ -187,59 +199,86 @@
 
             </LinearLayout>
 
-            <View
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/more_line_color"></View>
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-            <ListView
-                android:id="@+id/comment_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@null"
-                android:divider="@color/common_color"
-                android:dividerHeight="0.3dp"/>
+                <android.support.design.widget.TabLayout
+                    android:id="@+id/show_tabs_layout"
+                    style="@style/MyCustomTabLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="34dp"
+                    android:background="@color/topic_bg_color"
+                    app:tabSelectedTextColor="@color/colorPrimary"
+                    app:tabTextColor="@color/my_color"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/black_alpha_12"></View>
+
+                <com.feiyou.headstyle.view.NoScrollViewPager
+                    android:id="@+id/view_pager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                </com.feiyou.headstyle.view.NoScrollViewPager>
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 
-    <LinearLayout
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0.3dp"
+        android:layout_above="@+id/layout_bottom"
+        android:background="@color/line_color"></View>
+
+    <LinearLayout
+        android:id="@+id/layout_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/article_line_color"
+        android:background="@color/white"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <EditText
-            android:id="@+id/comment_content"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:background="@drawable/search_boder_bg"
-            android:hint="请发表评论"
-            android:minHeight="35dp"
-            android:paddingLeft="3dp"
-            android:singleLine="false"
-            android:textColor="@color/black"
-            android:textColorHint="#d2d2d2"
-            android:textCursorDrawable="@null"
-            android:textSize="16sp"/>
+        android:gravity="center">
 
         <TextView
-            android:id="@+id/send_btn"
-            android:layout_width="50dp"
-            android:layout_height="32dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginRight="5dp"
-            android:background="@drawable/common_selector"
-            android:gravity="center"
-            android:padding="3dp"
-            android:text="发送"
-            android:textColor="@color/white"
-            android:textSize="16sp"/>
+            android:id="@+id/tv_send_commit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/comment_input_bg"
+            android:drawableLeft="@mipmap/comment_edit_icon"
+            android:drawablePadding="10dp"
+            android:gravity="center_vertical"
+            android:hint="请发表评论"
+            android:minHeight="32dp"
+            android:paddingBottom="4dp"
+            android:paddingLeft="8dp"
+            android:paddingTop="4dp"
+            android:singleLine="false"
+            android:textColor="@color/comment_input_color"
+            android:textColorHint="@color/comment_input_color"
+            android:textCursorDrawable="@null"
+            android:textSize="14sp"/>
+
+        <LinearLayout
+            android:id="@+id/praise_layout"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/iv_praise"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:src="@mipmap/detail_no_zan_icon"/>
+        </LinearLayout>
     </LinearLayout>
 </RelativeLayout>
 

@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
           package="com.feiyou.headstyle"
-          android:versionCode="27"
-          android:versionName="3.0.5">
+          android:versionCode="28"
+          android:versionName="3.1">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
@@ -32,7 +32,7 @@
     <uses-feature android:name="android.hardware.camera.flash"/>
 
     <application
-        android:name=".HeadStyleApplication"
+        android:name=".App"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@drawable/logo"
@@ -52,7 +52,20 @@
         </activity>
         <activity
             android:name=".ui.activity.MainActivity"
-            android:theme="@style/MainAppTheme">
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name=".ui.activity.MyInfoActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name=".ui.activity.FriendInfoActivity"
+            android:label=""
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name=".ui.activity.MyInfoUpdateActivity"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
             android:name=".ui.activity.HeadListActivity"
@@ -167,8 +180,7 @@
         </activity>
         <activity
             android:name=".ui.activity.ArticleDetailActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan">
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
         <activity
@@ -189,6 +201,34 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize"/>
+
+        <activity
+            android:name=".ui.activity.TalkListActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:host="com.feiyou.headstyle"
+                    android:pathPrefix="/conversationlist"
+                    android:scheme="rong" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.activity.TalkActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data
+                    android:host="com.feiyou.headstyle"
+                    android:pathPrefix="/conversation/"
+                    android:scheme="rong"/>
+            </intent-filter>
+        </activity>
 
         <service android:name=".net.service.UpdateService"></service>
         <service android:name=".net.service.DownFightService"></service>
@@ -230,6 +270,15 @@
             android:screenOrientation="behind"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.feiyou.headstyle.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/rc_file_path"/>
+        </provider>
     </application>
 
 </manifest>

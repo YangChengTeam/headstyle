@@ -6,28 +6,21 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <View
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/bar_height"
-        android:background="@color/colorPrimary">
-    </View>
-
     <RelativeLayout
         android:id="@+id/top_layout"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="48dp"
         android:background="@color/colorPrimary"
         android:orientation="vertical">
 
-        <com.facebook.drawee.view.SimpleDraweeView
+        <ImageView
             android:id="@+id/user_img"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="8dp"
-            fresco:placeholderImage="@mipmap/user_default_icon"
-            fresco:roundAsCircle="true"/>
+            android:src="@mipmap/user_head_def_icon"/>
 
         <TextView
             android:id="@+id/top_title"

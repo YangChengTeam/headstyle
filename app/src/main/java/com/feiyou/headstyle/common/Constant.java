@@ -2,7 +2,7 @@ package com.feiyou.headstyle.common;
 
 import android.os.Environment;
 
-import com.feiyou.headstyle.HeadStyleApplication;
+import com.feiyou.headstyle.App;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -24,7 +24,7 @@ public class Constant {
 
     public final static String LAST_UPDATE_TIME = "last_update_time";
 
-    public static String SD_DIR = HeadStyleApplication.sdPath;
+    public static String SD_DIR = App.sdPath;
 
     public static final String BASE_SD_DIR = SD_DIR + File.separator + "GXTX";
 
@@ -74,4 +74,10 @@ public class Constant {
     public final static String CHAT_ARTICLE = "2";
 
     public final static String COMMENT_COUNT = "comment_count";
+
+    public final static String LOGIN_SUCCESS = "user_login_success";
+
+    public final static String MESSAGE = "message_hint";
+
+    public final static String PRAISE_SUCCESS = "praise_success";
 }

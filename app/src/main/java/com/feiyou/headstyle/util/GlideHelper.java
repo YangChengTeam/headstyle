@@ -21,15 +21,33 @@ public class GlideHelper {
         }
         options.transform(new GlideCircleTransformation(context, borderwidth,
                 bordercolor));
-
         if (AppUtils.isValidContext(context)) {
             Glide.with(context).load(url).apply(options).into(imageView);
+        }
+    }
+
+    public static void circleBorderImageView(final Context context, ImageView imageView, int res, int
+            placehorder, float borderwidth, int bordercolor) {
+        RequestOptions options = new RequestOptions();
+        if (placehorder != 0) {
+            options.placeholder(placehorder);
+        }
+        options.transform(new GlideCircleTransformation(context, borderwidth,
+                bordercolor));
+
+        if (AppUtils.isValidContext(context)) {
+            Glide.with(context).load(res).apply(options).into(imageView);
         }
     }
 
     public static void circleImageView(final Context context, ImageView imageView, String url, int
             placehorder) {
         circleBorderImageView(context, imageView, url, placehorder, 0, Color.WHITE);
+    }
+
+    public static void circleImageView(final Context context, ImageView imageView, int res, int
+            placehorder) {
+        circleBorderImageView(context, imageView, res, placehorder, 0, Color.WHITE);
     }
 
     public static void imageView(final Context context, ImageView imageView, String url, int

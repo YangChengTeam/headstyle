@@ -28,7 +28,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.feiyou.headstyle.HeadStyleApplication;
+import com.feiyou.headstyle.App;
 import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.bean.Result;
 import com.feiyou.headstyle.bean.UserInfo;
@@ -428,7 +428,7 @@ public class HeadShowActivity extends BaseActivity {
     public void toAuth(View view) {
         operation = 1;
         //已经登录授权过，无需再次授权
-        if (HeadStyleApplication.isLoginAuth) {
+        if (App.isLoginAuth) {
             userInfo = (UserInfo) PreferencesUtils.getObject(this, Constant.USER_INFO, UserInfo.class);
             setUseCount(userInfo.uid);
             if (imagePath != null && imagePath.length() > 0) {
@@ -718,7 +718,7 @@ public class HeadShowActivity extends BaseActivity {
                                 Logger.e("登录成功");
 
                                 PreferencesUtils.putObject(HeadShowActivity.this, Constant.USER_INFO, userInfo);
-                                HeadStyleApplication.isLoginAuth = true;
+                                App.isLoginAuth = true;
 
                                 if (operation == 1) {
                                     if (imagePath != null && imagePath.length() > 0) {

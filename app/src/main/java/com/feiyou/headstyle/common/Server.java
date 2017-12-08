@@ -46,7 +46,7 @@ public class Server {
     public final static String ARTICLE_DETAIL_DATA = BASE_SERVER_IP + "txapp/sajax.asp?action=showinfo";
 
     //评论详情
-    public final static String COMMENT_DATA = BASE_SERVER_IP + "txapp/sajax.asp?action=cinfolist&num=10&p=1";
+    public final static String COMMENT_DATA = BASE_SERVER_IP + "txapp/sajax.asp?action=cinfolist";
 
     //点赞
     public final static String UP_ZAN_DATA = BASE_SERVER_IP + "txapp/sajax.asp?action=upzan";
@@ -83,4 +83,10 @@ public class Server {
 
     //帖子-评论点赞
     public final static String COMMENT_AGREE_DATA = BASE_SERVER_IP + "txapp/sajax.asp?action=upcommentzan";
+
+    //获取用户信息接口
+    public final static String USER_INFO_DATA = BASE_SERVER_IP + "apajax.asp?action=17";
+
+    //获取用户token
+    public final static String GET_TOKEN = BASE_SERVER_IP + "";
 }

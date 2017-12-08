@@ -27,17 +27,14 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
-import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.RelativeLayout;
 
-import com.feiyou.headstyle.HeadStyleApplication;
 import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.common.Constant;
 import com.feiyou.headstyle.ui.activity.ShowImageListActivity;

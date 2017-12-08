@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.feiyou.headstyle.HeadStyleApplication;
+import com.feiyou.headstyle.App;
 import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.adapter.PhotosListAdapter;
 import com.feiyou.headstyle.bean.ArticleInfo;
@@ -29,6 +29,10 @@ import com.feiyou.headstyle.util.DialogUtils;
 import com.feiyou.headstyle.util.PreferencesUtils;
 import com.feiyou.headstyle.util.StringUtils;
 import com.feiyou.headstyle.util.ToastUtils;
+import com.hwangjr.rxbus.RxBus;
+import com.hwangjr.rxbus.annotation.Subscribe;
+import com.hwangjr.rxbus.annotation.Tag;
+import com.hwangjr.rxbus.thread.EventThread;
 import com.orhanobut.logger.Logger;
 import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.UMShareAPI;
@@ -81,6 +85,8 @@ public class PhotosFragment extends BaseFragment implements PhotosListAdapter.Lo
 
     private int maxPage = 0;
 
+    private int lastItemPosition = -1;
+
     public PhotosFragment() {
     }
 
@@ -119,6 +125,7 @@ public class PhotosFragment extends BaseFragment implements PhotosListAdapter.Lo
         mAdapter.setOnItemClickListener(new PhotosListAdapter.OnRecyclerViewItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
+                lastItemPosition = position;
                 Intent intent = new Intent(getActivity(), ArticleDetailActivity.class);
                 intent.putExtra("show_type", 2);
                 intent.putExtra("sid", articleInfoList.get(position).sid);
@@ -354,10 +361,10 @@ public class PhotosFragment extends BaseFragment implements PhotosListAdapter.Lo
                                 ToastUtils.show(getActivity(), "登录成功");
 
                                 PreferencesUtils.putObject(getActivity(), Constant.USER_INFO, tempUserInfo);
-                                HeadStyleApplication.isLoginAuth = true;
+                                App.isLoginAuth = true;
 
                                 ToastUtils.show(getActivity(), "登录成功");
-
+                                RxBus.get().post(Constant.LOGIN_SUCCESS,"loginSuccess");
                             }
                         }
 
@@ -399,5 +406,21 @@ public class PhotosFragment extends BaseFragment implements PhotosListAdapter.Lo
     public void onRefresh() {
         pageNum = 1;
         loadData();
+    }
+
+    @Subscribe(
+            thread = EventThread.MAIN_THREAD,
+            tags = {
+                    @Tag(Constant.PRAISE_SUCCESS)
+            }
+    )
+    public void praiseSuccess(String type) {
+        if (lastItemPosition > -1 && type.equals("2")) {
+            if (mAdapter.getArticleData() != null && mAdapter.getArticleData().size() > 0) {
+                mAdapter.getArticleData().get(lastItemPosition).iszan = 1;
+                mAdapter.getArticleData().get(lastItemPosition).zan = +1;
+                mAdapter.notifyDataSetChanged();
+            }
+        }
     }
 }

@@ -45,4 +45,21 @@ public class DialogUtils {
                 .onNegative(cancelCallBack).build();
     }
 
+    public static MaterialDialog logoutDialog(Context context, int confirmTextRes, int cancelTextRes, MaterialDialog.SingleButtonCallback confirmCallBack, MaterialDialog.SingleButtonCallback cancelCallBack) {
+        return new MaterialDialog.Builder(context)
+                .titleColorRes(R.color.dialog_title_color)
+                .contentColorRes(R.color.dialog_content_color)
+                .backgroundColorRes(R.color.white)
+                .positiveColorRes(R.color.colorPrimary)
+                .negativeColorRes(R.color.quick_text_color)
+                .title(R.string.logout_text)
+                .content(R.string.logout_current_text)
+                .icon(ContextCompat.getDrawable(context, R.drawable.logo))
+                .maxIconSize(80)
+                .positiveText(confirmTextRes)
+                .negativeText(cancelTextRes)
+                .onPositive(confirmCallBack)
+                .onNegative(cancelCallBack).build();
+    }
+
 }

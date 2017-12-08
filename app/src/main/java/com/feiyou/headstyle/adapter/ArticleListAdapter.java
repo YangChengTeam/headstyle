@@ -29,6 +29,7 @@ import com.feiyou.headstyle.net.OKHttpRequest;
 import com.feiyou.headstyle.net.listener.OnResponseListener;
 import com.feiyou.headstyle.service.ArticleService;
 import com.feiyou.headstyle.ui.activity.ArticleDetailActivity;
+import com.feiyou.headstyle.ui.activity.FriendInfoActivity;
 import com.feiyou.headstyle.ui.activity.ShowImageListActivity;
 import com.feiyou.headstyle.util.AppUtils;
 import com.feiyou.headstyle.util.PreferencesUtils;
@@ -80,12 +81,24 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
     }
 
     public void addNewDatas(List<ArticleInfo> datas) {
-        if (articleData != null) {
+        if (articleData == null) {
+            articleData = new ArrayList<ArticleInfo>();
+        }
+
+        if (datas != null) {
             articleData.addAll(datas);
             createImageUrlList();
         } else {
-            articleData = new ArrayList<ArticleInfo>();
+            articleData.clear();
         }
+    }
+
+    public List<ArticleInfo> getArticleData() {
+        return articleData;
+    }
+
+    public void setArticleData(List<ArticleInfo> articleData) {
+        this.articleData = articleData;
     }
 
     @Override
@@ -124,7 +137,7 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
         holder.articleSendTimeTv.setText(articleData.get(position).addtime);
         holder.articleTitleTv.setText(articleData.get(position).scontent);
         holder.commentCountTv.setText(articleData.get(position).comment + "");
-        holder.praiseCountTv.setText(articleData.get(position).zan+"");
+        holder.praiseCountTv.setText(articleData.get(position).zan + "");
 
         if (articleData.get(position).sex.equals("1")) {
             holder.userGender.setImageResource(R.mipmap.boy_icon);
@@ -151,6 +164,17 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
         }
 
         holder.topTv.setTag(position);
+
+        holder.userImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (articleData.get(position) != null) {
+                    Intent intent = new Intent(mContext, FriendInfoActivity.class);
+                    intent.putExtra("fuid", articleData.get(position).uid);
+                    mContext.startActivity(intent);
+                }
+            }
+        });
 
         final String cimgs = articleData.get(position).cimg;
         HeadWallAdapter gridViewAdapter = new HeadWallAdapter(mContext);
