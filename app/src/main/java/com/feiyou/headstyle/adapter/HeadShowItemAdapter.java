@@ -34,6 +34,14 @@ public class HeadShowItemAdapter extends BaseAdapter {
         ivWidth = ScreenUtils.getWidth(mContext) - SizeUtils.dp2px(mContext, 26);
     }
 
+    public List<String> getHeads() {
+        return heads;
+    }
+
+    public void setHeads(List<String> heads) {
+        this.heads = heads;
+    }
+
     public void addItemData(String imageUrl) {
         if (heads == null) {
             heads = new ArrayList<String>();

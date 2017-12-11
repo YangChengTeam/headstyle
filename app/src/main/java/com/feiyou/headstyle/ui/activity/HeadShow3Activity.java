@@ -1,8 +1,10 @@
 package com.feiyou.headstyle.ui.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -11,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Gravity;
@@ -306,6 +309,10 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
             isKeep = "0";
         }
 
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            String[] mPermissionList = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.CALL_PHONE, Manifest.permission.READ_LOGS, Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.SET_DEBUG_APP, Manifest.permission.SYSTEM_ALERT_WINDOW, Manifest.permission.GET_ACCOUNTS, Manifest.permission.WRITE_APN_SETTINGS};
+            ActivityCompat.requestPermissions(this, mPermissionList, 123);
+        }
     }
 
     @Override
@@ -400,6 +407,7 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
     @Override
     public void removeFirstObjectInAdapter() {
         adapter.remove(0);
+        imagePath = null;
     }
 
     @Override
@@ -502,12 +510,47 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
         if (App.isLoginAuth) {
             userInfo = (UserInfo) PreferencesUtils.getObject(this, Constant.USER_INFO, UserInfo.class);
             setUseCount(userInfo.uid);
-            if (imagePath != null && imagePath.length() > 0) {
-                isSetting = true;
-                Uri uri = Uri.parse("file:///" + imagePath);
-                doSetAvatar(uri);
+
+            if (StringUtils.isEmpty(imagePath)) {
+                if (adapter.getHeads() != null && adapter.getHeads().size() > 0) {
+                    imageUrl = adapter.getHeads().get(0);
+                }
+
+                fileName = String.valueOf(TimeUtils.getCurrentTimeInLong()) + ".jpg";
+                savePath = Constant.BASE_NORMAL_SAVE_IMAGE_DIR + File.separator + "DCIM" + File.separator + "camera";
+
+                OkHttpUtils.get().url(imageUrl).build().execute(new FileCallBack(savePath, fileName) {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        Message message = new Message();
+                        message.what = 1;
+                        handler.sendMessage(message);
+                    }
+
+                    @Override
+                    public void onResponse(File file, int id) {
+                        saveFile = file;
+                        imagePath = file.getAbsolutePath();
+
+                        Bitmap tempBitmap = BitmapFactory.decodeFile(imagePath);
+                        if (tempBitmap != null) {
+                            tempBitmap = ImageUtils.compressImage(tempBitmap, 100);
+                            image = new UMImage(HeadShow3Activity.this, tempBitmap);
+                        }
+
+                        isSetting = true;
+                        Uri uri = Uri.parse("file:///" + imagePath);
+                        doSetAvatar(uri);
+                    }
+                });
             } else {
-                ToastUtils.show(HeadShow3Activity.this, "图片地址有误，不能设置QQ头像");
+                if (imagePath != null && imagePath.length() > 0) {
+                    isSetting = true;
+                    Uri uri = Uri.parse("file:///" + imagePath);
+                    doSetAvatar(uri);
+                } else {
+                    ToastUtils.show(HeadShow3Activity.this, "图片地址有误，不能设置QQ头像");
+                }
             }
         } else {
             mShareAPI.doOauthVerify(HeadShow3Activity.this, platform, umAuthListener);
@@ -534,6 +577,14 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
                 }
                 handler.sendMessage(message);
             } else {
+
+                if (adapter.getHeads() != null && adapter.getHeads().size() > 0) {
+                    imageUrl = adapter.getHeads().get(0);
+                }
+
+                fileName = String.valueOf(TimeUtils.getCurrentTimeInLong()) + ".jpg";
+                savePath = Constant.BASE_NORMAL_SAVE_IMAGE_DIR + File.separator + "DCIM" + File.separator + "camera";
+
                 OkHttpUtils.get().url(imageUrl).build().execute(new FileCallBack(savePath, fileName) {
                     @Override
                     public void onError(Call call, Exception e, int id) {
@@ -546,6 +597,13 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
                     public void onResponse(File file, int id) {
                         saveFile = file;
                         imagePath = file.getAbsolutePath();
+
+                        Bitmap tempBitmap = BitmapFactory.decodeFile(imagePath);
+                        if (tempBitmap != null) {
+                            tempBitmap = ImageUtils.compressImage(tempBitmap, 100);
+                            image = new UMImage(HeadShow3Activity.this, tempBitmap);
+                        }
+
                         Message message = new Message();
                         message.what = 0;
                         handler.sendMessage(message);
@@ -571,13 +629,51 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
 
     @OnClick(R.id.right_image)
     public void shareHead() {
-        final ViewGroup viewGroup = (ViewGroup) ((ViewGroup) this
-                .findViewById(android.R.id.content)).getChildAt(0);
-        shareWindow = new SharePopupWindow(this, itemsOnClick);
 
-        shareWindow.showAtLocation(viewGroup, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, NavgationBarUtils.getNavigationBarHeight(HeadShow3Activity.this));
-        setBackgroundAlpha(HeadShow3Activity.this, 0.5f);
-        shareWindow.setOnDismissListener(new HeadShow3Activity.PoponDismissListener());
+        if (StringUtils.isEmpty(imagePath)) {
+            if (adapter.getHeads() != null && adapter.getHeads().size() > 0) {
+                imageUrl = adapter.getHeads().get(0);
+            }
+
+            fileName = String.valueOf(TimeUtils.getCurrentTimeInLong()) + ".jpg";
+            savePath = Constant.BASE_NORMAL_SAVE_IMAGE_DIR + File.separator + "DCIM" + File.separator + "camera";
+
+            OkHttpUtils.get().url(imageUrl).build().execute(new FileCallBack(savePath, fileName) {
+                @Override
+                public void onError(Call call, Exception e, int id) {
+                    ToastUtils.show(HeadShow3Activity.this, "分享图片有误");
+                    return;
+                }
+
+                @Override
+                public void onResponse(File file, int id) {
+                    saveFile = file;
+                    imagePath = file.getAbsolutePath();
+
+                    Bitmap tempBitmap = BitmapFactory.decodeFile(imagePath);
+                    if (tempBitmap != null) {
+                        tempBitmap = ImageUtils.compressImage(tempBitmap, 100);
+                        image = new UMImage(HeadShow3Activity.this, tempBitmap);
+                    }
+
+                    final ViewGroup viewGroup = (ViewGroup) ((ViewGroup) HeadShow3Activity.this
+                            .findViewById(android.R.id.content)).getChildAt(0);
+                    shareWindow = new SharePopupWindow(HeadShow3Activity.this, itemsOnClick);
+
+                    shareWindow.showAtLocation(viewGroup, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, NavgationBarUtils.getNavigationBarHeight(HeadShow3Activity.this));
+                    setBackgroundAlpha(HeadShow3Activity.this, 0.5f);
+                    shareWindow.setOnDismissListener(new HeadShow3Activity.PoponDismissListener());
+                }
+            });
+        } else {
+            final ViewGroup viewGroup = (ViewGroup) ((ViewGroup) HeadShow3Activity.this
+                    .findViewById(android.R.id.content)).getChildAt(0);
+            shareWindow = new SharePopupWindow(HeadShow3Activity.this, itemsOnClick);
+
+            shareWindow.showAtLocation(viewGroup, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, NavgationBarUtils.getNavigationBarHeight(HeadShow3Activity.this));
+            setBackgroundAlpha(HeadShow3Activity.this, 0.5f);
+            shareWindow.setOnDismissListener(new HeadShow3Activity.PoponDismissListener());
+        }
     }
 
     public static void setBackgroundAlpha(Activity activity, float bgAlpha) {
@@ -788,12 +884,41 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
                                 App.isLoginAuth = true;
 
                                 if (operation == 1) {
-                                    if (imagePath != null && imagePath.length() > 0) {
+
+                                    if (StringUtils.isEmpty(imagePath)) {
+                                        if (adapter.getHeads() != null && adapter.getHeads().size() > 0) {
+                                            imageUrl = adapter.getHeads().get(0);
+                                        }
+
+                                        fileName = String.valueOf(TimeUtils.getCurrentTimeInLong()) + ".jpg";
+                                        savePath = Constant.BASE_NORMAL_SAVE_IMAGE_DIR + File.separator + "DCIM" + File.separator + "camera";
+
+                                        OkHttpUtils.get().url(imageUrl).build().execute(new FileCallBack(savePath, fileName) {
+                                            @Override
+                                            public void onError(Call call, Exception e, int id) {
+                                                ToastUtils.show(HeadShow3Activity.this, "图片地址有误，不能设置QQ头像");
+                                            }
+
+                                            @Override
+                                            public void onResponse(File file, int id) {
+                                                saveFile = file;
+                                                imagePath = file.getAbsolutePath();
+
+                                                Bitmap tempBitmap = BitmapFactory.decodeFile(imagePath);
+                                                if (tempBitmap != null) {
+                                                    tempBitmap = ImageUtils.compressImage(tempBitmap, 100);
+                                                    image = new UMImage(HeadShow3Activity.this, tempBitmap);
+                                                }
+
+                                                isSetting = true;
+                                                Uri uri = Uri.parse("file:///" + imagePath);
+                                                doSetAvatar(uri);
+                                            }
+                                        });
+                                    } else {
                                         isSetting = true;
                                         Uri uri = Uri.parse("file:///" + imagePath);
                                         doSetAvatar(uri);
-                                    } else {
-                                        ToastUtils.show(HeadShow3Activity.this, "图片地址有误，不能设置QQ头像");
                                     }
                                     setUseCount(userInfo.uid);
                                 } else {

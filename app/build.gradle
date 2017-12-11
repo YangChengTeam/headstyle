@@ -9,9 +9,9 @@ android {
     defaultConfig {
         applicationId "com.feiyou.headstyle"
         minSdkVersion 16
-        targetSdkVersion 21
-        versionCode 28
-        versionName "3.1"
+        targetSdkVersion 23
+        versionCode 30
+        versionName "3.1.2"
         multiDexEnabled true
         ndk {
             abiFilters "armeabi-v7a", "x86"

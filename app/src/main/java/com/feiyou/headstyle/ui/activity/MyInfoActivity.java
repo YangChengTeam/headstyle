@@ -1,16 +1,21 @@
 package com.feiyou.headstyle.ui.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -78,6 +83,8 @@ public class MyInfoActivity extends BaseActivity {
     private final int REQUEST_CODE_EDIT = 1002;
 
     private static final int CROP_SMALL_PICTURE = 1003;
+
+    private static final int OPEN_CAMERA = 1004;
 
     @BindView(R.id.layout_user_head)
     RelativeLayout mUserHeadLayout;
@@ -203,6 +210,8 @@ public class MyInfoActivity extends BaseActivity {
 
     private boolean isUpdateImage;
 
+    private boolean isCrop;
+
     @Override
     public int getLayoutId() {
         return R.layout.activity_my_info;
@@ -242,7 +251,6 @@ public class MyInfoActivity extends BaseActivity {
         bottomSheetDialog = new BottomSheetDialog(MyInfoActivity.this);
         bottomSheetDialog.setContentView(bottomSheetView);
 
-
         //星座
         starView = LayoutInflater.from(MyInfoActivity.this).inflate(R.layout.star_list_view, null);
         starDialog = new BottomSheetDialog(MyInfoActivity.this);
@@ -257,11 +265,17 @@ public class MyInfoActivity extends BaseActivity {
         RxView.clicks(mUserHeadLayout).throttleFirst(200, TimeUnit.MILLISECONDS).subscribe(new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
-                ViewGroup viewGroup = (ViewGroup) ((ViewGroup) MyInfoActivity.this.findViewById(android.R.id.content)).getChildAt(0);
-                photoModePopupWindow = new PhotoModePopupWindow(MyInfoActivity.this, itemsOnClick);
-                photoModePopupWindow.showAtLocation(viewGroup, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, NavgationBarUtils.getNavigationBarHeight(MyInfoActivity.this));
-                setBackgroundAlpha(MyInfoActivity.this, 0.5f);
-                photoModePopupWindow.setOnDismissListener(new PoponDismissListener());
+                if (Build.VERSION.SDK_INT >= 23) {
+                    int checkCallPhonePermission = ContextCompat.checkSelfPermission(MyInfoActivity.this, Manifest.permission.CAMERA);
+                    if (checkCallPhonePermission != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(MyInfoActivity.this, new String[]{Manifest.permission.CAMERA}, OPEN_CAMERA);
+                        return;
+                    } else {
+                        photoSelect();
+                    }
+                } else {
+                    photoSelect();
+                }
             }
         });
 
@@ -446,11 +460,44 @@ public class MyInfoActivity extends BaseActivity {
         });
     }
 
+    public void photoSelect() {
+        ViewGroup viewGroup = (ViewGroup) ((ViewGroup) MyInfoActivity.this.findViewById(android.R.id.content)).getChildAt(0);
+        photoModePopupWindow = new PhotoModePopupWindow(MyInfoActivity.this, itemsOnClick);
+        photoModePopupWindow.showAtLocation(viewGroup, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, NavgationBarUtils.getNavigationBarHeight(MyInfoActivity.this));
+        setBackgroundAlpha(MyInfoActivity.this, 0.5f);
+        photoModePopupWindow.setOnDismissListener(new PoponDismissListener());
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            //就像onActivityResult一样这个地方就是判断你是从哪来的。
+            case OPEN_CAMERA:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission Granted
+                    photoSelect();
+                } else {
+                    ToastUtils.show(MyInfoActivity.this, "禁止了相机权限,请开启");
+                    // Permission Denied
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
         if (!isUpdateImage) {
             getUserInfo();
+        }
+
+        if (!isCrop) {
+            userInfo = (UserInfo) PreferencesUtils.getObject(this, Constant.USER_INFO, UserInfo.class);
+            if (userInfo != null) {
+                GlideHelper.circleImageView(MyInfoActivity.this, mUserHeadImageView, userInfo.getUserimg(), R.mipmap.user_head_def_icon);
+            }
         }
     }
 
@@ -543,15 +590,31 @@ public class MyInfoActivity extends BaseActivity {
         return list;
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        Logger.e("file length --- >" + outputImage.length());
+        if (imageUri == null || outputImage.length() == 0) {
+            if (userInfo != null) {
+                GlideHelper.circleImageView(MyInfoActivity.this, mUserHeadImageView, userInfo.getUserimg(), R.mipmap.user_head_def_icon);
+            }
+            return;
+        }
         switch (requestCode) {
             case TAKE_BIG_PICTURE:
                 cropImageUri(imageUri, 300, 300, CROP_SMALL_PICTURE);
                 break;
             case CROP_SMALL_PICTURE:
-                GlideHelper.circleImageView(this, mUserHeadImageView, outputImage.getAbsolutePath(), 0);
-                updateImage();
+                //确认裁剪
+                if (resultCode == -1) {
+                    isCrop = true;
+                    GlideHelper.circleImageView(this, mUserHeadImageView, outputImage.getAbsolutePath(), 0);
+                    updateImage();
+                }else{
+                    if (userInfo != null) {
+                        GlideHelper.circleImageView(MyInfoActivity.this, mUserHeadImageView, userInfo.getUserimg(), R.mipmap.user_head_def_icon);
+                    }
+                }
                 break;
             default:
                 break;
@@ -699,6 +762,10 @@ public class MyInfoActivity extends BaseActivity {
             List<File> files = new ArrayList<File>();
             if (outputImage.exists()) {
                 files.add(outputImage);
+            }
+
+            if (files == null || files.size() == 0) {
+                return;
             }
 
             Luban.compress(this, files).putGear(Luban.THIRD_GEAR).launch(new OnMultiCompressListener() {
