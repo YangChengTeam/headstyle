@@ -1,5 +1,8 @@
 package com.feiyou.headstyle.ui.fragment;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -20,6 +23,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.adapter.HeadTypeAdapter;
 import com.feiyou.headstyle.adapter.HeadWallAdapter;
+import com.feiyou.headstyle.bean.AlipyCodeRet;
 import com.feiyou.headstyle.bean.HeadInfo;
 import com.feiyou.headstyle.bean.SpecialInfo;
 import com.feiyou.headstyle.bean.UserInfo;
@@ -134,6 +138,8 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     ArticleService articleService = null;
 
     private int rPageNum = 1;
+
+    public String alipyCode = "迅Z睿忆B意1骁融锐";
 
     private List<SpecialInfo> specialInfos;
 
@@ -272,6 +278,7 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
             }
         });
 
+        getAlipyCode();
     }
 
     /**
@@ -413,6 +420,38 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
             }
         });
 
+    }
+
+    public void copyAlipy(String code) {
+        ClipboardManager cm = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+        // 将文本内容放到系统剪贴板里。
+        cm.setPrimaryClip(ClipData.newPlainText(null, code));
+    }
+
+    public void getAlipyCode() {
+
+        okHttpRequest.aget("http://u.wk990.com/api/index/zfb_code?app_name=gxtx", null, new OnResponseListener() {
+            @Override
+            public void onSuccess(String response) {
+                if (!StringUtils.isEmpty(response)) {
+                    AlipyCodeRet alipyCodeRet = Constant.GSON.fromJson(response, AlipyCodeRet.class);
+                    if (alipyCodeRet != null && alipyCodeRet.code == 1) {
+                        alipyCode = alipyCodeRet.data.zfb_code;
+                    }
+                    copyAlipy(alipyCode);
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                copyAlipy(alipyCode);
+            }
+
+            @Override
+            public void onBefore() {
+
+            }
+        });
     }
 
     /**

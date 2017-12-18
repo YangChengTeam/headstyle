@@ -1,18 +1,29 @@
 package com.feiyou.headstyle.ui.activity;
 
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.text.Html;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.feiyou.headstyle.R;
+import com.feiyou.headstyle.util.AppUtils;
+import com.feiyou.headstyle.util.DialogUtils;
+import com.feiyou.headstyle.util.ToastUtils;
 import com.feiyou.headstyle.view.SharePopupWindow;
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMShareAPI;
@@ -35,12 +46,22 @@ public class AboutActivity extends BaseActivity {
     @BindView(R.id.about_head_tv)
     TextView aboutHeadTv;
 
+    @BindView(R.id.tv_version_name)
+    TextView mVersionNameTextView;
+
+    @BindView(R.id.iv_head_weixin_code)
+    ImageView mWeiXinImageView;
+
     //分享弹出窗口
     private SharePopupWindow shareWindow;
 
     private UMImage image;
 
     private UMShareAPI mShareAPI = null;
+
+    private MaterialDialog loginDialog;
+
+    private Handler handler = new Handler();
 
     @Override
     public int getLayoutId() {
@@ -51,6 +72,7 @@ public class AboutActivity extends BaseActivity {
     public void initViews() {
         super.initViews();
         titleTv.setText(titleTextValue);
+        mVersionNameTextView.setText(getResources().getString(R.string.app_name) + "V" + AppUtils.getVersionName(this));
     }
 
     @Override
@@ -216,9 +238,43 @@ public class AboutActivity extends BaseActivity {
         finish();
     }
 
+    @OnClick(R.id.iv_head_weixin_code)
+    public void weixinCode() {
+        ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        // 将文本内容放到系统剪贴板里。
+        cm.setPrimaryClip(ClipData.newPlainText(null, "gexing-app"));
+        ToastUtils.show(AboutActivity.this, "复制成功，可以加微信了");
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //弹出QQ登录询问框
+                loginDialog = DialogUtils.createWeiXinDialog(AboutActivity.this, R.string.confirm_text, R.string.cancel_login_text, new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        if (AppUtils.appInstalled(AboutActivity.this, "com.tencent.mm")) {
+                            AppUtils.launchApp(AboutActivity.this, "com.tencent.mm", 1);
+                        } else {
+                            ToastUtils.show(AboutActivity.this, "未安装微信");
+                        }
+                    }
+                }, new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                    }
+                });
+                loginDialog.show();
+            }
+        }, 500);
+    }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        if (loginDialog != null && loginDialog.isShowing()) {
+            loginDialog.dismiss();
+        }
         finish();
     }
 }

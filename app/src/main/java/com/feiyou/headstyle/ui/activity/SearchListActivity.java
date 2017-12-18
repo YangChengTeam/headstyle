@@ -136,7 +136,6 @@ public class SearchListActivity extends BaseActivity implements SwipeRefreshLayo
             intent.putExtra("cid", data.get(position).getCid());
             intent.putExtra("imageUrl", data.get(position).getHurl());
         }
-
         startActivity(intent);
     }
 

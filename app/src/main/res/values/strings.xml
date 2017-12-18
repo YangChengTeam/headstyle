@@ -93,6 +93,7 @@
     <string name="chat_text">闲聊灌水</string>
     <string name="qq_friend_text">Q友圈</string>
     <string name="game_friends_text">游戏圈</string>
+    <string name="city_wide_text">同城</string>
 
     <string name="show_tip_text">你就是下一个交友达人，发点照片吧!</string>
     <string name="send_text">发布</string>
@@ -117,4 +118,7 @@
 
     <string name="comment_text">评论</string>
     <string name="agree_text">点赞</string>
+
+    <string name="confirm_text">确定</string>
+    <string name="open_weixin_text">是否打开微信并关注公众号</string>
 </resources>

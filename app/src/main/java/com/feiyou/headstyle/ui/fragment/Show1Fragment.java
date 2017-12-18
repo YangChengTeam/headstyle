@@ -36,6 +36,7 @@ import com.feiyou.headstyle.service.UserService;
 import com.feiyou.headstyle.ui.activity.MainActivity;
 import com.feiyou.headstyle.ui.activity.ShowAddActivity;
 import com.feiyou.headstyle.ui.fragment.subfragment.AllArticleFragment;
+import com.feiyou.headstyle.ui.fragment.subfragment.CityFragment;
 import com.feiyou.headstyle.ui.fragment.subfragment.FriendsFragment;
 import com.feiyou.headstyle.ui.fragment.subfragment.PhotosFragment;
 import com.feiyou.headstyle.util.AppUtils;
@@ -117,7 +118,7 @@ public class Show1Fragment extends BaseFragment implements CustomWebViewDelegate
     private float maxSize = 0;
 
     //子菜单打开，关闭时的动画
-    private Animation qq_friend_in, take_photo_in, qq_friend_out, take_photo_out;
+    private Animation qq_friend_in, take_photo_in, qq_friend_out, take_photo_out,city_wide_in,city_wide_out;
 
     float lastSize = 0;
 
@@ -182,6 +183,7 @@ public class Show1Fragment extends BaseFragment implements CustomWebViewDelegate
         fragments.add(new AllArticleFragment());
         fragments.add(new FriendsFragment());
         fragments.add(new PhotosFragment());
+        fragments.add(new CityFragment());
 
         pagerAdapter = new SimpleFragmentPagerAdapter(((FragmentActivity) getActivity()).getSupportFragmentManager(), getActivity(), fragments);
         viewPager.setAdapter(pagerAdapter);
@@ -193,8 +195,10 @@ public class Show1Fragment extends BaseFragment implements CustomWebViewDelegate
 
         qq_friend_in = AnimationUtils.loadAnimation(getActivity(), R.anim.qq_friend_in);
         take_photo_in = AnimationUtils.loadAnimation(getActivity(), R.anim.take_photo_in);
+        city_wide_in = AnimationUtils.loadAnimation(getActivity(), R.anim.city_wide_in);
         qq_friend_out = AnimationUtils.loadAnimation(getActivity(), R.anim.qq_friend_out);
         take_photo_out = AnimationUtils.loadAnimation(getActivity(), R.anim.take_photo_out);
+        city_wide_out = AnimationUtils.loadAnimation(getActivity(), R.anim.city_wide_out);
 
         menuLayout.setOnClickListener(new View.OnClickListener() {
             @Override

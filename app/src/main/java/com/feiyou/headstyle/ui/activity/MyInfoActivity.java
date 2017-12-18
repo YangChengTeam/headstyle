@@ -64,6 +64,7 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import cn.finalteam.galleryfinal.GalleryFinal;
 import cn.finalteam.galleryfinal.model.PhotoInfo;
 import me.shaohui.advancedluban.Luban;
@@ -880,4 +881,8 @@ public class MyInfoActivity extends BaseActivity {
         }
     }
 
+    @OnClick(R.id.back_image)
+    public void finishActivity() {
+        finish();
+    }
 }

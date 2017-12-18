@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -28,6 +29,9 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.feiyou.headstyle.App;
 import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.adapter.HeadShowItemAdapter;
@@ -64,6 +68,15 @@ import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.umeng.socialize.media.UMImage;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.FileCallBack;
+
+import org.lasque.tusdk.TuSdkGeeV1;
+import org.lasque.tusdk.core.TuSdk;
+import org.lasque.tusdk.core.TuSdkResult;
+import org.lasque.tusdk.core.seles.tusdk.FilterManager;
+import org.lasque.tusdk.impl.activity.TuFragment;
+import org.lasque.tusdk.impl.components.TuEditMultipleComponent;
+import org.lasque.tusdk.modules.components.TuSdkComponent;
+import org.lasque.tusdk.modules.components.TuSdkHelperComponent;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -161,6 +174,11 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
 
     private boolean isLastPage;
 
+    public TuSdkHelperComponent componentHelper;
+
+    // 组件选项配置
+    TuEditMultipleComponent component = null;
+
     private Handler handler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -194,12 +212,13 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
     @Override
     protected void initVars() {
         super.initVars();
+        this.componentHelper = new TuSdkHelperComponent(this);
     }
 
     @Override
     public void initViews() {
         super.initViews();
-
+        TuSdk.checkFilterManager(mFilterManagerDelegate);
         okHttpRequest = new OKHttpRequest();
         mService = new HomeService();
         uService = new UserService();
@@ -352,7 +371,6 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
 
         Logger.e("page---" + page);
 
-
         StringBuffer homeUrl = new StringBuffer(Server.NEW_HOME_DATA);
         homeUrl.append("/").append("0").append("/").append("0");
         if (typeId > 0) {
@@ -396,8 +414,6 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
 
             }
         });
-
-
     }
 
     @Override
@@ -427,6 +443,75 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
 
     @Override
     public void onScroll(float progress, float scrollXProgress) {
+    }
+
+    @OnClick(R.id.iv_make_image)
+    public void makeImage(View view) {
+        component = TuSdkGeeV1.editMultipleCommponent(this, delegate);
+
+        // 是否保存到相册
+        component.componentOption().editMultipleOption().setSaveToAlbum(false);
+        // 是否保存到临时文件
+        component.componentOption().editMultipleOption().setSaveToTemp(true);
+
+        if (StringUtils.isEmpty(imagePath)) {
+            if (adapter.getHeads() != null && adapter.getHeads().size() > 0) {
+                imageUrl = adapter.getHeads().get(0);
+            }
+
+            fileName = String.valueOf(TimeUtils.getCurrentTimeInLong()) + ".jpg";
+            savePath = Constant.BASE_NORMAL_SAVE_IMAGE_DIR + File.separator + "DCIM" + File.separator + "camera";
+
+            OkHttpUtils.get().url(imageUrl).build().execute(new FileCallBack(savePath, fileName) {
+                @Override
+                public void onError(Call call, Exception e, int id) {
+                    Message message = new Message();
+                    message.what = 1;
+                    handler.sendMessage(message);
+                }
+
+                @Override
+                public void onResponse(File file, int id) {
+                    saveFile = file;
+                    imagePath = file.getAbsolutePath();
+
+                    Bitmap tempBitmap = BitmapFactory.decodeFile(imagePath);
+                    if (tempBitmap != null) {
+                        tempBitmap = ImageUtils.compressImage(tempBitmap, 100);
+                        image = new UMImage(HeadShow3Activity.this, tempBitmap);
+                    }
+
+                    isSetting = false;
+                    // 设置图片
+                    component.setImage(tempBitmap)
+                            // 在组件执行完成后自动关闭组件
+                            .setAutoDismissWhenCompleted(true)
+                            // 开启组件
+                            .showComponent();
+                }
+            });
+        } else {
+            if (imagePath != null && imagePath.length() > 0) {
+                isSetting = false;
+
+                Glide.with(this).load(imagePath).into(new SimpleTarget<Drawable>() {
+                    @Override
+                    public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
+                        BitmapDrawable bitmapDrawable = (BitmapDrawable) resource;
+                        // 设置图片
+                        component.setImage(bitmapDrawable.getBitmap())
+                                // 在组件执行完成后自动关闭组件
+                                .setAutoDismissWhenCompleted(true)
+                                // 开启组件
+                                .showComponent();
+                    }
+                });
+            } else {
+                ToastUtils.show(HeadShow3Activity.this, "图片地址有误，不能设置QQ头像");
+            }
+        }
+
+
     }
 
     @OnClick(R.id.iv_in_keep)
@@ -1004,6 +1089,30 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
         UMShareAPI.get(this).HandleQQError(HeadShow3Activity.this, requestCode, umAuthListener);
         mShareAPI.onActivityResult(requestCode, resultCode, data);
     }
+
+    /**
+     * 组件委托
+     */
+    TuSdkComponent.TuSdkComponentDelegate delegate = new TuSdkComponent.TuSdkComponentDelegate() {
+        @Override
+        public void onComponentFinished(TuSdkResult result1, Error error, TuFragment lastFragment) {
+
+            if (result1.imageFile.exists() && result1.imageFile.getAbsolutePath() != null) {
+
+                Intent intent = new Intent(HeadShow3Activity.this, HeadCreateShowActivity.class);
+                intent.putExtra("isCreateQQImage", true);
+                intent.putExtra("imagePath", result1.imageFile.getAbsolutePath());
+                startActivity(intent);
+            }
+        }
+    };
+
+    private FilterManager.FilterManagerDelegate mFilterManagerDelegate = new FilterManager.FilterManagerDelegate() {
+        @Override
+        public void onFilterManagerInited(FilterManager manager) {
+            //TuSdk.messageHub().showSuccess(getActivity(), R.string.lsq_inited);
+        }
+    };
 
     @OnClick(R.id.back_image)
     public void finishActivity() {

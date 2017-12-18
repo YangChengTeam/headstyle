@@ -110,7 +110,6 @@ public class App extends Application {
                 return false;
             }
         });
-
     }
 
     @Override

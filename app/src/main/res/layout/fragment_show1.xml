@@ -115,12 +115,28 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_below="@+id/qq_friend_tv"
-                    android:layout_marginTop="25dp"
+                    android:layout_marginTop="16dp"
                     android:clickable="true"
                     android:drawableLeft="@mipmap/take_photo_icon"
                     android:drawablePadding="6dp"
                     android:gravity="center"
                     android:text="@string/game_friends_text"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:id="@+id/tv_city"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@+id/game_frends_tv"
+                    android:layout_marginTop="16dp"
+                    android:clickable="true"
+                    android:drawableLeft="@mipmap/take_photo_icon"
+                    android:drawablePadding="6dp"
+                    android:gravity="center"
+                    android:text="@string/city_wide_text"
+                    android:visibility="gone"
                     android:textColor="@color/black"
                     android:textSize="16sp"/>
             </RelativeLayout>

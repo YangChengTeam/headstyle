@@ -331,7 +331,7 @@ public class ArticleDetailActivity extends BaseActivity implements CommentAdapte
                 }
             }
         });
-
+        
     }
 
     /**

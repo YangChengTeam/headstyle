@@ -684,12 +684,12 @@
         "source": "E:\\zdh\\as_workspace\\HeadStyle\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\u1f649.png"
     },
     {
-        "merged": "E:\\zdh\\as_workspace\\HeadStyle\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\rc_send_voice_two.png",
-        "source": "E:\\zdh\\as_workspace\\HeadStyle\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\rc_send_voice_two.png"
-    },
-    {
         "merged": "E:\\zdh\\as_workspace\\HeadStyle\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\rc_ed_pub_service_search_normal.9.png",
         "source": "E:\\zdh\\as_workspace\\HeadStyle\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\rc_ed_pub_service_search_normal.9.png"
+    },
+    {
+        "merged": "E:\\zdh\\as_workspace\\HeadStyle\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\rc_send_voice_two.png",
+        "source": "E:\\zdh\\as_workspace\\HeadStyle\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\rc_send_voice_two.png"
     },
     {
         "merged": "E:\\zdh\\as_workspace\\HeadStyle\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\rc_audio_toggle_hover.png",
@@ -700,12 +700,12 @@
         "source": "E:\\zdh\\as_workspace\\HeadStyle\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\rc_menu_trangle.png"
     },
     {
-        "merged": "E:\\zdh\\as_workspace\\HeadStyle\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\rc_ext_location_marker.png",
-        "source": "E:\\zdh\\as_workspace\\HeadStyle\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\rc_ext_location_marker.png"
-    },
-    {
         "merged": "E:\\zdh\\as_workspace\\HeadStyle\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\rc_ic_yes_hover.png",
         "source": "E:\\zdh\\as_workspace\\HeadStyle\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\rc_ic_yes_hover.png"
+    },
+    {
+        "merged": "E:\\zdh\\as_workspace\\HeadStyle\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\rc_ext_location_marker.png",
+        "source": "E:\\zdh\\as_workspace\\HeadStyle\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\rc_ext_location_marker.png"
     },
     {
         "merged": "E:\\zdh\\as_workspace\\HeadStyle\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\rc_ad_list_file_icon.png",
@@ -908,12 +908,12 @@
         "source": "E:\\zdh\\as_workspace\\HeadStyle\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\u1f004.png"
     },
     {
-        "merged": "E:\\zdh\\as_workspace\\HeadStyle\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\rc_cs_follow_hover.png",
-        "source": "E:\\zdh\\as_workspace\\HeadStyle\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\rc_cs_follow_hover.png"
-    },
-    {
         "merged": "E:\\zdh\\as_workspace\\HeadStyle\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\u261d.png",
         "source": "E:\\zdh\\as_workspace\\HeadStyle\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\u261d.png"
+    },
+    {
+        "merged": "E:\\zdh\\as_workspace\\HeadStyle\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\rc_cs_follow_hover.png",
+        "source": "E:\\zdh\\as_workspace\\HeadStyle\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\rc_cs_follow_hover.png"
     },
     {
         "merged": "E:\\zdh\\as_workspace\\HeadStyle\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\rc_ad_list_file_unchecked.png",
@@ -1384,12 +1384,12 @@
         "source": "E:\\zdh\\as_workspace\\HeadStyle\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\u1f4a2.png"
     },
     {
-        "merged": "E:\\zdh\\as_workspace\\HeadStyle\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\u1f62b.png",
-        "source": "E:\\zdh\\as_workspace\\HeadStyle\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\u1f62b.png"
-    },
-    {
         "merged": "E:\\zdh\\as_workspace\\HeadStyle\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\u2614.png",
         "source": "E:\\zdh\\as_workspace\\HeadStyle\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\u2614.png"
+    },
+    {
+        "merged": "E:\\zdh\\as_workspace\\HeadStyle\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\u1f62b.png",
+        "source": "E:\\zdh\\as_workspace\\HeadStyle\\IMKit\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\u1f62b.png"
     },
     {
         "merged": "E:\\zdh\\as_workspace\\HeadStyle\\IMKit\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\rc_ic_voice_sent_play2.png",

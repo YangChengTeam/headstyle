@@ -40,6 +40,13 @@
             android:src="@mipmap/set_qq_head_icon"/>
 
         <ImageView
+            android:id="@+id/iv_make_image"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="16dp"
+            android:src="@mipmap/iv_create_icon"/>
+
+        <ImageView
             android:id="@+id/iv_in_keep"
             android:layout_width="60dp"
             android:layout_height="60dp"

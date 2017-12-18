@@ -250,4 +250,36 @@ public class AppUtils {
     public static String getAndroidID(Context context) {
         return Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
+
+    private static boolean isSpace(final String s) {
+        if (s == null) return true;
+        for (int i = 0, len = s.length(); i < len; ++i) {
+            if (!Character.isWhitespace(s.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 打开 App
+     *
+     * @param activity    activity
+     * @param packageName 包名
+     * @param requestCode 请求值
+     */
+    public static void launchApp(Activity activity, String packageName, int requestCode) {
+        if (isSpace(packageName)) return;
+        activity.startActivityForResult(getLaunchAppIntent(activity, packageName), requestCode);
+    }
+
+    /**
+     * 获取打开 App 的意图
+     *
+     * @param packageName 包名
+     * @return intent
+     */
+    public static Intent getLaunchAppIntent(Context context, String packageName) {
+        return context.getPackageManager().getLaunchIntentForPackage(packageName);
+    }
 }
