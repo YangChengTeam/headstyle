@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -102,7 +103,7 @@ public class ArticleDetailActivity extends BaseActivity implements CommentAdapte
     TextView articleSendTimeTv;
 
     @BindView(R.id.article_title)
-    TextView articleTitleTv;
+    EditText articleTitleTv;
 
     @BindView(R.id.article_photo_list)
     GridView articlePhotoGridView;

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="266dp"
+             android:layout_margin="2dp">
+
+    <com.xinqu.videoplayer.XinQuVideoPlayerStandard
+        android:id="@+id/video_player"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </com.xinqu.videoplayer.XinQuVideoPlayerStandard>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="10dp"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/tv_video_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:ellipsize="end"
+            android:lines="2"
+            android:maxEms="20"
+            android:text="搞笑视频"
+            android:textColor="@color/white"
+            android:textSize="16sp"/>
+    </LinearLayout>
+</FrameLayout>

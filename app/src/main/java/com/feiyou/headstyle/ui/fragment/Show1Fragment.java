@@ -36,7 +36,6 @@ import com.feiyou.headstyle.service.UserService;
 import com.feiyou.headstyle.ui.activity.MainActivity;
 import com.feiyou.headstyle.ui.activity.ShowAddActivity;
 import com.feiyou.headstyle.ui.fragment.subfragment.AllArticleFragment;
-import com.feiyou.headstyle.ui.fragment.subfragment.CityFragment;
 import com.feiyou.headstyle.ui.fragment.subfragment.FriendsFragment;
 import com.feiyou.headstyle.ui.fragment.subfragment.PhotosFragment;
 import com.feiyou.headstyle.util.AppUtils;
@@ -183,7 +182,7 @@ public class Show1Fragment extends BaseFragment implements CustomWebViewDelegate
         fragments.add(new AllArticleFragment());
         fragments.add(new FriendsFragment());
         fragments.add(new PhotosFragment());
-        fragments.add(new CityFragment());
+        fragments.add(new VideoFragment());
 
         pagerAdapter = new SimpleFragmentPagerAdapter(((FragmentActivity) getActivity()).getSupportFragmentManager(), getActivity(), fragments);
         viewPager.setAdapter(pagerAdapter);

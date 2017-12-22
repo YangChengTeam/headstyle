@@ -18,31 +18,22 @@
 package com.feiyou.headstyle.view.TouchView;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.MediaScannerConnection;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.MediaStore;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView.ScaleType;
 import android.widget.RelativeLayout;
 
 import com.feiyou.headstyle.R;
-import com.feiyou.headstyle.common.Constant;
 import com.feiyou.headstyle.ui.activity.ShowImageListActivity;
-import com.feiyou.headstyle.util.ImageUtils;
-import com.feiyou.headstyle.util.TimeUtils;
 import com.feiyou.headstyle.util.ToastUtils;
 
-import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
@@ -60,7 +51,7 @@ public class UrlTouchImageView extends RelativeLayout {
 
     private boolean isLongClick = false;
 
-    private Button saveImageBtn;
+    //private Button saveImageBtn;
 
     private Handler handler = new Handler(){
         @Override
@@ -99,7 +90,7 @@ public class UrlTouchImageView extends RelativeLayout {
     protected void init() {
         View view = LayoutInflater.from(mContext).inflate(R.layout.touch_image_view, null);
         mImageView= (TouchImageView)view.findViewById(R.id.touch_image_view);
-        saveImageBtn = (Button) view.findViewById(R.id.save_image_btn);
+        //saveImageBtn = (Button) view.findViewById(R.id.save_image_btn);
         /*mImageView = new TouchImageView(mContext);
         LayoutParams params = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
         mImageView.setLayoutParams(params);
@@ -138,7 +129,7 @@ public class UrlTouchImageView extends RelativeLayout {
             }
         });
 
-        saveImageBtn.setOnClickListener(new OnClickListener() {
+       /*saveImageBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (downBitmap != null) {
@@ -178,7 +169,7 @@ public class UrlTouchImageView extends RelativeLayout {
                     handler.sendMessage(mes);
                 }
             }
-        });
+        });*/
 
     }
 

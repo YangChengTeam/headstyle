@@ -1,29 +1,38 @@
 package com.feiyou.headstyle.ui.activity;
 
 import android.os.Bundle;
-import android.view.View;
+import android.widget.ImageView;
 
 import com.feiyou.headstyle.R;
+import com.feiyou.headstyle.util.GlideHelper;
 import com.feiyou.headstyle.util.ToastUtils;
 import com.feiyou.headstyle.view.GalleryWidget.BasePagerAdapter;
 import com.feiyou.headstyle.view.GalleryWidget.GalleryViewPager;
 import com.feiyou.headstyle.view.GalleryWidget.UrlPagerAdapter;
+import com.jakewharton.rxbinding.view.RxView;
 import com.orhanobut.logger.Logger;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import rx.functions.Action1;
 
 public class ShowImageListActivity extends BaseActivity {
 
     @BindView(R.id.view_pager)
     GalleryViewPager viewPager;
 
+    @BindView(R.id.iv_down)
+    ImageView mDownImageView;
+
     private int currentPosition;
 
     private String currentImgUrl;
 
     private List<String> imgUrlList;
+
+    UrlPagerAdapter pagerAdapter;
 
     @Override
     public int getLayoutId() {
@@ -32,48 +41,36 @@ public class ShowImageListActivity extends BaseActivity {
 
     public void initViews() {
         super.initViews();
-    }
 
+        RxView.clicks(mDownImageView).throttleFirst(200, TimeUnit.MILLISECONDS).subscribe(new Action1<Void>() {
+            @Override
+            public void call(Void aVoid) {
+                if (imgUrlList != null && imgUrlList.size() > 0) {
+                    GlideHelper.downLoadImage(ShowImageListActivity.this, imgUrlList.get(currentPosition));
+                }
+            }
+        });
+    }
 
     @Override
     public void loadData() {
-
         Bundle bundle = this.getIntent().getExtras();
-
         if (bundle != null) {
             currentPosition = bundle.getInt("position");
             currentImgUrl = bundle.getString("current_img_url");
         }
-
         if (bundle != null && bundle.getStringArrayList("imageList") != null) {
 
             imgUrlList = bundle.getStringArrayList("imageList");
+
             if (imgUrlList != null) {
-                /*String[] urls = {
-                        "http://img3.imgtn.bdimg.com/it/u=4201345522,2791155945&fm=11&gp=0.jpg",
-                        "http://uploads.xuexila.com/allimg/1608/704-160Q5103023.jpg",
-                        "http://img2.imgtn.bdimg.com/it/u=1719883226,3198015880&fm=11&gp=0.jpg",
-                        "http://img1.imgtn.bdimg.com/it/u=2857028710,1354526997&fm=11&gp=0.jpg",
-                        "http://imgsrc.baidu.com/forum/pic/item/622762d0f703918fbd53195e513d269758eec4a7.jpg",
-                        "http://img0.imgtn.bdimg.com/it/u=1012743149,55982983&fm=11&gp=0.jpg"
-                };*/
-
-               /* String[] urls = imageList.split("\\|");
-
-                List<String> items = new ArrayList<String>();
-                //Collections.addAll(items, urls);
-                for (int i = urls.length -1; i >=0; i--) {
-                    items.add(urls[i]);
-                }*/
-
-                UrlPagerAdapter pagerAdapter = new UrlPagerAdapter(this, imgUrlList);
+                pagerAdapter = new UrlPagerAdapter(this, imgUrlList);
                 pagerAdapter.setOnItemChangeListener(new BasePagerAdapter.OnItemChangeListener() {
                     @Override
-                    public void onItemChange(int currentPosition) {
-                        //ToastUtils.show(ShowImageListActivity.this, "Current item is " + currentPosition);
+                    public void onItemChange(int position) {
+                        currentPosition = position;
                     }
                 });
-
                 int index = imgUrlList.lastIndexOf(currentImgUrl);
                 Logger.e("current index ---> " + index);
                 viewPager.setOffscreenPageLimit(3);
@@ -86,17 +83,11 @@ public class ShowImageListActivity extends BaseActivity {
         }
     }
 
-    public void cropSelect(View view) {
-
-    }
-
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         finish();
-        overridePendingTransition(R.anim.zoomin,
-                R.anim.zoomout);
+        overridePendingTransition(R.anim.zoomin, R.anim.zoomout);
     }
 
 }

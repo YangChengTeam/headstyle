@@ -8,6 +8,7 @@ import android.support.multidex.MultiDex;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.feiyou.headstyle.common.Constant;
 import com.feiyou.headstyle.common.DbHelper;
+import com.feiyou.headstyle.common.LocationService;
 import com.feiyou.headstyle.listener.FrescoPauseOnScrollListener;
 import com.feiyou.headstyle.util.AppUtils;
 import com.feiyou.headstyle.util.FileUtils;
@@ -58,6 +59,8 @@ public class App extends Application {
     public static String AID = "";
 
     public static boolean isConnect = false;
+
+    public LocationService locationService;
 
     @Override
     public void onCreate() {
@@ -110,6 +113,7 @@ public class App extends Application {
                 return false;
             }
         });
+        locationService = new LocationService(getApplicationContext());
     }
 
     @Override

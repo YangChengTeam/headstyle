@@ -85,30 +85,27 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_margin="12sp"
+            android:layout_marginBottom="6dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="6dp"
             android:background="@null"
             android:editable="false"
-            android:textIsSelectable="true"
-            android:textCursorDrawable="@null"
             android:text="发帖的标题，测试发帖的标题"
             android:textColor="@color/dialog_title_color"
+            android:textCursorDrawable="@null"
+            android:textIsSelectable="true"
             android:textSize="14sp"/>
 
-        <GridView
-            android:id="@+id/article_photo_list"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/imgs_list"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
             android:background="@color/white"
-            android:columnWidth="@dimen/image_thumbnail_size"
-            android:gravity="center"
-            android:horizontalSpacing="@dimen/image_thumbnail_spacing"
-            android:numColumns="3"
-            android:scrollbars="none"
-            android:stretchMode="columnWidth"
-            android:verticalSpacing="@dimen/image_thumbnail_spacing">
-        </GridView>
+            android:divider="#f1f1f1"
+            android:dividerHeight="2dp"/>
 
         <View
             android:layout_width="match_parent"

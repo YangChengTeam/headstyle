@@ -1,20 +1,23 @@
 package com.feiyou.headstyle.adapter;
 
+import android.app.Activity;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.GridView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.bean.ArticleInfo;
@@ -27,7 +30,6 @@ import com.feiyou.headstyle.net.listener.OnResponseListener;
 import com.feiyou.headstyle.service.ArticleService;
 import com.feiyou.headstyle.ui.activity.ArticleDetailActivity;
 import com.feiyou.headstyle.ui.activity.FriendInfoActivity;
-import com.feiyou.headstyle.ui.activity.MainActivity;
 import com.feiyou.headstyle.ui.activity.ShowImageListActivity;
 import com.feiyou.headstyle.util.AppUtils;
 import com.feiyou.headstyle.util.PreferencesUtils;
@@ -39,7 +41,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.feiyou.headstyle.ui.fragment.Show1Fragment.showgGameImageUrlList;
+import static com.feiyou.headstyle.ui.fragment.Show1Fragment.showImageUrlList;
 
 public class PhotosListAdapter extends RecyclerView.Adapter<PhotosListAdapter.MyViewHolder> implements View.OnClickListener {
 
@@ -71,6 +73,7 @@ public class PhotosListAdapter extends RecyclerView.Adapter<PhotosListAdapter.My
     }
 
     public PhotosListAdapter(Context context, List<ArticleInfo> adata) {
+
         this.mContext = context;
         this.articleData = adata;
         okHttpRequest = new OKHttpRequest();
@@ -98,28 +101,28 @@ public class PhotosListAdapter extends RecyclerView.Adapter<PhotosListAdapter.My
         this.articleData = articleData;
     }
 
-    public void createImageUrlList() {
-        if(articleData != null){
-            for (int i = 0; i < articleData.size(); i++) {
-                final String cimgs = articleData.get(i).cimg;
-                if (cimgs != null) {
-                    String[] imgs = cimgs.split("\\|");
-                    for (int m = imgs.length - 1; m >= 0; m--) {
-                        if(!showgGameImageUrlList.contains(imgs[m])){
-                            showgGameImageUrlList.add(imgs[m]);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.article_list_item, parent, false);
         MyViewHolder holder = new MyViewHolder(view);
         view.setOnClickListener(this);
         return holder;
+    }
+
+    public void createImageUrlList() {
+        if (articleData != null) {
+            for (int i = 0; i < articleData.size(); i++) {
+                final String cimgs = articleData.get(i).cimg;
+                if (cimgs != null) {
+                    String[] imgs = cimgs.split("\\|");
+                    for (int m = imgs.length - 1; m >= 0; m--) {
+                        if (!showImageUrlList.contains(imgs[m])) {
+                            showImageUrlList.add(imgs[m]);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -133,8 +136,8 @@ public class PhotosListAdapter extends RecyclerView.Adapter<PhotosListAdapter.My
         holder.itemView.setTag(position);
         holder.articleSendTimeTv.setText(articleData.get(position).addtime);
         holder.articleTitleTv.setText(articleData.get(position).scontent);
-        holder.commentCountTv.setText(articleData.get(position).comment+"");
-        holder.praiseCountTv.setText(articleData.get(position).zan+"");
+        holder.commentCountTv.setText(articleData.get(position).comment + "");
+        holder.praiseCountTv.setText(articleData.get(position).zan + "");
 
         if (articleData.get(position).sex.equals("1")) {
             holder.userGender.setImageResource(R.mipmap.boy_icon);
@@ -154,6 +157,14 @@ public class PhotosListAdapter extends RecyclerView.Adapter<PhotosListAdapter.My
 
         holder.praiseCountTv.setTag(position);
 
+        if (!articleData.get(position).ding.equals("1")) {
+            holder.topTv.setVisibility(View.GONE);
+        } else {
+            holder.topTv.setVisibility(View.VISIBLE);
+        }
+
+        holder.topTv.setTag(position);
+
         holder.userImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -164,45 +175,56 @@ public class PhotosListAdapter extends RecyclerView.Adapter<PhotosListAdapter.My
                 }
             }
         });
-        if (!articleData.get(position).ding.equals("1")) {
-            holder.topTv.setVisibility(View.GONE);
-        } else {
-            holder.topTv.setVisibility(View.VISIBLE);
-        }
-        
-        holder.topTv.setTag(position);
 
         final String cimgs = articleData.get(position).cimg;
-        HeadWallAdapter gridViewAdapter = new HeadWallAdapter(mContext);
+        //HeadWallAdapter gridViewAdapter = new HeadWallAdapter(mContext);
 
-        final List<HeadInfo> data = new ArrayList<HeadInfo>();
+        CommunityImageAdapter communityImageAdapter = new CommunityImageAdapter(mContext, null);
+        holder.imagesRecyclerView.setLayoutManager(new GridLayoutManager(mContext, 3));
+        holder.imagesRecyclerView.setAdapter(communityImageAdapter);
+
+        final List<HeadInfo> imageDatas = new ArrayList<HeadInfo>();
         if (cimgs != null) {
             String[] imgs = cimgs.split("\\|");
-            if(imgs != null){
-                for (int i = imgs.length -1; i >=0; i--) {
-                    HeadInfo tempHeadInfo = new HeadInfo();
-                    tempHeadInfo.setHurl(imgs[i]);
-                    data.add(tempHeadInfo);
-                }
+            for (int i = imgs.length - 1; i >= 0; i--) {
+                HeadInfo tempHeadInfo = new HeadInfo();
+                tempHeadInfo.setHurl(imgs[i]);
+                imageDatas.add(tempHeadInfo);
             }
-            gridViewAdapter.addItemDatas(data);
+            //gridViewAdapter.addItemDatas(data);
+            communityImageAdapter.setNewData(imageDatas);
         }
 
-        holder.articlePhotoGridView.setAdapter(gridViewAdapter);
-        holder.articlePhotoGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        communityImageAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                Intent intent = new Intent(mContext, ShowImageListActivity.class);
+
+                intent.putStringArrayListExtra("imageList", (ArrayList<String>) showImageUrlList);
+                intent.putExtra("position", position);
+                intent.putExtra("current_img_url", imageDatas.get(position).getHurl());
+                mContext.startActivity(intent);
+                //进入图片浏览时的动画
+                ((Activity) mContext).overridePendingTransition(R.anim.image_show_in, R.anim.image_show_out);
+            }
+        });
+
+        //holder.articlePhotoGridView.setAdapter(gridViewAdapter);
+        /*holder.articlePhotoGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+                // ToastUtils.show(mContext, "点击了图--->" + position);
                 Intent intent = new Intent(mContext, ShowImageListActivity.class);
-                intent.putStringArrayListExtra("imageList", (ArrayList<String>) showgGameImageUrlList);
+
+                intent.putStringArrayListExtra("imageList", (ArrayList<String>) showImageUrlList);
                 intent.putExtra("position", position);
                 intent.putExtra("current_img_url", data.get(position).getHurl());
-
                 mContext.startActivity(intent);
                 //进入图片浏览时的动画
-                ((MainActivity) mContext).overridePendingTransition(R.anim.image_show_in, R.anim.image_show_out);
+                ((Activity) mContext).overridePendingTransition(R.anim.image_show_in, R.anim.image_show_out);
             }
-        });
+        });*/
 
         final String sid = articleData.get(position).sid;
         holder.commentLayout.setOnClickListener(new View.OnClickListener() {
@@ -212,6 +234,16 @@ public class PhotosListAdapter extends RecyclerView.Adapter<PhotosListAdapter.My
                 Intent intent = new Intent(mContext, ArticleDetailActivity.class);
                 intent.putExtra("sid", sid);
                 mContext.startActivity(intent);
+            }
+        });
+
+        holder.articleTitleTv.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                ClipboardManager cm = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+                cm.setText(articleData.get(position).scontent);
+                ToastUtils.show(mContext, "已复制到粘贴板");
+                return false;
             }
         });
 
@@ -228,8 +260,8 @@ public class PhotosListAdapter extends RecyclerView.Adapter<PhotosListAdapter.My
                         UserInfo userInfo = (UserInfo) PreferencesUtils.getObject(mContext, Constant.USER_INFO, UserInfo.class);
                         params.put("sid", sid);
                         if (userInfo != null) {
-                            params.put("uid", userInfo != null ? userInfo.uid :"");
-                            params.put("oid", userInfo != null ? userInfo.openid:"");
+                            params.put("uid", userInfo != null ? userInfo.uid : "");
+                            params.put("oid", userInfo != null ? userInfo.openid : "");
                         }
 
                         okHttpRequest.aget(Server.UP_ZAN_DATA, params, new OnResponseListener() {
@@ -291,8 +323,9 @@ public class PhotosListAdapter extends RecyclerView.Adapter<PhotosListAdapter.My
         TextView topTv;//置顶
         ImageView userGender;
         TextView articleSendTimeTv;
-        TextView articleTitleTv;
-        GridView articlePhotoGridView;
+        EditText articleTitleTv;
+        //GridView articlePhotoGridView;
+        RecyclerView imagesRecyclerView;
         TextView commentCountTv;
         TextView praiseCountTv;
         LinearLayout commentLayout;
@@ -306,8 +339,9 @@ public class PhotosListAdapter extends RecyclerView.Adapter<PhotosListAdapter.My
             topTv = (TextView) view.findViewById(R.id.top_tv);
             userGender = (ImageView) view.findViewById(R.id.user_gender_icon);
             articleSendTimeTv = (TextView) view.findViewById(R.id.article_send_time);
-            articleTitleTv = (TextView) view.findViewById(R.id.article_title);
-            articlePhotoGridView = (GridView) view.findViewById(R.id.article_photo_list);
+            articleTitleTv = (EditText) view.findViewById(R.id.article_title);
+            //articlePhotoGridView = (GridView) view.findViewById(R.id.article_photo_list);
+            imagesRecyclerView = (RecyclerView) view.findViewById(R.id.imgs_list);
             commentCountTv = (TextView) view.findViewById(R.id.comment_count_tv);
             praiseCountTv = (TextView) view.findViewById(R.id.praise_count_tv);
             commentLayout = (LinearLayout) view.findViewById(R.id.comment_layout);

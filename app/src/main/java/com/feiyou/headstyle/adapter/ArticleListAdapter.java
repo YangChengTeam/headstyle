@@ -1,23 +1,22 @@
 package com.feiyou.headstyle.adapter;
 
 import android.app.Activity;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.bean.ArticleInfo;
@@ -177,21 +176,40 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
         });
 
         final String cimgs = articleData.get(position).cimg;
-        HeadWallAdapter gridViewAdapter = new HeadWallAdapter(mContext);
+        //HeadWallAdapter gridViewAdapter = new HeadWallAdapter(mContext);
 
-        final List<HeadInfo> data = new ArrayList<HeadInfo>();
+        CommunityImageAdapter communityImageAdapter = new CommunityImageAdapter(mContext, null);
+        holder.imagesRecyclerView.setLayoutManager(new GridLayoutManager(mContext, 3));
+        holder.imagesRecyclerView.setAdapter(communityImageAdapter);
+
+        final List<HeadInfo> imageDatas = new ArrayList<HeadInfo>();
         if (cimgs != null) {
             String[] imgs = cimgs.split("\\|");
             for (int i = imgs.length - 1; i >= 0; i--) {
                 HeadInfo tempHeadInfo = new HeadInfo();
                 tempHeadInfo.setHurl(imgs[i]);
-                data.add(tempHeadInfo);
+                imageDatas.add(tempHeadInfo);
             }
-            gridViewAdapter.addItemDatas(data);
+            //gridViewAdapter.addItemDatas(data);
+            communityImageAdapter.setNewData(imageDatas);
         }
 
-        holder.articlePhotoGridView.setAdapter(gridViewAdapter);
-        holder.articlePhotoGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        communityImageAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                Intent intent = new Intent(mContext, ShowImageListActivity.class);
+
+                intent.putStringArrayListExtra("imageList", (ArrayList<String>) showImageUrlList);
+                intent.putExtra("position", position);
+                intent.putExtra("current_img_url", imageDatas.get(position).getHurl());
+                mContext.startActivity(intent);
+                //进入图片浏览时的动画
+                ((Activity) mContext).overridePendingTransition(R.anim.image_show_in, R.anim.image_show_out);
+            }
+        });
+
+        //holder.articlePhotoGridView.setAdapter(gridViewAdapter);
+        /*holder.articlePhotoGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
@@ -205,10 +223,9 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
                 //进入图片浏览时的动画
                 ((Activity) mContext).overridePendingTransition(R.anim.image_show_in, R.anim.image_show_out);
             }
-        });
+        });*/
 
         final String sid = articleData.get(position).sid;
-
         holder.commentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -219,7 +236,7 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
             }
         });
 
-        holder.articleTitleTv.setOnLongClickListener(new View.OnLongClickListener() {
+        /*holder.articleTitleTv.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 ClipboardManager cm = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
@@ -227,7 +244,7 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
                 ToastUtils.show(mContext, "已复制到粘贴板");
                 return false;
             }
-        });
+        });*/
 
         final int iszan = articleData.get(position).iszan;
         final int zan = articleData.get(position).zan;
@@ -306,7 +323,8 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
         ImageView userGender;
         TextView articleSendTimeTv;
         EditText articleTitleTv;
-        GridView articlePhotoGridView;
+        //GridView articlePhotoGridView;
+        RecyclerView imagesRecyclerView;
         TextView commentCountTv;
         TextView praiseCountTv;
         LinearLayout commentLayout;
@@ -321,7 +339,8 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
             userGender = (ImageView) view.findViewById(R.id.user_gender_icon);
             articleSendTimeTv = (TextView) view.findViewById(R.id.article_send_time);
             articleTitleTv = (EditText) view.findViewById(R.id.article_title);
-            articlePhotoGridView = (GridView) view.findViewById(R.id.article_photo_list);
+            //articlePhotoGridView = (GridView) view.findViewById(R.id.article_photo_list);
+            imagesRecyclerView = (RecyclerView) view.findViewById(R.id.imgs_list);
             commentCountTv = (TextView) view.findViewById(R.id.comment_count_tv);
             praiseCountTv = (TextView) view.findViewById(R.id.praise_count_tv);
             commentLayout = (LinearLayout) view.findViewById(R.id.comment_layout);

@@ -7,6 +7,7 @@
     <string name="tab_fun_test_text">测试</string>
     <string name="tab_my_text">我的</string>
     <string name="tab_test_text">趣味测试</string>
+    <string name="fun_video_text">搞笑视频</string>
 
     <string name="type_lovers_text">情侣头像</string>
     <string name="type_boy_text">男生头像</string>
@@ -94,6 +95,7 @@
     <string name="qq_friend_text">Q友圈</string>
     <string name="game_friends_text">游戏圈</string>
     <string name="city_wide_text">同城</string>
+    <string name="video_text">趣视频</string>
 
     <string name="show_tip_text">你就是下一个交友达人，发点照片吧!</string>
     <string name="send_text">发布</string>

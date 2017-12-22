@@ -17,13 +17,12 @@
  */
 package com.feiyou.headstyle.view.GalleryWidget;
 
-import java.util.List;
-
 import android.content.Context;
-import android.view.View;
 import android.view.ViewGroup;
 
 import com.feiyou.headstyle.view.TouchView.UrlTouchImageView;
+
+import java.util.List;
 
 
 /**
@@ -31,7 +30,13 @@ import com.feiyou.headstyle.view.TouchView.UrlTouchImageView;
  */
 public class UrlPagerAdapter extends BasePagerAdapter {
 
-	public UrlPagerAdapter(Context context, List<String> resources)
+    public List<String> lists;
+
+    public void setLists(List<String> lists) {
+        this.lists = lists;
+    }
+
+    public UrlPagerAdapter(Context context, List<String> resources)
 	{
 		super(context, resources);
 	}

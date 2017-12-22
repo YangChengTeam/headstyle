@@ -89,4 +89,8 @@ public class Server {
 
     //获取用户token
     public final static String GET_TOKEN = BASE_SERVER_IP + "";
+
+    //视频地址
+    public final static String VIDEO_LIST_DATA = "http://app.nq6.com/api/video/hot_lists_zbsq";
+
 }
