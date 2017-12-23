@@ -12,8 +12,8 @@ import java.util.List;
 
 public class SimpleFragmentPagerAdapter extends FragmentPagerAdapter {
 
-    final int PAGE_COUNT = 4;
-    private int tabTitles[] = new int[]{R.string.hot_text, R.string.qq_friend_text, R.string.game_friends_text, R.string.video_text};
+    final int PAGE_COUNT = 3;
+    private int tabTitles[] = new int[]{R.string.hot_text, R.string.qq_friend_text, R.string.game_friends_text};
     private Context context;
 
     List<BaseFragment> fragments;

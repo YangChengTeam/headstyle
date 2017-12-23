@@ -30,13 +30,14 @@ import com.feiyou.headstyle.ui.fragment.HomeFragment;
 import com.feiyou.headstyle.ui.fragment.MyFragment1;
 import com.feiyou.headstyle.ui.fragment.Show1Fragment;
 import com.feiyou.headstyle.util.PreferencesUtils;
+import com.feiyou.headstyle.util.SPUtils;
 import com.feiyou.headstyle.util.StringUtils;
 import com.hwangjr.rxbus.annotation.Subscribe;
 import com.hwangjr.rxbus.annotation.Tag;
 import com.hwangjr.rxbus.thread.EventThread;
 import com.orhanobut.logger.Logger;
 import com.umeng.socialize.UMShareAPI;
-import com.xinqu.videoplayer.XinQuVideoPlayer;
+
 
 import java.util.HashMap;
 import java.util.Map;
@@ -61,6 +62,9 @@ public class MainActivity extends BaseActivity {
     //定义FragmentTabHost对象
     @BindView(R.id.tabhost)
     public FragmentTabHost mTabHost;
+
+    @BindView(R.id.tv_create_tips)
+    public TextView tipsTextView;
 
     //定义一个布局
     private LayoutInflater layoutInflater;
@@ -153,6 +157,11 @@ public class MainActivity extends BaseActivity {
             public void onTabChanged(String tabId) {
                 Logger.e("tabId---" + tabId);
 
+                if(tabId.equals(getResources().getString(mTextviewArray[2]))){
+                    SPUtils.getInstance(MainActivity.this, "TIPS_SHOW").put("tips", false);
+                    tipsTextView.setVisibility(View.GONE);
+                }
+
                 //有消息提示时，当选择了该界面，让提示红点消失
                 if (tabId.equals(getResources().getString(mTextviewArray[4]))) {
                     View currentView = mTabHost.getTabWidget().getChildTabViewAt(4);
@@ -161,6 +170,21 @@ public class MainActivity extends BaseActivity {
                 }
             }
         });
+
+        tipsTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SPUtils.getInstance(MainActivity.this, "TIPS_SHOW").put("tips", false);
+                tipsTextView.setVisibility(View.GONE);
+            }
+        });
+
+        boolean isShow = SPUtils.getInstance(MainActivity.this,"TIPS_SHOW").getBoolean("tips",true);
+        if(!isShow){
+            tipsTextView.setVisibility(View.GONE);
+        }else{
+            tipsTextView.setVisibility(View.VISIBLE);
+        }
     }
 
     /**
@@ -190,9 +214,6 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (XinQuVideoPlayer.backPress()) {
-            return;
-        }
         exit();
     }
 

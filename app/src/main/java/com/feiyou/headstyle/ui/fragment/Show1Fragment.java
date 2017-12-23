@@ -182,7 +182,7 @@ public class Show1Fragment extends BaseFragment implements CustomWebViewDelegate
         fragments.add(new AllArticleFragment());
         fragments.add(new FriendsFragment());
         fragments.add(new PhotosFragment());
-        fragments.add(new VideoFragment());
+        //fragments.add(new VideoFragment());
 
         pagerAdapter = new SimpleFragmentPagerAdapter(((FragmentActivity) getActivity()).getSupportFragmentManager(), getActivity(), fragments);
         viewPager.setAdapter(pagerAdapter);

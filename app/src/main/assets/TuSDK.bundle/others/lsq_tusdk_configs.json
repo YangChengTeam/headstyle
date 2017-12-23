@@ -4,13 +4,15 @@
             "file":"lsq_filter_Beauty_6.gfilter",
             "name":"lsq_filter_group_Beauty",
             "default_filter_id":65,
+            "type":0,
             "filters":[
                 {
                     "id":61,
                     "name":"lsq_filter_SkinNature",
                     "color":"#E9807E",
                     "args":{
-                        "smoothing":0.3
+                        "smoothing":0.7,
+                        "mixied":1
                     }
                 },
                 {
@@ -18,8 +20,8 @@
                     "name":"lsq_filter_SkinPink",
                     "color":"#E9807E",
                     "args":{
-                        "smoothing":0.5,
-                        "mixied":0.3
+                        "smoothing":0.7,
+                        "mixied":0.75
                     }
                 },
                 {
@@ -27,8 +29,8 @@
                     "name":"lsq_filter_SkinJelly",
                     "color":"#E9807E",
                     "args":{
-                        "smoothing":0.6,
-                        "mixied":0.4
+                        "smoothing":0.7,
+                        "mixied":0.75
                     }
                 },
                 {
@@ -36,7 +38,7 @@
                     "name":"lsq_filter_SkinNoir",
                     "color":"#E9807E",
                     "args":{
-                        "smoothing":0.5,
+                        "smoothing":0.7,
                         "mixied":1
                     }
                 },
@@ -45,8 +47,8 @@
                     "name":"lsq_filter_SkinRuddy",
                     "color":"#E9807E",
                     "args":{
-                        "smoothing":0.45,
-                        "mixied":0.25
+                        "smoothing":0.7,
+                        "mixied":0.75
                     }
                 },
                 {
@@ -54,8 +56,8 @@
                     "name":"lsq_filter_SkinSugar",
                     "color":"#E9807E",
                     "args":{
-                        "smoothing":0.6,
-                        "mixied":0.3
+                        "smoothing":0.7,
+                        "mixied":0.75
                     }
                 },
                 {
@@ -63,8 +65,8 @@
                     "name":"lsq_filter_SkinPowder",
                     "color":"#E9807E",
                     "args":{
-                        "smoothing":0.45,
-                        "mixied":0.4
+                        "smoothing":0.7,
+                        "mixied":0.75
                     }
                 }
             ]
@@ -86,65 +88,35 @@
     ],
     "stickerGroups":[
         {
-            "file":"lsq_sticker_1_931.gsce",
-            "name":"So Sweet",
+            "file":"lsq_sticker_1_714.gsce",
+            "name":"\u5723\u8bde\u5934\u9970",
             "stickers":[
                 {
-                    "id":6812
+                    "id":5040
                 },
                 {
-                    "id":6813
+                    "id":5041
                 },
                 {
-                    "id":6814
+                    "id":5042
                 },
                 {
-                    "id":6815
+                    "id":5043
                 },
                 {
-                    "id":6816
+                    "id":5044
                 },
                 {
-                    "id":6817
+                    "id":5045
                 },
                 {
-                    "id":6818
+                    "id":5046
                 },
                 {
-                    "id":6819
-                }
-            ]
-        },
-        {
-            "file":"lsq_sticker_1_261.gsce",
-            "name":"\u8033\u6735",
-            "stickers":[
-                {
-                    "id":1646
-                },
-                {
-                    "id":1647
-                },
-                {
-                    "id":1648
-                },
-                {
-                    "id":1649
-                },
-                {
-                    "id":1650
-                },
-                {
-                    "id":1651
-                },
-                {
-                    "id":1652
-                },
-                {
-                    "id":1653
+                    "id":5047
                 }
             ]
         }
     ],
-    "master":"UmceVRmrhD3ScTgLKhJ5g7TWtf9EME8fL3OzqnewROSMtjHsNx3JBzSL1lS1vbtryScj89jIhTuzJh7lZe8wm\/JV0MvdEwNpBAo8FI4wxP1xEQxJynNNBk7J\/0uquzvaNY7sWtuKq2b4VeDomrNGWuKkxAQoNwCmVvIj3T5aj30KWLlnX6ni06ZFXJM7K0QxgLTvgALd83xJQU+A4PWWMKsk2yZBtRtlZsVQmFER2jT2BE+6umhQccnfyG5DnJZ3rxWFs+nCXacD8MfRxqfxiBvcynemco11fOFvl8+usbkEcucaRAD+9w7Cv8HmfE39ery01jJvpc9CrETyD\/z2JGYsmigvICIyHTfGmZzAWY++MyOPXbXt9qnDozJAvpbMuwp85syX6vJkYGjIrvXR7hDly\/YIn74ew\/EpX7ob3IwfHlkRexxZbRqxXtTo\/lHUG3Iqhna9QUIq7bTvQpeIEDi9w9hJ\/GPsIPw\/TtCYA1kIys1oUiD7JNLPOnIquLmxPkTfc9PS0kmsIGxntvqvrmnLbwVmrZjtCxdrK06+HkoJv3DxyOEztIm6GJ6vaSYhAWH1uXq70msHxL6++j10ZTueUYPa\/4auxQGPopctEv\/LSu23R9yBy\/HNNPbmuGLpb4tvSJsmlqsL\/yLo60dclymHuHpel2DSHL\/\/cxn6EXwo1+clR+5AgRzIrBNhuTNelBkwFrpQWpBr86\/52RaGf4CpsIuUH0dwHMyeunM8w\/FLY0KThDhtRBaX4d4s3g3R9CDA836D39"
+    "master":"GyTVKXbMscdKkrtEAgIBjePPEj4OK8G9owNti2WxKOEzypbyb9K\/BSi00gqN2YTd4Kqx6tPPjP+Ev1Y1fGR21x+v0Vbx4czZBJPf7sBs92x\/X3f2pocL94Tjtl4hpVZYZJZsfQ4hFkMFg+9dzZ\/g8WGf\/jV3EeviAjO1Bel9zdCPbK16PsKvZORl2Hz\/0cgr1tNoelYbIVP6VmGAx0e4zs9D1h5JJhKU9jZLB9K59zYx5QeXIFJCqd9bDRqmQpwwmsO2ABxc2KjaziItze+pLtMxflpq\/fQf7Kg85jQt8A7mT1zLtOzQG\/JtrbaFIs+jjxAw37H+oFtIeMDlWWNdcW\/Q+t3NZ7xDpOwXbaieW22UmTdW9+tNeXeMe3O7t4NFR5YUfD\/0\/Fwq71a32gtJO9cYc37YUhpyfgYzbbKa4VzTAE3WkJ7EyG7\/mO2akM+jXuVl90duVPqvrDG4mUAE0izcOZm6FHRGBy48wqlUVeNFJEeR7qV0cSypizD5ZHPZLIkdBuAtTCL+TWV8fOdLqTDoV9xNDt0TDAKDSmMsol9NRkEnh9zbQvGPBluY8J3IEluYez0yO58SVhUbMB7HDJ7R5g5SW\/oDuG0TqLixxfmkLNpjvA53nXHFgf+8oq9bCnyHxRbJ57i0HoZUjqwEQQDUwQp6tohlOG97Xqx68aTbeU0a+LUIZ0bZiAqicE78KYvbTCNCJbNTHU9QlT7sO3ENtEBAlnx2W2\/4Zhl1jXGjeaqb3w2D7MiYeEe3GCfPIzgja\/llnNEsOWsStT8Anr\/NvQfHsHIOVokAqQLhmVPvTmlzw1fItA1oLVkruWDCcTAxaL5gjA6KFZR4Ak+zSsl+7hl5uyANTKR0Cz0aL6OcOQITlVul9QIbIe1cP3FrG79xmIw7wOuBtXgkXGC5\/QhxF9XWI7FTdpsv9fFWG2kD5TFrwKz3yN286Y8RAfAcvgS74bAOPIMIGtElx4PQSkagDib6KSIVpqrrobeKDiYIg9D69EnC1F0zMopbIS9sXexjGM46RhE1iYUxBbi46xWnIgwwzzRkegeQN+gfeDY=CB3FCE7219"
 }
