@@ -18,7 +18,6 @@ import com.feiyou.headstyle.App;
 import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.bean.UserInfo;
 import com.feiyou.headstyle.common.Constant;
-import com.feiyou.headstyle.common.LocationService;
 import com.feiyou.headstyle.common.Server;
 import com.feiyou.headstyle.net.OKHttpRequest;
 import com.feiyou.headstyle.net.listener.OnResponseListener;
@@ -37,7 +36,6 @@ import com.hwangjr.rxbus.annotation.Tag;
 import com.hwangjr.rxbus.thread.EventThread;
 import com.orhanobut.logger.Logger;
 import com.umeng.socialize.UMShareAPI;
-
 
 import java.util.HashMap;
 import java.util.Map;
@@ -86,23 +84,24 @@ public class MainActivity extends BaseActivity {
 
     private UserInfo userInfo;
 
-    private LocationService locationService;
+    //private LocationService locationService;
 
-    @NeedsPermission({Manifest.permission.READ_PHONE_STATE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    @NeedsPermission({Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void requestLocation() {
-        startLocation();
+        //startLocation();
     }
 
-    @OnShowRationale({Manifest.permission.READ_PHONE_STATE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    @OnShowRationale({Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void showRationaleForLocation(final PermissionRequest request) {
 
     }
 
-    @OnPermissionDenied({Manifest.permission.READ_PHONE_STATE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    @OnPermissionDenied({Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void showDeniedForLocation() {
+
     }
 
-    @OnNeverAskAgain({Manifest.permission.READ_PHONE_STATE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    @OnNeverAskAgain({Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void showNeverAskForLocation() {
 
     }
@@ -365,7 +364,7 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    protected void startLocation() {
+    /*protected void startLocation() {
         super.onStart();
         // -----------location config ------------
         locationService = ((App) getApplication()).locationService;
@@ -377,16 +376,18 @@ public class MainActivity extends BaseActivity {
         locationService.start();//定位SDK
     }
 
-    /***
+    *//***
      * Stop location service
-     */
+     *//*
     @Override
     protected void onStop() {
         super.onStop();
-        locationService.unregisterListener(mListener); //注销掉监听
-        locationService.stop(); //停止定位服务
-        mListener = null;
-    }
+        if(locationService != null) {
+            locationService.unregisterListener(mListener); //注销掉监听
+            locationService.stop(); //停止定位服务
+            mListener = null;
+        }
+    }*/
 
     /*****
      *

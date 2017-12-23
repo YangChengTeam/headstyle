@@ -39,6 +39,7 @@ import com.feiyou.headstyle.util.DialogUtils;
 import com.feiyou.headstyle.util.ImageUtils;
 import com.feiyou.headstyle.util.PreferencesUtils;
 import com.feiyou.headstyle.util.StringUtils;
+import com.feiyou.headstyle.util.TimeUtils;
 import com.feiyou.headstyle.util.ToastUtils;
 import com.feiyou.headstyle.view.SharePopupWindow;
 import com.feiyou.headstyle.view.qqhead.BaseUIListener;
@@ -53,6 +54,7 @@ import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.umeng.socialize.media.UMImage;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
@@ -161,9 +163,17 @@ public class HeadCreateShowActivity extends BaseActivity {
             squareHeadImage.setImageURI(uri);
             circleHeadImage.setImageURI(uri);
 
+            String fileName = String.valueOf(TimeUtils.getCurrentTimeInLong()) + ".jpg";
+            String savePath = Constant.BASE_NORMAL_SAVE_IMAGE_DIR + File.separator + "DCIM" + File.separator + "camera";
+
             Bitmap tempBitmap = BitmapFactory.decodeFile(imagePath);
-            if(tempBitmap != null){
-                tempBitmap = ImageUtils.compressImage(tempBitmap,150);
+            if (tempBitmap != null) {
+                tempBitmap = ImageUtils.compressImage(tempBitmap, 150);
+                boolean flag = ImageUtils.writeImageInSDCard(tempBitmap, savePath, fileName);
+                if (flag) {
+                    imagePath = savePath + "/" + fileName;
+                }
+
                 image = new UMImage(HeadCreateShowActivity.this, tempBitmap);
             }
         }
@@ -325,8 +335,8 @@ public class HeadCreateShowActivity extends BaseActivity {
                     new ShareAction(HeadCreateShowActivity.this)
                             .setPlatform(SHARE_MEDIA.QZONE)
                             .setCallback(umShareListener)
-                            .withTitle("个性头像")
-                            .withText("换个头像，换种心情")
+                            .withTitle("你的好友送了你一顶【圣诞帽】，快快点击领取")
+                            .withText("圣诞帽个性定制，快来使用吧")
                             .withTargetUrl("http://www.qqtn.com/tx/")
                             .withMedia(image)
                             .share();
@@ -348,8 +358,8 @@ public class HeadCreateShowActivity extends BaseActivity {
                     new ShareAction(HeadCreateShowActivity.this)
                             .setPlatform(SHARE_MEDIA.WEIXIN_CIRCLE)
                             .setCallback(umShareListener)
-                            .withTitle("个性头像")
-                            .withText("超萌的图像，是否想尝试一下呢？")
+                            .withTitle("你的好友送了你一顶【圣诞帽】，快快点击领取")
+                            .withText("圣诞帽个性定制，快来使用吧")
                             .withTargetUrl("http://www.qqtn.com/tx/")
                             .withMedia(image)
                             .share();
@@ -469,7 +479,7 @@ public class HeadCreateShowActivity extends BaseActivity {
                                 } else {
                                     addArticle();
                                 }
-                                RxBus.get().post(Constant.LOGIN_SUCCESS,"loginSuccess");
+                                RxBus.get().post(Constant.LOGIN_SUCCESS, "loginSuccess");
                             }
                         }
 

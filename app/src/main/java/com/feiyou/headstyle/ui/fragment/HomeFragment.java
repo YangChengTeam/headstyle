@@ -1,5 +1,6 @@
 package com.feiyou.headstyle.ui.fragment;
 
+import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -10,13 +11,18 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -54,7 +60,13 @@ import com.feiyou.headstyle.util.TimeUtils;
 import com.feiyou.headstyle.util.ToastUtils;
 import com.feiyou.headstyle.view.BannerImageLoader;
 import com.feiyou.headstyle.view.HeaderGridView;
+import com.feiyou.headstyle.view.SharePopupWindow;
 import com.orhanobut.logger.Logger;
+import com.umeng.socialize.ShareAction;
+import com.umeng.socialize.UMShareAPI;
+import com.umeng.socialize.UMShareListener;
+import com.umeng.socialize.bean.SHARE_MEDIA;
+import com.umeng.socialize.media.UMImage;
 import com.youth.banner.Banner;
 import com.youth.banner.listener.OnBannerListener;
 
@@ -80,6 +92,9 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
 
     @BindView(R.id.search_icon)
     ImageView searchBtn;
+
+    @BindView(R.id.share_icon)
+    ImageView shareBtn;
 
     Banner mBanner;
 
@@ -143,6 +158,15 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
 
     private List<SpecialInfo> specialInfos;
 
+    //分享弹出窗口
+    private SharePopupWindow shareWindow;
+
+    private UMImage image;
+
+    private UMShareAPI mShareAPI = null;
+
+    private MaterialDialog loginDialog;
+
     public HomeFragment() {
     }
 
@@ -166,6 +190,9 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                 R.dimen.image_thumbnail_size);
         mImageThumbSpacing = getResources().getDimensionPixelSize(
                 R.dimen.image_thumbnail_spacing);
+
+        mShareAPI = UMShareAPI.get(getActivity());
+        image = new UMImage(getActivity(), R.mipmap.logo_100);
 
     }
 
@@ -257,7 +284,6 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                 }
             }).start();
         }
-
 
         mBanner.setOnBannerListener(new OnBannerListener() {
             @Override
@@ -874,5 +900,121 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         //刷新是否有最新的评论
         ((MainActivity) getActivity()).getUserInfo();
     }
+
+    public static void setBackgroundAlpha(Activity activity, float bgAlpha) {
+        WindowManager.LayoutParams lp = activity.getWindow().getAttributes();
+        lp.alpha = bgAlpha;
+        if (bgAlpha == 1) {
+            activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);//不移除该Flag的话,在有视频的页面上的视频会出现黑屏的bug
+        } else {
+            activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);//此行代码主要是解决在华为手机上半透明效果无效的bug
+        }
+        activity.getWindow().setAttributes(lp);
+    }
+
+    @OnClick(R.id.share_icon)
+    public void shareApp() {
+        final ViewGroup viewGroup = (ViewGroup) ((ViewGroup) getActivity().findViewById(android.R.id.content)).getChildAt(0);
+        shareWindow = new SharePopupWindow(getActivity(), itemsOnClick);
+
+        shareWindow.showAtLocation(viewGroup, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+        setBackgroundAlpha(getActivity(), 0.5f);
+        shareWindow.setOnDismissListener(new PoponDismissListener());
+    }
+
+    //弹出窗口监听消失
+    public class PoponDismissListener implements PopupWindow.OnDismissListener {
+        @Override
+        public void onDismiss() {
+            setBackgroundAlpha(getActivity(), 1f);
+        }
+    }
+
+    //为弹出窗口实现监听类
+    private View.OnClickListener itemsOnClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.cancel_layout:
+                    if (shareWindow != null && shareWindow.isShowing()) {
+                        shareWindow.dismiss();
+                    }
+                    break;
+                case R.id.qq_layout:
+                    new ShareAction(getActivity())
+                            .setPlatform(SHARE_MEDIA.QQ)
+                            .setCallback(umShareListener)
+                            .withTitle("你的好友送了你一顶【圣诞帽】，快快点击领取")
+                            .withText("圣诞帽个性定制，快来使用吧")
+                            .withTargetUrl("http://gx.qqtn.com/")
+                            .withMedia(image)
+                            .share();
+                    if (shareWindow != null && shareWindow.isShowing()) {
+                        shareWindow.dismiss();
+                    }
+                    break;
+                case R.id.qzone_layout:
+                    new ShareAction(getActivity())
+                            .setPlatform(SHARE_MEDIA.QZONE)
+                            .setCallback(umShareListener)
+                            .withTitle("你的好友送了你一顶【圣诞帽】，快快点击领取")
+                            .withText("圣诞帽个性定制，快来使用吧")
+                            .withTargetUrl("http://gx.qqtn.com/")
+                            .withMedia(image)
+                            .share();
+                    if (shareWindow != null && shareWindow.isShowing()) {
+                        shareWindow.dismiss();
+                    }
+                    break;
+                case R.id.wechat_layout:
+                    new ShareAction(getActivity())
+                            .setPlatform(SHARE_MEDIA.WEIXIN)
+                            .setCallback(umShareListener)
+                            .withTitle("你的好友送了你一顶【圣诞帽】，快快点击领取")
+                            .withText("圣诞帽个性定制，快来使用吧")
+                            .withTargetUrl("http://gx.qqtn.com/")
+                            .withMedia(image)
+                            .share();
+                    if (shareWindow != null && shareWindow.isShowing()) {
+                        shareWindow.dismiss();
+                    }
+                    break;
+                case R.id.wxcircle_layout:
+                    new ShareAction(getActivity())
+                            .setPlatform(SHARE_MEDIA.WEIXIN_CIRCLE)
+                            .setCallback(umShareListener)
+                            .withTitle("你的好友送了你一顶【圣诞帽】，快快点击领取")
+                            .withText("圣诞帽个性定制，快来使用吧")
+                            .withTargetUrl("http://www.qqtn.com/tx/")
+                            .withMedia(image)
+                            .share();
+                    if (shareWindow != null && shareWindow.isShowing()) {
+                        shareWindow.dismiss();
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+
+    private UMShareListener umShareListener = new UMShareListener() {
+        @Override
+        public void onResult(SHARE_MEDIA platform) {
+            com.umeng.socialize.utils.Log.d("plat", "platform" + platform);
+            Toast.makeText(getActivity(), "分享成功啦", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onError(SHARE_MEDIA platform, Throwable t) {
+            Toast.makeText(getActivity(), "分享失败啦", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onCancel(SHARE_MEDIA platform) {
+            Toast.makeText(getActivity(), "分享取消了", Toast.LENGTH_SHORT).show();
+        }
+    };
+
 
 }

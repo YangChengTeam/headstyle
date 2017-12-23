@@ -3,14 +3,9 @@ package com.feiyou.headstyle.ui.fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.PointF;
-import android.graphics.drawable.Icon;
-import android.media.Image;
 import android.net.Uri;
 import android.view.View;
 
-import com.facebook.drawee.generic.RoundingParams;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.ui.activity.HeadCreateShowActivity;
@@ -26,8 +21,6 @@ import org.lasque.tusdk.impl.components.TuAlbumComponent;
 import org.lasque.tusdk.impl.components.TuEditMultipleComponent;
 import org.lasque.tusdk.modules.components.TuSdkComponent;
 import org.lasque.tusdk.modules.components.TuSdkHelperComponent;
-
-import java.io.File;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -100,6 +93,8 @@ public class CreateFragment extends BaseFragment {
 
                     squareHeadImage.setImageURI(uri);//正方形
                     circleHeadImage.setImageURI(uri);//圆形
+
+                    editPhoto(null);
                 }
             }
         });
@@ -122,7 +117,7 @@ public class CreateFragment extends BaseFragment {
 
             //editBitmap = ImageUtils.getBitmapFromFile(new File(editImagePath), 500, 500);
             editBitmap = BitmapFactory.decodeFile(editImagePath);
-            editBitmap = ImageUtils.compressImage(editBitmap,300);
+            editBitmap = ImageUtils.compressImage(editBitmap, 300);
 
             component = TuSdkGeeV1.editMultipleCommponent(getActivity(), delegate);
 

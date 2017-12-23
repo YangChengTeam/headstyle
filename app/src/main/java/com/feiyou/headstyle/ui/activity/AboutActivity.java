@@ -155,8 +155,8 @@ public class AboutActivity extends BaseActivity {
                     new ShareAction(AboutActivity.this)
                             .setPlatform(SHARE_MEDIA.QQ)
                             .setCallback(umShareListener)
-                            .withTitle("个性头像")
-                            .withText("换个头像，换种心情")
+                            .withTitle("你的好友送了你一顶【圣诞帽】，快快点击领取")
+                            .withText("圣诞帽个性定制，快来使用吧")
                             .withTargetUrl("http://gx.qqtn.com/")
                             .withMedia(image)
                             .share();
@@ -168,8 +168,8 @@ public class AboutActivity extends BaseActivity {
                     new ShareAction(AboutActivity.this)
                             .setPlatform(SHARE_MEDIA.QZONE)
                             .setCallback(umShareListener)
-                            .withTitle("个性头像")
-                            .withText("换个头像，换种心情")
+                            .withTitle("你的好友送了你一顶【圣诞帽】，快快点击领取")
+                            .withText("圣诞帽个性定制，快来使用吧")
                             .withTargetUrl("http://gx.qqtn.com/")
                             .withMedia(image)
                             .share();
@@ -181,8 +181,8 @@ public class AboutActivity extends BaseActivity {
                     new ShareAction(AboutActivity.this)
                             .setPlatform(SHARE_MEDIA.WEIXIN)
                             .setCallback(umShareListener)
-                            .withTitle("个性头像")
-                            .withText("换个头像，换种心情")
+                            .withTitle("你的好友送了你一顶【圣诞帽】，快快点击领取")
+                            .withText("圣诞帽个性定制，快来使用吧")
                             .withTargetUrl("http://gx.qqtn.com/")
                             .withMedia(image)
                             .share();
@@ -194,8 +194,8 @@ public class AboutActivity extends BaseActivity {
                     new ShareAction(AboutActivity.this)
                             .setPlatform(SHARE_MEDIA.WEIXIN_CIRCLE)
                             .setCallback(umShareListener)
-                            .withTitle("个性头像")
-                            .withText("换个头像，换种心情")
+                            .withTitle("你的好友送了你一顶【圣诞帽】，快快点击领取")
+                            .withText("圣诞帽个性定制，快来使用吧")
                             .withTargetUrl("http://www.qqtn.com/tx/")
                             .withMedia(image)
                             .share();
@@ -213,17 +213,17 @@ public class AboutActivity extends BaseActivity {
         @Override
         public void onResult(SHARE_MEDIA platform) {
             com.umeng.socialize.utils.Log.d("plat", "platform" + platform);
-            Toast.makeText(AboutActivity.this, platform + " 分享成功啦", Toast.LENGTH_SHORT).show();
+            Toast.makeText(AboutActivity.this, "分享成功啦", Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onError(SHARE_MEDIA platform, Throwable t) {
-            Toast.makeText(AboutActivity.this, platform + " 分享失败啦", Toast.LENGTH_SHORT).show();
+            Toast.makeText(AboutActivity.this, "分享失败啦", Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onCancel(SHARE_MEDIA platform) {
-            Toast.makeText(AboutActivity.this, platform + " 分享取消了", Toast.LENGTH_SHORT).show();
+            Toast.makeText(AboutActivity.this, "分享取消了", Toast.LENGTH_SHORT).show();
         }
     };
 

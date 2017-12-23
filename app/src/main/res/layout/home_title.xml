@@ -13,8 +13,8 @@
         android:layout_height="30dp"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:src="@mipmap/user_head_def_icon"
-        android:layout_marginLeft="8dp"/>
+        android:layout_marginLeft="8dp"
+        android:src="@mipmap/user_head_def_icon"/>
 
     <ImageView
         android:id="@+id/top_title"
@@ -28,14 +28,27 @@
         android:id="@+id/search_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/share_icon"
+        android:background="@drawable/common_btn_selector"
+        android:clickable="true"
+        android:paddingBottom="10dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="10dp"
+        android:paddingTop="10dp"
+        android:src="@mipmap/search_icon"/>
+
+    <ImageView
+        android:id="@+id/share_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:background="@drawable/common_btn_selector"
         android:clickable="true"
-        android:paddingTop="10dp"
         android:paddingBottom="10dp"
-        android:paddingLeft="15dp"
+        android:paddingLeft="6dp"
         android:paddingRight="10dp"
-        android:src="@mipmap/search_icon"/>
-
+        android:paddingTop="10dp"
+        android:src="@mipmap/share_image_icon"/>
 </RelativeLayout>

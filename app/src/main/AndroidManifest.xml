@@ -45,6 +45,7 @@
         tools:replace="android:icon,android:theme">
         <activity
             android:name=".ui.activity.SplashActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -53,133 +54,163 @@
             </intent-filter>
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.activity.MainActivity">
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.activity.MyInfoActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.activity.FriendInfoActivity"
             android:label=""
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.activity.MyInfoUpdateActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.activity.HeadListActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.activity.SpecialListActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.activity.FunTestDetailActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.activity.FunTestItemActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.activity.FunTestResultActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.activity.HeadShowActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.activity.HeadShow3Activity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.activity.HeadShow1Activity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.activity.HeadCreateShowActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.activity.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.activity.RegisterActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.activity.MoreHeadTypeActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.activity.ImageCropActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.activity.SearchActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.activity.SearchListActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.activity.KeepListActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.activity.ShowAddActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.activity.ShowDetailActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.activity.ShowImageListActivity"
             android:theme="@style/imageShow">
         </activity>
 
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.activity.MyArticleActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.activity.MyCreateListActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.activity.AboutActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.activity.FunTestCategoryActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.activity.FunTestSearchActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.activity.FunTestSearchResultActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".ui.activity.ArticleDetailActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
@@ -190,9 +221,10 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 
-        <activity android:name="com.tencent.connect.avatar.ImageActivity"/>
+        <activity android:screenOrientation="portrait" android:name="com.tencent.connect.avatar.ImageActivity"/>
 
         <activity
+            android:screenOrientation="portrait"
             android:name="com.umeng.socialize.editorpage.ShareActivity"
             android:excludeFromRecents="true"
             android:theme="@style/Theme.UMDefault"/>
@@ -285,8 +317,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/rc_file_path"/>
         </provider>
-
-        <service android:name="com.baidu.location.f" android:enabled="true" android:process=":remote"> </service>
     </application>
 
 </manifest>
