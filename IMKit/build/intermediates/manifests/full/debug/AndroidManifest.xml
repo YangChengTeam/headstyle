@@ -5,7 +5,7 @@
     android:versionName="2.8.23 Stable" >
 
     <uses-sdk
-        android:minSdkVersion="15"
+        android:minSdkVersion="16"
         android:targetSdkVersion="23" />
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />

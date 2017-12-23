@@ -117,6 +117,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void initVars() {
         super.initVars();
+        //QMUIStatusBarHelper.translucent(this); // 沉浸式状态栏
         articleService = new ArticleService();
         mService = new UserService();
         okHttpRequest = new OKHttpRequest();
