@@ -1,1 +1,1 @@
-include ':app', ':TuSDKUI', ':rxbus', ':IMKit', ':IMLib', ':banner'
+include ':app', ':TuSDKUI', ':rxbus', ':IMKit', ':IMLib', ':banner', ':video-player'

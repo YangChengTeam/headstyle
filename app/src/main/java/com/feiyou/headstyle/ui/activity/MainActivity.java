@@ -36,6 +36,7 @@ import com.hwangjr.rxbus.annotation.Tag;
 import com.hwangjr.rxbus.thread.EventThread;
 import com.orhanobut.logger.Logger;
 import com.umeng.socialize.UMShareAPI;
+import com.xinqu.videoplayer.XinQuVideoPlayer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -213,6 +214,11 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
+
+        if(XinQuVideoPlayer.backPress()){
+            return;
+        }
+
         exit();
     }
 

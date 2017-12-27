@@ -109,4 +109,5 @@ dependencies {
     annotationProcessor "com.github.hotchemi:permissionsdispatcher-processor:3.1.0"
     compile files('libs/BaiduLBS_Android.jar')
     compile 'com.qmuiteam:qmui:1.0.6'
+    implementation project(':video-player')
 }
