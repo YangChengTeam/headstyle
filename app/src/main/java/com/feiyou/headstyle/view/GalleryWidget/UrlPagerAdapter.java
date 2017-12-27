@@ -44,7 +44,9 @@ public class UrlPagerAdapter extends BasePagerAdapter {
     @Override
     public void setPrimaryItem(ViewGroup container, int position, Object object) {
         super.setPrimaryItem(container, position, object);
-        ((GalleryViewPager)container).mCurrentView = ((UrlTouchImageView)object).getImageView();
+        if(object != null) {
+            ((GalleryViewPager) container).mCurrentView = ((UrlTouchImageView) object).getImageView();
+        }
     }
 
     @Override

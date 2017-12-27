@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.util.Util;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.adapter.ImageItemAdapter;
@@ -154,7 +155,9 @@ public class SpecialListActivity extends BaseActivity implements SwipeRefreshLay
                     specialDesTextView.setText(ret.description);
                     specialCountTextView.setText(ret.total + "张");
                     if (ret.list != null) {
-                        Glide.with(SpecialListActivity.this).load(ret.list.get(0).getHurl()).into(specialImageView);
+                        if (Util.isOnMainThread()) {
+                            Glide.with(SpecialListActivity.this).load(ret.list.get(0).getHurl()).into(specialImageView);
+                        }
                         mAdapter.setNewData(ret.list);
                     }
 
@@ -189,5 +192,13 @@ public class SpecialListActivity extends BaseActivity implements SwipeRefreshLay
     public void onBackPressed() {
         super.onBackPressed();
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (Util.isOnMainThread()) {
+            Glide.with(this).pauseRequests();
+        }
     }
 }
