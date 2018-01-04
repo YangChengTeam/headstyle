@@ -21,12 +21,13 @@ import android.content.Context;
 import android.view.ViewGroup;
 
 import com.feiyou.headstyle.view.TouchView.UrlTouchImageView;
+import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
 
 /**
- Class wraps URLs to adapter, then it instantiates {@link com.feiyou.headstyle.view.TouchView.UrlTouchImageView} objects to paging up through them.
+ * Class wraps URLs to adapter, then it instantiates {@link com.feiyou.headstyle.view.TouchView.UrlTouchImageView} objects to paging up through them.
  */
 public class UrlPagerAdapter extends BasePagerAdapter {
 
@@ -36,21 +37,24 @@ public class UrlPagerAdapter extends BasePagerAdapter {
         this.lists = lists;
     }
 
-    public UrlPagerAdapter(Context context, List<String> resources)
-	{
-		super(context, resources);
-	}
+    public UrlPagerAdapter(Context context, List<String> resources) {
+        super(context, resources);
+    }
 
     @Override
     public void setPrimaryItem(ViewGroup container, int position, Object object) {
         super.setPrimaryItem(container, position, object);
-        if(object != null) {
-            ((GalleryViewPager) container).mCurrentView = ((UrlTouchImageView) object).getImageView();
+        try {
+            if (object != null) {
+                ((GalleryViewPager) container).mCurrentView = ((UrlTouchImageView) object).getImageView();
+            }
+        } catch (Exception e) {
+            Logger.e("UrlPagerAdapter error");
         }
     }
 
     @Override
-    public Object instantiateItem(ViewGroup collection, final int position){
+    public Object instantiateItem(ViewGroup collection, final int position) {
         final UrlTouchImageView iv = new UrlTouchImageView(mContext);
         iv.setUrl(mResources.get(position));
         iv.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));

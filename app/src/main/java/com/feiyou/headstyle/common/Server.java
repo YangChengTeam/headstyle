@@ -15,6 +15,9 @@ public class Server {
     //搜索接口地址
     public final static String SEARCH_DATA = BASE_SERVER_IP + "apajax.asp?action=2&num=50";
 
+    //新搜索接口地址
+    public final static String NEW_SEARCH_DATA = BASE_SERVER_IP + "gxtx/2";
+
     //登录接口地址
     public final static String LOGIN_DATA = BASE_SERVER_IP + "apajax.asp?action=3";
 

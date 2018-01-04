@@ -46,7 +46,9 @@ public class HeadWallAdapter extends BaseAdapter {
     }
 
     public void clear() {
-        dataList.clear();
+        if(dataList != null) {
+            dataList.clear();
+        }
     }
 
     @Override
@@ -73,6 +75,7 @@ public class HeadWallAdapter extends BaseAdapter {
             dataList.addAll(datas);
         } else {
             dataList = new ArrayList<HeadInfo>();
+            dataList.addAll(datas);
         }
     }
 

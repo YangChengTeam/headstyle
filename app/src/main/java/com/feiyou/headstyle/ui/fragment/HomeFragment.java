@@ -11,10 +11,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AbsListView;
 import android.widget.ImageView;
@@ -35,6 +33,7 @@ import com.feiyou.headstyle.bean.SpecialInfo;
 import com.feiyou.headstyle.bean.UserInfo;
 import com.feiyou.headstyle.bean.VersionInfo;
 import com.feiyou.headstyle.bean.VersionRet;
+import com.feiyou.headstyle.bean.WeiXinInfoRet;
 import com.feiyou.headstyle.common.Constant;
 import com.feiyou.headstyle.common.Server;
 import com.feiyou.headstyle.net.OKHttpRequest;
@@ -166,6 +165,12 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     private UMShareAPI mShareAPI = null;
 
     private MaterialDialog loginDialog;
+
+    public String weixinUrl = "";
+
+    public int weixinState;
+
+    private int loadCount;
 
     public HomeFragment() {
     }
@@ -305,6 +310,8 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         });
 
         getAlipyCode();
+
+        getWeixinInfo();
     }
 
     /**
@@ -348,7 +355,8 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
      */
     @Override
     public void loadData() {
-        List<SpecialInfo> tSpecialInfoList = mService.getSpecialInfoListFromDB();
+        loadDataByParams();
+        /*List<SpecialInfo> tSpecialInfoList = mService.getSpecialInfoListFromDB();
         if (tSpecialInfoList != null) {
             updataSpecialData(tSpecialInfoList);
 
@@ -360,10 +368,20 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
             }, 1500);
         } else {
             loadDataByParams();
-        }
+        }*/
     }
 
     public void loadDataByParams() {
+
+        loadCount++;
+
+        Random random = new Random();
+        int result = random.nextInt(10);
+        rPageNum = result + 1;
+        pageNum = rPageNum;
+
+        Logger.e("loadDataByParams 随机产生的页码url--->" + rPageNum);
+
         StringBuffer homeUrl = new StringBuffer(Server.NEW_HOME_DATA);
 
         homeUrl.append("/").append("0");
@@ -389,7 +407,7 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                     }
                 }
 
-                if (pageNum == 1) {
+                if (loadCount == 1) {
                     Logger.e("top---");
                     //设置banner数据
                     final List<SpecialInfo> tempSpecialInfos = mService.getSpecialInfos(response);
@@ -410,22 +428,7 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                 final List<HeadInfo> temp = mService.getHeadInfos(response);
                 if (temp != null && temp.size() > 0) {
                     Logger.e("first data ==" + temp.get(0).getHurl());
-
-                    if (pageNum == 1) {
-                        mAdapter.addItemDatas(temp);
-
-                        //缓存第一页数据
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                mService.deleteAllHeadInfoList();
-                                mService.saveHeadInfoListToDB(temp);
-                            }
-                        }).start();
-                    } else {
-                        mAdapter.addNewDatas(temp);
-                    }
-
+                    mAdapter.addNewDatas(temp);
                     pageNum++;
                     Logger.e("加载最新页码page--->" + pageNum);
 
@@ -465,6 +468,33 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                         alipyCode = alipyCodeRet.data.zfb_code;
                     }
                     copyAlipy(alipyCode);
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                copyAlipy(alipyCode);
+            }
+
+            @Override
+            public void onBefore() {
+
+            }
+        });
+    }
+
+    public void getWeixinInfo() {
+        final Map<String, String> params = new HashMap<String, String>();
+        params.put("app_name", "gxtx");
+        okHttpRequest.aget("http://nz.qqtn.com/zbsq/index.php?m=Home&c=zbsq&a=wx", params, new OnResponseListener() {
+            @Override
+            public void onSuccess(String response) {
+                if (!StringUtils.isEmpty(response)) {
+                    WeiXinInfoRet weiXinInfoRet = Constant.GSON.fromJson(response, WeiXinInfoRet.class);
+                    if (weiXinInfoRet != null && weiXinInfoRet.errCode == 1) {
+                        weixinUrl = weiXinInfoRet.data.url;
+                        weixinState = weiXinInfoRet.data.status;
+                    }
                 }
             }
 
@@ -862,13 +892,9 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
             position = position - 3;
             Logger.e("url isRefresh--->" + isRefresh + "---position----" + position);
             intent.putExtra("pos", position);
-            if (isRefresh) {
-                int tempPage = (position / 50) + 1;
-                intent.putExtra("page", tempPage + rPageNum - 1);
-            } else {
-                int tempPage = (position / 50) + 1;
-                intent.putExtra("page", tempPage);
-            }
+
+            int tempPage = (position / 50) + 1;
+            intent.putExtra("page", tempPage + rPageNum - 1);
 
             intent.putExtra("cid", mAdapter.getDataList().get(position).getCid());
             intent.putExtra("imageUrl", mAdapter.getDataList().get(position).getHurl());
@@ -891,7 +917,7 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         int result = random.nextInt(10);
         rPageNum = result + 1;
         pageNum = rPageNum;
-
+        loadCount = 0;
         Logger.e("随机产生的页码url--->" + rPageNum);
 
         isRefresh = true;
@@ -914,12 +940,21 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
 
     @OnClick(R.id.share_icon)
     public void shareApp() {
-        final ViewGroup viewGroup = (ViewGroup) ((ViewGroup) getActivity().findViewById(android.R.id.content)).getChildAt(0);
+        /*final ViewGroup viewGroup = (ViewGroup) ((ViewGroup) getActivity().findViewById(android.R.id.content)).getChildAt(0);
         shareWindow = new SharePopupWindow(getActivity(), itemsOnClick);
 
         shareWindow.showAtLocation(viewGroup, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
         setBackgroundAlpha(getActivity(), 0.5f);
-        shareWindow.setOnDismissListener(new PoponDismissListener());
+        shareWindow.setOnDismissListener(new PoponDismissListener());*/
+
+        if (!AppUtils.appInstalled(getActivity(), "com.tencent.mm")) {
+            ToastUtils.show(getActivity(), "未安装微信");
+            return;
+        }
+
+        if (!StringUtils.isEmpty(weixinUrl)) {
+            MainActivity.getMainActivity().fixOpenwx(weixinState, weixinUrl);
+        }
     }
 
     //弹出窗口监听消失

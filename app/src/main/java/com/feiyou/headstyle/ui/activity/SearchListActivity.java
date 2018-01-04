@@ -19,9 +19,7 @@ import com.feiyou.headstyle.util.StringUtils;
 import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -91,6 +89,7 @@ public class SearchListActivity extends BaseActivity implements SwipeRefreshLayo
         }
 
         mAdapter = new HeadWallAdapter(this, data);
+        mAdapter.clear();
         mPhotoWall.setAdapter(mAdapter);
 
         swipeLayout.setColorSchemeResources(
@@ -130,12 +129,27 @@ public class SearchListActivity extends BaseActivity implements SwipeRefreshLayo
 
     @OnItemClick(R.id.photo_wall)
     public void onHeadItemClick(int position) {
-        Intent intent = new Intent(this, HeadShowActivity.class);
+        /*Intent intent = new Intent(this, HeadShowActivity.class);
 
         if (data != null && data.size() > 0) {
             intent.putExtra("cid", data.get(position).getCid());
             intent.putExtra("imageUrl", data.get(position).getHurl());
         }
+        startActivity(intent);*/
+
+        Intent intent = new Intent(this, HeadShow3Activity.class);
+        if (mAdapter.getDataList() != null && mAdapter.getDataList().size() > 0 && position >= -1) {
+            //position = position - 3;
+            Logger.e("---position----" + position);
+            intent.putExtra("pos", position);
+            int tempPage = (position / 50) + 1;
+            intent.putExtra("page", tempPage);
+
+            intent.putExtra("cid", mAdapter.getDataList().get(position).getCid());
+            intent.putExtra("imageUrl", mAdapter.getDataList().get(position).getHurl());
+            intent.putExtra("gaoqing", mAdapter.getDataList().get(position).getGaoqing());
+        }
+        intent.putExtra("searchKey", searchKey);
         startActivity(intent);
     }
 
@@ -149,16 +163,22 @@ public class SearchListActivity extends BaseActivity implements SwipeRefreshLayo
             }
         });
 
-        final Map<String, String> params = new HashMap<String, String>();
+        /*final Map<String, String> params = new HashMap<String, String>();
         Logger.e("page---" + pageNum + "--maxpage---" + maxPage);
         params.put("p", String.valueOf(pageNum));
 
         if (!StringUtils.isEmpty(searchKey)) {
             params.put("keyword", searchKey);
-        }
+        }*/
+
+        StringBuffer homeUrl = new StringBuffer(Server.NEW_SEARCH_DATA);
+        homeUrl.append("/").append(searchKey);
+        homeUrl.append("/").append("0");
+        homeUrl.append("/").append(String.valueOf(pageNum)).append(".html");
+        Logger.e("new search url --->" + homeUrl);
 
         if (pageNum <= maxPage || maxPage == 0) {
-            okHttpRequest.aget(Server.SEARCH_DATA, params, new OnResponseListener() {
+            okHttpRequest.aget(homeUrl.toString(), null, new OnResponseListener() {
                 @Override
                 public void onSuccess(String response) {
                     swipeLayout.setRefreshing(false);

@@ -54,12 +54,14 @@ import com.feiyou.headstyle.util.StringUtils;
 import com.feiyou.headstyle.util.TimeUtils;
 import com.feiyou.headstyle.util.ToastUtils;
 import com.feiyou.headstyle.view.SharePopupWindow;
+import com.feiyou.headstyle.view.WeiXinFollowDialog;
 import com.feiyou.headstyle.view.flingswipe.SwipeFlingAdapterView;
 import com.feiyou.headstyle.view.qqhead.BaseUIListener;
 import com.hwangjr.rxbus.RxBus;
 import com.orhanobut.logger.Logger;
 import com.tencent.connect.avatar.QQAvatar;
 import com.tencent.tauth.Tencent;
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.UMShareAPI;
@@ -83,6 +85,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -93,7 +97,7 @@ import okhttp3.Call;
  */
 
 public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapterView.onFlingListener,
-        SwipeFlingAdapterView.OnItemClickListener {
+        SwipeFlingAdapterView.OnItemClickListener, WeiXinFollowDialog.TimeListener {
 
     @BindView(R.id.title_text)
     TextView titleTv;
@@ -179,6 +183,16 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
     // 组件选项配置
     TuEditMultipleComponent component = null;
 
+    private boolean isSearch = false;
+
+    private String searchKey = "";
+
+    private int timeNum = 0;
+
+    private Timer timer;
+
+    private boolean isFollow;
+
     private Handler handler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -218,6 +232,9 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
     @Override
     public void initViews() {
         super.initViews();
+
+        MobclickAgent.onEvent(this, "image_head_detail", AppUtils.getVersionName(this));
+
         TuSdk.checkFilterManager(mFilterManagerDelegate);
         okHttpRequest = new OKHttpRequest();
         mService = new HomeService();
@@ -254,6 +271,13 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
             pageNum = bundle.getInt("page");
 
             start = pageNum > 0 ? cpos % 50 : cpos;
+
+            if (bundle.getString("searchKey") != null) {
+                isSearch = true;
+                searchKey = bundle.getString("searchKey");
+            } else {
+                isSearch = false;
+            }
         }
 
         if (bundle != null && bundle.getString("imageUrl") != null) {
@@ -365,21 +389,25 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
      * @param page
      */
     public void loadGalleryData(int page) {
-
-        final Map<String, String> params = new HashMap<String, String>();
-        params.put("p", String.valueOf(page));
-
         Logger.e("page---" + page);
 
-        StringBuffer homeUrl = new StringBuffer(Server.NEW_HOME_DATA);
-        homeUrl.append("/").append("0").append("/").append("0");
-        if (typeId > 0) {
-            homeUrl.append("/").append(typeId + "");
+        String loadUrl = "";
+        if (isSearch) {
+            StringBuffer searchUrl = new StringBuffer(Server.NEW_SEARCH_DATA);
+            searchUrl.append("/").append(searchKey);
+            searchUrl.append("/").append("0");
+            searchUrl.append("/").append(String.valueOf(pageNum)).append(".html");
+            loadUrl = searchUrl.toString();
+        } else {
+            StringBuffer homeUrl = new StringBuffer(Server.NEW_HOME_DATA);
+            homeUrl.append("/").append("0").append("/").append("0");
+            if (typeId > 0) {
+                homeUrl.append("/").append(typeId + "");
+            }
+            homeUrl.append("/").append(String.valueOf(pageNum)).append(".html");
+            loadUrl = homeUrl.toString();
         }
-
-        homeUrl.append("/").append(String.valueOf(pageNum)).append(".html");
-        Logger.e("first url222--->" + homeUrl.toString());
-        okHttpRequest.aget(homeUrl.toString(), null, new OnResponseListener() {
+        okHttpRequest.aget(loadUrl, null, new OnResponseListener() {
             @Override
             public void onSuccess(String response) {
                 //设置首页列表数据
@@ -644,7 +672,19 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
 
     @OnClick(R.id.iv_down_head)
     public void downImg(View view) {
-        saveImageToGallery();
+
+        if (!AppUtils.appInstalled(this, "com.tencent.mm")) {
+            isFollow = true;
+        }
+
+        if (isFollow) {
+            saveImageToGallery();
+        } else {
+            MobclickAgent.onEvent(this, "down_load_click", AppUtils.getVersionName(this));
+            WeiXinFollowDialog weiXinFollowDialog = new WeiXinFollowDialog(this);
+            weiXinFollowDialog.setTimeListener(this);
+            weiXinFollowDialog.showChargeDialog(weiXinFollowDialog);
+        }
     }
 
     // 其次把文件插入到系统图库
@@ -705,11 +745,40 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
     }
 
     @Override
+    public void timeStart() {
+        if (timer == null) {
+            timer = new Timer();
+        }
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                timeNum++;
+                if (timeNum > 20) {
+                    timer.cancel();
+                    timer.purge();
+                    timer = null;
+                }
+            }
+        };
+        timer.schedule(task, 1000, 1000);
+    }
+
+    public void computeTime() {
+        if (timeNum > 20) {
+            PreferencesUtils.putBoolean(this, "is_follow_weixin", true);
+        }
+    }
+
+
+    @Override
     protected void onResume() {
         super.onResume();
         if (isSetting) {
             shareHead();
         }
+        computeTime();
+
+        isFollow = PreferencesUtils.getBoolean(this, "is_follow_weixin", false);
     }
 
     @OnClick(R.id.right_image)

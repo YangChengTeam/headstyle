@@ -2,15 +2,20 @@ package com.feiyou.headstyle.ui.activity;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTabHost;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
 import com.baidu.location.Poi;
@@ -31,6 +36,8 @@ import com.feiyou.headstyle.ui.fragment.Show1Fragment;
 import com.feiyou.headstyle.util.PreferencesUtils;
 import com.feiyou.headstyle.util.SPUtils;
 import com.feiyou.headstyle.util.StringUtils;
+import com.feiyou.headstyle.util.WeiXinUtil;
+import com.feiyou.headstyle.view.WebPopupWindow;
 import com.hwangjr.rxbus.annotation.Subscribe;
 import com.hwangjr.rxbus.annotation.Tag;
 import com.hwangjr.rxbus.thread.EventThread;
@@ -85,7 +92,15 @@ public class MainActivity extends BaseActivity {
 
     private UserInfo userInfo;
 
+    private int is_close_gzh;
+
     //private LocationService locationService;
+
+    public static MainActivity mainActivity;
+
+    public static MainActivity getMainActivity() {
+        return mainActivity;
+    }
 
     @NeedsPermission({Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void requestLocation() {
@@ -126,6 +141,7 @@ public class MainActivity extends BaseActivity {
         mService = new UserService();
         okHttpRequest = new OKHttpRequest();
         MainActivityPermissionsDispatcher.requestLocationWithPermissionCheck(this);
+        mainActivity = this;
     }
 
     /**
@@ -157,7 +173,7 @@ public class MainActivity extends BaseActivity {
             public void onTabChanged(String tabId) {
                 Logger.e("tabId---" + tabId);
 
-                if(tabId.equals(getResources().getString(mTextviewArray[2]))){
+                if (tabId.equals(getResources().getString(mTextviewArray[2]))) {
                     SPUtils.getInstance(MainActivity.this, "TIPS_SHOW").put("tips", false);
                     tipsTextView.setVisibility(View.GONE);
                 }
@@ -179,10 +195,10 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        boolean isShow = SPUtils.getInstance(MainActivity.this,"TIPS_SHOW").getBoolean("tips",true);
-        if(!isShow){
+        boolean isShow = SPUtils.getInstance(MainActivity.this, "TIPS_SHOW").getBoolean("tips", true);
+        if (!isShow) {
             tipsTextView.setVisibility(View.GONE);
-        }else{
+        } else {
             tipsTextView.setVisibility(View.VISIBLE);
         }
     }
@@ -215,7 +231,7 @@ public class MainActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
 
-        if(XinQuVideoPlayer.backPress()){
+        if (XinQuVideoPlayer.backPress()) {
             return;
         }
 
@@ -239,6 +255,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         //获取用户信息，主要是获取评论数
         getUserInfo();
     }
@@ -490,4 +507,30 @@ public class MainActivity extends BaseActivity {
             }
         }
     };
+
+    public void fixOpenwx(int state,String url) {
+        if (state == 1) {
+            WebPopupWindow webPopupWindow = new WebPopupWindow(MainActivity.getMainActivity(), url);
+            webPopupWindow.show(MainActivity.getMainActivity().getWindow().getDecorView().getRootView());
+            return;
+        }
+
+        //AppUtil.copy(MainActivity.this, Config.WEIXIN);
+        String html = "关注【头像达人】微信公众号，做时尚达人吧!";
+        new MaterialDialog.Builder(MainActivity.this)
+                .title("关注微信公众号")
+                .content(Html.fromHtml(html))
+                .positiveText("确定")
+                .backgroundColor(Color.WHITE)
+                .contentColor(Color.GRAY)
+                .canceledOnTouchOutside(false)
+                .titleColor(Color.BLACK)
+                .onAny(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        WeiXinUtil.gotoWeiXin(MainActivity.this, "正在前往微信...");
+                    }
+                })
+                .build().show();
+    }
 }

@@ -123,4 +123,6 @@
 
     <string name="confirm_text">确定</string>
     <string name="open_weixin_text">是否打开微信并关注公众号</string>
+    <string name="weixin_code_text">关注[头像达人]公众号</string>
+    <string name="weixin_title_text">关注后，可免费下载,尽情炫酷</string>
 </resources>

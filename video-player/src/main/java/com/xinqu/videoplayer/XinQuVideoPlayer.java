@@ -65,7 +65,7 @@ public abstract class XinQuVideoPlayer extends FrameLayout implements View.OnCli
     public static final int VIDEO_IMAGE_DISPLAY_TYPE_ORIGINAL = 3;
     public static boolean ACTION_BAR_EXIST = true;
     public static boolean TOOL_BAR_EXIST = true;
-    public static int FULLSCREEN_ORIENTATION = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;//全屏方向
+    public static int FULLSCREEN_ORIENTATION = ActivityInfo.SCREEN_ORIENTATION_SENSOR;//全屏方向
     public static int NORMAL_ORIENTATION = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;//默认方向
     public static boolean SAVE_PROGRESS = true;
     public static int VIDEO_IMAGE_DISPLAY_TYPE = 0;
@@ -169,7 +169,7 @@ public abstract class XinQuVideoPlayer extends FrameLayout implements View.OnCli
     }
 
     public static void startFullscreen(Context context, Class _class, Object[] dataSourceObjects, int defaultUrlMapIndex, Object... objects) {
-        hideSupportActionBar(context);
+        //hideSupportActionBar(context);
         XinQuUtils.setRequestedOrientation(context, FULLSCREEN_ORIENTATION);
         ViewGroup vp = (ViewGroup) (XinQuUtils.scanForActivity(context)).getWindow().getDecorView();
         View old = vp.findViewById(R.id.xinqu_fullscreen_id);

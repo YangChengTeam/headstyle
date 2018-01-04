@@ -34,7 +34,7 @@ public class VideoAdapter extends BaseQuickAdapter<VideoInfo, BaseViewHolder> {
                 .transform(new GlideRoundTransform(mContext, 6));
 
         final XinQuVideoPlayerStandard xinQuVideoPlayerStandard = helper.getConvertView().findViewById(R.id.video_player);
-        xinQuVideoPlayerStandard.setUp(item.getPath(), XinQuVideoPlayer.CURRENT_STATE_NORMAL, false, "");
+        xinQuVideoPlayerStandard.setUp(item.getPath(), XinQuVideoPlayer.SCREEN_WINDOW_LIST, false, "");
         Glide.with(mContext).load(item.getCover()).apply(myOptions).into(xinQuVideoPlayerStandard.thumbImageView);
         xinQuVideoPlayerStandard.thumbImageView.setOnClickListener(new View.OnClickListener() {
             @Override

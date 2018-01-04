@@ -50,5 +50,5 @@
         android:paddingLeft="6dp"
         android:paddingRight="10dp"
         android:paddingTop="10dp"
-        android:src="@mipmap/share_image_icon"/>
+        android:src="@mipmap/add_weixin_icon"/>
 </RelativeLayout>

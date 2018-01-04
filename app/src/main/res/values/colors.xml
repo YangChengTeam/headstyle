@@ -63,4 +63,6 @@
 
     <color name="my_info_bg_color">#f0f0f0</color>
     <color name="comment_input_color">#515151</color>
+    <color name="weixin_color">#7ab939</color>
+    <color name="weixin_line_color">#c1c1c1c1</color>
 </resources>

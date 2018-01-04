@@ -195,10 +195,15 @@ public class SpecialListActivity extends BaseActivity implements SwipeRefreshLay
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onPause() {
+        super.onPause();
         if (Util.isOnMainThread()) {
             Glide.with(this).pauseRequests();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

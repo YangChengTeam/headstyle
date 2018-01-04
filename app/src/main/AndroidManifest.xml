@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
           package="com.feiyou.headstyle"
-          android:versionCode="32"
-          android:versionName="3.1.4">
+          android:versionCode="34"
+          android:versionName="3.1.6">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
@@ -12,8 +12,8 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.READ_LOGS"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.GET_TASKS"/>
     <uses-permission android:name="android.permission.SET_DEBUG_APP"/>
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
@@ -54,164 +54,165 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".ui.activity.MainActivity"
             android:screenOrientation="portrait"
-            android:name=".ui.activity.MainActivity">
+            android:theme="@style/CommonTheme">
         </activity>
         <activity
-            android:screenOrientation="portrait"
             android:name=".ui.activity.MyInfoActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:screenOrientation="portrait"
             android:name=".ui.activity.FriendInfoActivity"
             android:label=""
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:screenOrientation="portrait"
             android:name=".ui.activity.MyInfoUpdateActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:screenOrientation="portrait"
             android:name=".ui.activity.HeadListActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:screenOrientation="portrait"
             android:name=".ui.activity.SpecialListActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:screenOrientation="portrait"
             android:name=".ui.activity.FunTestDetailActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:screenOrientation="portrait"
             android:name=".ui.activity.FunTestItemActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:screenOrientation="portrait"
             android:name=".ui.activity.FunTestResultActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:screenOrientation="portrait"
             android:name=".ui.activity.HeadShowActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:screenOrientation="portrait"
             android:name=".ui.activity.HeadShow3Activity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:screenOrientation="portrait"
             android:name=".ui.activity.HeadShow1Activity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:screenOrientation="portrait"
             android:name=".ui.activity.HeadCreateShowActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:screenOrientation="portrait"
             android:name=".ui.activity.LoginActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
         <activity
-            android:screenOrientation="portrait"
             android:name=".ui.activity.RegisterActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
         <activity
-            android:screenOrientation="portrait"
             android:name=".ui.activity.MoreHeadTypeActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
         <activity
-            android:screenOrientation="portrait"
             android:name=".ui.activity.ImageCropActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
         <activity
-            android:screenOrientation="portrait"
             android:name=".ui.activity.SearchActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
         <activity
-            android:screenOrientation="portrait"
             android:name=".ui.activity.SearchListActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:screenOrientation="portrait"
             android:name=".ui.activity.KeepListActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
         <activity
-            android:screenOrientation="portrait"
             android:name=".ui.activity.ShowAddActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
         <activity
-            android:screenOrientation="portrait"
             android:name=".ui.activity.ShowDetailActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:screenOrientation="portrait"
             android:name=".ui.activity.ShowImageListActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/imageShow">
         </activity>
 
         <activity
-            android:screenOrientation="portrait"
             android:name=".ui.activity.MyArticleActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
         <activity
-            android:screenOrientation="portrait"
             android:name=".ui.activity.MyCreateListActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
         <activity
-            android:screenOrientation="portrait"
             android:name=".ui.activity.AboutActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
         <activity
-            android:screenOrientation="portrait"
             android:name=".ui.activity.FunTestCategoryActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:screenOrientation="portrait"
             android:name=".ui.activity.FunTestSearchActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:screenOrientation="portrait"
             android:name=".ui.activity.FunTestSearchResultActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:screenOrientation="portrait"
             android:name=".ui.activity.ArticleDetailActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
@@ -221,12 +222,14 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 
-        <activity android:screenOrientation="portrait" android:name="com.tencent.connect.avatar.ImageActivity"/>
+        <activity
+            android:name="com.tencent.connect.avatar.ImageActivity"
+            android:screenOrientation="portrait"/>
 
         <activity
-            android:screenOrientation="portrait"
             android:name="com.umeng.socialize.editorpage.ShareActivity"
             android:excludeFromRecents="true"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.UMDefault"/>
 
         <activity
@@ -240,12 +243,12 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
                 <data
                     android:host="com.feiyou.headstyle"
                     android:pathPrefix="/conversationlist"
-                    android:scheme="rong" />
+                    android:scheme="rong"/>
             </intent-filter>
         </activity>
 
@@ -286,7 +289,7 @@
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="lYkaEBXzo7fNM4RjdX2uxV6YugGl5G53" >
+            android:value="lYkaEBXzo7fNM4RjdX2uxV6YugGl5G53">
         </meta-data>
 
         <activity
