@@ -17,7 +17,7 @@
         android:id="@+id/tv_create_tips"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="快来制作圣诞帽头像哦"
+        android:text="快来制作头像吧"
         android:textColor="@color/white"
         android:layout_above="@+id/view_tab_line"
         android:background="@mipmap/tab_top_line"

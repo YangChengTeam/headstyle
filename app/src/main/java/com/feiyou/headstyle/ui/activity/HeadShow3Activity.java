@@ -54,6 +54,7 @@ import com.feiyou.headstyle.util.StringUtils;
 import com.feiyou.headstyle.util.TimeUtils;
 import com.feiyou.headstyle.util.ToastUtils;
 import com.feiyou.headstyle.view.SharePopupWindow;
+import com.feiyou.headstyle.view.WebPopupWindow;
 import com.feiyou.headstyle.view.WeiXinFollowDialog;
 import com.feiyou.headstyle.view.flingswipe.SwipeFlingAdapterView;
 import com.feiyou.headstyle.view.qqhead.BaseUIListener;
@@ -680,10 +681,24 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
         if (isFollow) {
             saveImageToGallery();
         } else {
-            MobclickAgent.onEvent(this, "down_load_click", AppUtils.getVersionName(this));
-            WeiXinFollowDialog weiXinFollowDialog = new WeiXinFollowDialog(this);
-            weiXinFollowDialog.setTimeListener(this);
-            weiXinFollowDialog.showChargeDialog(weiXinFollowDialog);
+            if (App.weixinState == 1) {
+                if (StringUtils.isEmpty(App.weixinUrl)) {
+                    MobclickAgent.onEvent(this, "down_load_click", AppUtils.getVersionName(this));
+                    WeiXinFollowDialog weiXinFollowDialog = new WeiXinFollowDialog(this);
+                    weiXinFollowDialog.setTimeListener(this);
+                    weiXinFollowDialog.showChargeDialog(weiXinFollowDialog);
+                    return;
+                }
+
+                WebPopupWindow webPopupWindow = new WebPopupWindow(HeadShow3Activity.this, App.weixinUrl);
+                webPopupWindow.show(HeadShow3Activity.this.getWindow().getDecorView().getRootView());
+                return;
+            } else {
+                MobclickAgent.onEvent(this, "down_load_click", AppUtils.getVersionName(this));
+                WeiXinFollowDialog weiXinFollowDialog = new WeiXinFollowDialog(this);
+                weiXinFollowDialog.setTimeListener(this);
+                weiXinFollowDialog.showChargeDialog(weiXinFollowDialog);
+            }
         }
     }
 

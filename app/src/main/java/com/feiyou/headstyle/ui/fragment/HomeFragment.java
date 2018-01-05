@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.feiyou.headstyle.App;
 import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.adapter.HeadTypeAdapter;
 import com.feiyou.headstyle.adapter.HeadWallAdapter;
@@ -494,6 +495,9 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                     if (weiXinInfoRet != null && weiXinInfoRet.errCode == 1) {
                         weixinUrl = weiXinInfoRet.data.url;
                         weixinState = weiXinInfoRet.data.status;
+
+                        App.weixinUrl = weiXinInfoRet.data.url;
+                        App.weixinState = weiXinInfoRet.data.status;
                     }
                 }
             }

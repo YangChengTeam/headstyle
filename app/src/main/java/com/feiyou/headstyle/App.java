@@ -62,6 +62,10 @@ public class App extends Application {
 
     public LocationService locationService;
 
+    public static int weixinState;
+
+    public static String weixinUrl = "";
+
     @Override
     public void onCreate() {
         super.onCreate();
