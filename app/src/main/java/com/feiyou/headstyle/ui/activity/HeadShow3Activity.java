@@ -451,6 +451,7 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
 
     @Override
     public void removeFirstObjectInAdapter() {
+        MobclickAgent.onEvent(this, "swipe_image_count", AppUtils.getVersionName(this));
         adapter.remove(0);
         imagePath = null;
     }

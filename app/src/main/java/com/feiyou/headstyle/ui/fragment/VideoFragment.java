@@ -16,6 +16,8 @@ import com.feiyou.headstyle.common.Constant;
 import com.feiyou.headstyle.common.Server;
 import com.feiyou.headstyle.net.OKHttpRequest;
 import com.feiyou.headstyle.net.listener.OnResponseListener;
+import com.feiyou.headstyle.util.AppUtils;
+import com.umeng.analytics.MobclickAgent;
 
 import butterknife.BindView;
 
@@ -59,6 +61,9 @@ public class VideoFragment extends BaseFragment implements SwipeRefreshLayout.On
     @Override
     public void initViews() {
         super.initViews();
+
+        MobclickAgent.onEvent(getActivity(), "video_page", AppUtils.getVersionName(getActivity()));
+
         okHttpRequest = new OKHttpRequest();
         Glide.with(getActivity()).load(R.drawable.main_loading_gif).into(mLoadImageView);
         swipeLayout.setColorSchemeResources(
