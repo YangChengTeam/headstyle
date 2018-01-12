@@ -724,7 +724,6 @@ public class MyInfoActivity extends BaseActivity {
         }
     }
 
-
     private void chooseDate() {
         //获取当前年月日
         Calendar calendar = Calendar.getInstance();

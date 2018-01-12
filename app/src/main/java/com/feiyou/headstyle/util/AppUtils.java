@@ -282,4 +282,8 @@ public class AppUtils {
     public static Intent getLaunchAppIntent(Context context, String packageName) {
         return context.getPackageManager().getLaunchIntentForPackage(packageName);
     }
+
+    public static boolean checkBits(int status, int checkBit) {
+        return (status & checkBit) == checkBit;
+    }
 }

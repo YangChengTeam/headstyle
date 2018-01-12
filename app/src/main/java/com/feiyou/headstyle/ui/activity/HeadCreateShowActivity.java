@@ -3,7 +3,6 @@ package com.feiyou.headstyle.ui.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,13 +15,16 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.feiyou.headstyle.App;
 import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.bean.MyCreateInfo;
@@ -36,10 +38,8 @@ import com.feiyou.headstyle.service.UserService;
 import com.feiyou.headstyle.util.AppUtils;
 import com.feiyou.headstyle.util.DbUtil;
 import com.feiyou.headstyle.util.DialogUtils;
-import com.feiyou.headstyle.util.ImageUtils;
 import com.feiyou.headstyle.util.PreferencesUtils;
 import com.feiyou.headstyle.util.StringUtils;
-import com.feiyou.headstyle.util.TimeUtils;
 import com.feiyou.headstyle.util.ToastUtils;
 import com.feiyou.headstyle.view.SharePopupWindow;
 import com.feiyou.headstyle.view.qqhead.BaseUIListener;
@@ -54,7 +54,6 @@ import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.umeng.socialize.media.UMImage;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
@@ -73,17 +72,17 @@ public class HeadCreateShowActivity extends BaseActivity {
     @BindString(R.string.head_show_text)
     String titleTextValue;
 
-    @BindView(R.id.square_head_image)
-    SimpleDraweeView squareHeadImage;
+    @BindView(R.id.iv_set_qq_head)
+    ImageView qqAuthImageBtn;
 
-    @BindView(R.id.circle_head_image)
-    SimpleDraweeView circleHeadImage;
+    @BindView(R.id.iv_down_head)
+    ImageView downImg;
 
-    @BindView(R.id.qq_auth_login_btn)
-    TextView qqAuthImageBtn;
+    @BindView(R.id.iv_add_create)
+    ImageView mAddCreateImageView;
 
-    @BindView(R.id.down_img)
-    TextView downImg;
+    @BindView(R.id.iv_create_result)
+    ImageView mResultImageView;
 
     private UMShareAPI mShareAPI = null;
 
@@ -150,6 +149,7 @@ public class HeadCreateShowActivity extends BaseActivity {
     @Override
     public void loadData() {
         image = new UMImage(HeadCreateShowActivity.this, R.drawable.logo);
+
         mShareAPI = UMShareAPI.get(this);
         platform = SHARE_MEDIA.QQ;
 
@@ -159,23 +159,19 @@ public class HeadCreateShowActivity extends BaseActivity {
             if (bundle != null && bundle.getString("imagePath") != null) {
                 imagePath = bundle.getString("imagePath");
             }
-            Uri uri = Uri.parse("file:///" + imagePath);
-            squareHeadImage.setImageURI(uri);
-            circleHeadImage.setImageURI(uri);
 
-            String fileName = String.valueOf(TimeUtils.getCurrentTimeInLong()) + ".jpg";
-            String savePath = Constant.BASE_NORMAL_SAVE_IMAGE_DIR + File.separator + "DCIM" + File.separator + "camera";
-
-            Bitmap tempBitmap = BitmapFactory.decodeFile(imagePath);
-            if (tempBitmap != null) {
-                tempBitmap = ImageUtils.compressImage(tempBitmap, 150);
-                boolean flag = ImageUtils.writeImageInSDCard(tempBitmap, savePath, fileName);
-                if (flag) {
-                    imagePath = savePath + "/" + fileName;
-                }
-
-                image = new UMImage(HeadCreateShowActivity.this, tempBitmap);
+            if(bundle != null && bundle.getBoolean("from_createlist",false)){
+                mAddCreateImageView.setImageResource(R.mipmap.my_create_select_icon);
             }
+
+            Glide.with(this).asBitmap().load(imagePath).into(new SimpleTarget<Bitmap>() {
+                @Override
+                public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+                    mResultImageView.setImageBitmap(resource);
+                    image = new UMImage(HeadCreateShowActivity.this, resource);
+                }
+            });
+
         }
 
         if (AppUtils.isLogin(this)) {
@@ -183,7 +179,6 @@ public class HeadCreateShowActivity extends BaseActivity {
         } else {
             initLoginDialog();
         }
-
     }
 
     /**
@@ -205,7 +200,7 @@ public class HeadCreateShowActivity extends BaseActivity {
         });
     }
 
-    @OnClick(R.id.add_article_img)
+    @OnClick(R.id.iv_add_create)
     public void addArticleImg(View view) {
         operation = 2;
         if (AppUtils.isLogin(this)) {
@@ -223,18 +218,18 @@ public class HeadCreateShowActivity extends BaseActivity {
             myCreateInfo.setUid(userInfo.uid);
 
             if (imagePath != null && imagePath.length() > 0) {
-                //String photoId = imagePath.substring(imagePath.lastIndexOf("/") + 1, imagePath.length());
                 myCreateInfo.setPhoto_id(imagePath);
             }
 
             daoSession.insert(myCreateInfo);
+            mAddCreateImageView.setImageResource(R.mipmap.my_create_select_icon);
             ToastUtils.show(this, "已添加到我的制作");
         } else {
             ToastUtils.show(this, "操作失败，请稍后重试");
         }
     }
 
-    @OnClick(R.id.down_img)
+    @OnClick(R.id.iv_down_head)
     public void downImg(View view) {
         Message message = new Message();
         if (saveImageToGallery()) {
@@ -266,7 +261,7 @@ public class HeadCreateShowActivity extends BaseActivity {
         return flag;
     }
 
-    @OnClick(R.id.qq_auth_login_btn)
+    @OnClick(R.id.iv_set_qq_head)
     public void toAuth(View view) {
         operation = 1;
         //已经登录授权过，无需再次授权

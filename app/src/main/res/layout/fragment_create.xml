@@ -6,10 +6,27 @@
     android:background="@mipmap/create_bg"
     android:orientation="vertical">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@color/colorPrimary"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:text="@string/create_title_text"
+            android:textColor="@color/white"
+            android:textSize="20sp"/>
+    </RelativeLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="24dp"
         android:gravity="center">
 
         <ImageView
@@ -21,46 +38,30 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="25dp"
-        android:layout_marginRight="25dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="24dp"
         android:gravity="center"
         android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="140dp"
-            android:layout_height="140dp"
-            android:background="@drawable/create_boder_bg"
-            android:gravity="center">
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="2dp"
+            android:src="@mipmap/create_simple2"/>
 
-            <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@+id/square_head_image"
-                android:layout_width="135dp"
-                android:layout_height="135dp"
-                android:scaleType="fitXY"
-                fresco:placeholderImage="@mipmap/example_square"/>
-        </LinearLayout>
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="2dp"
+            android:src="@mipmap/create_simple1"/>
 
-        <LinearLayout
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_marginLeft="10dp"
-            android:gravity="center">
-
-            <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@+id/circle_head_image"
-                android:layout_width="146dp"
-                android:layout_height="146dp"
-                fresco:placeholderImage="@mipmap/example_square"
-                fresco:roundAsCircle="true"
-                fresco:roundBottomLeft="false"
-                fresco:roundBottomRight="false"
-                fresco:roundWithOverlayColor="@color/white"
-                fresco:roundedCornerRadius="5dp"
-                fresco:roundingBorderColor="@color/more_line_color"
-                fresco:roundingBorderWidth="3dp"/>
-        </LinearLayout>
-
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="2dp"
+            android:src="@mipmap/create_simple3"/>
     </LinearLayout>
 
     <FrameLayout
@@ -68,7 +69,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="42dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -82,7 +83,7 @@
                 android:layout_height="wrap_content"
                 android:background="@mipmap/select_photo"
                 android:gravity="center"
-                android:text="选择图片"
+                android:text="本地图片"
                 android:textColor="@color/white"/>
         </LinearLayout>
 
@@ -113,7 +114,7 @@
                 android:layout_height="wrap_content"
                 android:background="@mipmap/edit_photo"
                 android:gravity="center"
-                android:text="编辑图片"
+                android:text="拍摄照片"
                 android:textColor="@color/colorPrimary"/>
         </LinearLayout>
 

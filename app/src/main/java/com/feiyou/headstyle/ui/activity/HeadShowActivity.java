@@ -40,7 +40,7 @@ import com.feiyou.headstyle.net.listener.OnResponseListener;
 import com.feiyou.headstyle.service.UserService;
 import com.feiyou.headstyle.util.AppUtils;
 import com.feiyou.headstyle.util.DialogUtils;
-import com.feiyou.headstyle.util.ImageUtils;
+import com.feiyou.headstyle.util.ImgUtils;
 import com.feiyou.headstyle.util.PreferencesUtils;
 import com.feiyou.headstyle.util.StringUtils;
 import com.feiyou.headstyle.util.TimeUtils;
@@ -240,7 +240,7 @@ public class HeadShowActivity extends BaseActivity {
                     imagePath = file.getAbsolutePath();
                     Bitmap tempBitmap = BitmapFactory.decodeFile(imagePath);
                     if (tempBitmap != null) {
-                        tempBitmap = ImageUtils.compressImage(tempBitmap, 100);
+                        tempBitmap = ImgUtils.compressImage(tempBitmap, 100);
                         image = new UMImage(HeadShowActivity.this, tempBitmap);
                     }
                 }

@@ -133,6 +133,7 @@ public class MyCreateListActivity extends BaseActivity implements SwipeRefreshLa
         if (data != null && data.size() > 0) {
             intent.putExtra("isCreateQQImage", true);
             intent.putExtra("imagePath",data.get(position).getPhoto_id());
+            intent.putExtra("from_createlist",true);
         }
 
         startActivity(intent);

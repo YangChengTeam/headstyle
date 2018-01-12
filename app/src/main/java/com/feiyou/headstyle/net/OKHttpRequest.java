@@ -1,7 +1,7 @@
 package com.feiyou.headstyle.net;
 
 import com.feiyou.headstyle.net.listener.OnResponseListener;
-import com.feiyou.headstyle.util.ImageUtils;
+import com.feiyou.headstyle.util.ImgUtils;
 import com.feiyou.headstyle.util.TimeUtils;
 import com.orhanobut.logger.Logger;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -50,7 +50,7 @@ public class OKHttpRequest {
         PostFormBuilder builder = OkHttpUtils.post().params(params).url(url);
         if (files != null) {
             //修改上传图片的尺寸
-            files = ImageUtils.changeFileSize(files);
+            files = ImgUtils.changeFileSize(files);
 
             for (int i = 0; i < files.size(); i++) {
                 String fileName = String.valueOf(TimeUtils.getCurrentTimeInLong()) +(int)(Math.random()*(9999-1000+1))+1000 + ".jpg";

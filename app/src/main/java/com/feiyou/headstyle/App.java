@@ -16,8 +16,6 @@ import com.feiyou.headstyle.view.FrescoImageLoader;
 import com.hwangjr.rxbus.RxBus;
 import com.umeng.socialize.PlatformConfig;
 
-import org.lasque.tusdk.core.TuSdk;
-
 import cn.finalteam.galleryfinal.CoreConfig;
 import cn.finalteam.galleryfinal.FunctionConfig;
 import cn.finalteam.galleryfinal.GalleryFinal;
@@ -30,6 +28,8 @@ import io.rong.imlib.model.Message;
  * Created by admin on 2016/8/31.
  */
 public class App extends Application {
+
+    protected static App mInstance;
 
     public static FunctionConfig functionConfig;
 
@@ -66,6 +66,20 @@ public class App extends Application {
 
     public static String weixinUrl = "";
 
+    public App() {
+        mInstance = this;
+    }
+
+    public static App getApp() {
+        if (mInstance != null && mInstance instanceof App) {
+            return (App) mInstance;
+        } else {
+            mInstance = new App();
+            mInstance.onCreate();
+            return (App) mInstance;
+        }
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -80,6 +94,8 @@ public class App extends Application {
                 .setTitleBarTextColor(Color.rgb(255, 255, 255))
                 .setFabNornalColor(Color.rgb(251, 83, 96))
                 .setFabPressedColor(Color.rgb(246, 130, 130))
+                .setCropControlColor(Color.parseColor("#fb5161"))
+                .setEditPhotoBgTexture(getResources().getDrawable(R.mipmap.common_cancel_normal))
                 .build();
 
         //配置功能
@@ -98,7 +114,7 @@ public class App extends Application {
             sdPath = FileUtils.getDiskCacheDir(getApplicationContext());
         }
         // 开发ID (请前往 http://tusdk.com 获取您的 APP 开发秘钥)
-        TuSdk.init(this.getApplicationContext(), "9c6a7d8303d3c7c3-02-muczp1");
+        //TuSdk.init(this.getApplicationContext(), "9c6a7d8303d3c7c3-02-muczp1");
         DbHelper.init(App.this);
         /*OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .connectTimeout(30000L, TimeUnit.MILLISECONDS)
@@ -124,6 +140,16 @@ public class App extends Application {
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         MultiDex.install(this);
+    }
+
+    //获取应用的data/data/....File目录
+    public String getFilesDirPath() {
+        return getFilesDir().getAbsolutePath();
+    }
+
+    //获取应用的data/data/....Cache目录
+    public String getCacheDirPath() {
+        return getCacheDir().getAbsolutePath();
     }
 
 }

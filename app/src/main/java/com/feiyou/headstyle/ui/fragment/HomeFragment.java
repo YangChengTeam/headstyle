@@ -53,6 +53,7 @@ import com.feiyou.headstyle.ui.activity.SearchActivity;
 import com.feiyou.headstyle.ui.activity.SpecialListActivity;
 import com.feiyou.headstyle.util.AppUtils;
 import com.feiyou.headstyle.util.GlideHelper;
+import com.feiyou.headstyle.util.NavgationBarUtils;
 import com.feiyou.headstyle.util.NetWorkUtils;
 import com.feiyou.headstyle.util.PreferencesUtils;
 import com.feiyou.headstyle.util.StringUtils;
@@ -205,6 +206,8 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     @Override
     public void initViews() {
         super.initViews();
+
+        Logger.e("nav height --->" + NavgationBarUtils.getNavigationBarHeight(getActivity()));
 
         //头部控件View
         View headView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_home_header, null);

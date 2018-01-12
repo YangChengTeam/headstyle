@@ -18,7 +18,7 @@ import com.feiyou.headstyle.common.Server;
 import com.feiyou.headstyle.net.OKHttpRequest;
 import com.feiyou.headstyle.net.listener.OnResponseListener;
 import com.feiyou.headstyle.service.UserService;
-import com.feiyou.headstyle.util.ImageUtils;
+import com.feiyou.headstyle.util.ImgUtils;
 import com.feiyou.headstyle.util.PreferencesUtils;
 import com.feiyou.headstyle.util.StringUtils;
 import com.feiyou.headstyle.util.ToastUtils;
@@ -310,7 +310,7 @@ public class ShowAddActivity extends BaseActivity {
         @Override
         protected List<File> doInBackground(Integer... params) {
            // return NetWorkUtils.is404NotFound(Constant.FIGHT_DOWN_URL);
-            return ImageUtils.changeFileSize(tempFiles);
+            return ImgUtils.changeFileSize(tempFiles);
         }
 
         @Override

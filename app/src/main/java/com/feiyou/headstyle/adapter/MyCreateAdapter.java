@@ -1,7 +1,6 @@
 package com.feiyou.headstyle.adapter;
 
 import android.content.Context;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,8 +8,10 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.bean.MyCreateInfo;
+import com.feiyou.headstyle.util.ScreenUtils;
 import com.feiyou.headstyle.util.StringUtils;
 
 import java.util.ArrayList;
@@ -80,9 +81,12 @@ public class MyCreateAdapter extends BaseAdapter {
 
         if (dataList != null && dataList.get(position) != null) {
             if (!StringUtils.isEmpty(dataList.get(position).getPhoto_id())) {
-                Uri uri = Uri.parse("file:///" + dataList.get(position).getPhoto_id());
-                //holder.headImage.setImageURI(uri);
-                Glide.with(mContext).load(uri).into(holder.headImage);
+
+                RequestOptions options = new RequestOptions();
+                options.placeholder(R.mipmap.example_square);
+                int width = ScreenUtils.getWidth(mContext) / 3;
+                options.override(width, width);
+                Glide.with(mContext).load(dataList.get(position).getPhoto_id()).apply(options).into(holder.headImage);
             }
         }
 

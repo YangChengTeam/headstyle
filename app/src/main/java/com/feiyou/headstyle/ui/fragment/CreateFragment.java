@@ -1,44 +1,35 @@
 package com.feiyou.headstyle.ui.fragment;
 
+import android.Manifest;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.feiyou.headstyle.R;
-import com.feiyou.headstyle.ui.activity.HeadCreateShowActivity;
-import com.feiyou.headstyle.util.ImageUtils;
+import com.feiyou.headstyle.ui.activity.PhotoEditActivity;
+import com.feiyou.headstyle.util.StringUtils;
 import com.feiyou.headstyle.util.ToastUtils;
+import com.orhanobut.logger.Logger;
 
-import org.lasque.tusdk.TuSdkGeeV1;
-import org.lasque.tusdk.core.TuSdk;
-import org.lasque.tusdk.core.TuSdkResult;
-import org.lasque.tusdk.core.seles.tusdk.FilterManager;
-import org.lasque.tusdk.impl.activity.TuFragment;
-import org.lasque.tusdk.impl.components.TuAlbumComponent;
-import org.lasque.tusdk.impl.components.TuEditMultipleComponent;
-import org.lasque.tusdk.modules.components.TuSdkComponent;
-import org.lasque.tusdk.modules.components.TuSdkHelperComponent;
+import java.util.List;
 
-import butterknife.BindView;
 import butterknife.OnClick;
+import cn.finalteam.galleryfinal.FunctionConfig;
+import cn.finalteam.galleryfinal.GalleryFinal;
+import cn.finalteam.galleryfinal.model.PhotoInfo;
 
 public class CreateFragment extends BaseFragment {
 
-    @BindView(R.id.square_head_image)
-    SimpleDraweeView squareHeadImage;
+    private final int REQUEST_CODE_GALLERY = 1002;
 
-    @BindView(R.id.circle_head_image)
-    SimpleDraweeView circleHeadImage;
+    private final int REQUEST_CODE_CROP = 1003;
 
-    public TuSdkHelperComponent componentHelper;
+    private final int REQUEST_CODE_CAMERA = 1004;
 
-    private Bitmap editBitmap;
-
-    // 组件选项配置
-    TuEditMultipleComponent component = null;
+    private static final int OPEN_CAMERA = 1005;
 
     private String editImagePath;
 
@@ -53,17 +44,11 @@ public class CreateFragment extends BaseFragment {
     @Override
     public void initVars() {
         super.initVars();
-        this.componentHelper = new TuSdkHelperComponent(getActivity());
-        //editBitmap = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.logo);
     }
 
     @Override
     public void initViews() {
         super.initViews();
-        // 异步方式初始化滤镜管理器
-        // 需要等待滤镜管理器初始化完成，才能使用所有功能
-        //TuSdk.messageHub().setStatus(getActivity(), R.string.lsq_initing);
-        TuSdk.checkFilterManager(mFilterManagerDelegate);
     }
 
     @Override
@@ -78,32 +63,49 @@ public class CreateFragment extends BaseFragment {
      */
     @OnClick(R.id.select_btn)
     public void selectPhoto(View view) {
+        GalleryFinal.openGallerySingle(REQUEST_CODE_GALLERY, mOnHanlderResultCallback);
+    }
 
-        TuAlbumComponent comp = TuSdkGeeV1.albumCommponent(getActivity(), new TuSdkComponent.TuSdkComponentDelegate() {
-            @Override
-            public void onComponentFinished(TuSdkResult result, Error error, TuFragment lastFragment) {
+    private GalleryFinal.OnHanlderResultCallback mOnHanlderResultCallback = new GalleryFinal.OnHanlderResultCallback() {
+        @Override
+        public void onHanlderSuccess(int requestCode, List<PhotoInfo> resultList) {
 
-                if (result.imageSqlInfo != null && result.imageSqlInfo.path != null) {
+            if (requestCode == REQUEST_CODE_GALLERY || requestCode == REQUEST_CODE_CAMERA) {
+                if (resultList != null && resultList.get(0) != null) {
+                    editImagePath = resultList.get(0).getPhotoPath();
+                    Logger.e("select path--->" + editImagePath);
+                    if (StringUtils.isEmpty(editImagePath)) {
+                        ToastUtils.show(getActivity(), "图片加载异常,请重试");
+                        return;
+                    }
 
-                    String tempPath = ImageUtils.changeFileSizeByLocalPath(result.imageSqlInfo.path);
+                    FunctionConfig config = new FunctionConfig.Builder()
+                            .setEnableEdit(false)
+                            .setEnableCrop(false)
+                            .setForceCrop(true)
+                            .setCropSquare(true)
+                            .build();
 
-                    Uri uri = Uri.parse("file:///" + tempPath);
-
-                    editImagePath = tempPath;
-
-                    squareHeadImage.setImageURI(uri);//正方形
-                    circleHeadImage.setImageURI(uri);//圆形
-
-                    editPhoto(null);
+                    GalleryFinal.openCrop(REQUEST_CODE_CROP, config,editImagePath, mOnHanlderResultCallback);
                 }
             }
-        });
 
-        // 在组件执行完成后自动关闭组件
-        comp.setAutoDismissWhenCompleted(true)
-                // 显示组件
-                .showComponent();
-    }
+            if (requestCode == REQUEST_CODE_CROP) {
+                if (resultList != null && resultList.get(0) != null) {
+                    editImagePath = resultList.get(0).getPhotoPath();
+                    Logger.e("crop path--->" + editImagePath);
+                    Intent intent = new Intent(getActivity(), PhotoEditActivity.class);
+                    intent.putExtra("image_path", editImagePath);
+                    getActivity().startActivity(intent);
+                }
+            }
+        }
+
+        @Override
+        public void onHanlderFailure(int requestCode, String errorMsg) {
+            ToastUtils.show(getActivity(), errorMsg);
+        }
+    };
 
     /**
      * 编辑图片
@@ -113,64 +115,36 @@ public class CreateFragment extends BaseFragment {
     @OnClick(R.id.edit_btn)
     public void editPhoto(View view) {
 
-        if (editImagePath != null) {
-
-            //editBitmap = ImageUtils.getBitmapFromFile(new File(editImagePath), 500, 500);
-            editBitmap = BitmapFactory.decodeFile(editImagePath);
-            editBitmap = ImageUtils.compressImage(editBitmap, 300);
-
-            component = TuSdkGeeV1.editMultipleCommponent(getActivity(), delegate);
-
-            // 是否保存到相册
-            component.componentOption().editMultipleOption().setSaveToAlbum(false);
-            // 是否保存到临时文件
-            component.componentOption().editMultipleOption().setSaveToTemp(true);
-
-            // 设置图片
-            component.setImage(editBitmap)
-                    // 在组件执行完成后自动关闭组件
-                    .setAutoDismissWhenCompleted(true)
-                    // 开启组件
-                    .showComponent();
+        if (Build.VERSION.SDK_INT >= 23) {
+            int checkCallPhonePermission = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA);
+            if (checkCallPhonePermission != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, OPEN_CAMERA);
+                return;
+            } else {
+                GalleryFinal.openCamera(REQUEST_CODE_CAMERA, mOnHanlderResultCallback);
+            }
         } else {
-            ToastUtils.show(getActivity(), "请选择图片后编辑");
+            GalleryFinal.openCamera(REQUEST_CODE_CAMERA, mOnHanlderResultCallback);
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            //就像onActivityResult一样这个地方就是判断你是从哪来的。
+            case OPEN_CAMERA:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission Granted
+                    GalleryFinal.openCamera(REQUEST_CODE_CAMERA, mOnHanlderResultCallback);
+                } else {
+                    ToastUtils.show(getActivity(), "禁止了相机权限,请开启");
+                    // Permission Denied
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 
-    /**
-     * 组件委托
-     */
-    TuSdkComponent.TuSdkComponentDelegate delegate = new TuSdkComponent.TuSdkComponentDelegate() {
-        @Override
-        public void onComponentFinished(TuSdkResult result1, Error error, TuFragment lastFragment) {
-
-            if (result1.imageFile.exists() && result1.imageFile.getAbsolutePath() != null) {
-                /*Uri uri = Uri.parse("file:///" + result1.imageFile.getAbsolutePath());
-
-                squareHeadImage.setImageURI(uri);
-
-                RoundingParams roundingParams = RoundingParams.fromCornersRadius(2f);
-                roundingParams.setBorder(Color.rgb(238, 238, 238), 10f);
-                roundingParams.setRoundAsCircle(true);
-                circleHeadImage.getHierarchy().setRoundingParams(roundingParams);
-
-                circleHeadImage.setImageURI(uri);*/
-
-
-                Intent intent = new Intent(getActivity(), HeadCreateShowActivity.class);
-
-                intent.putExtra("isCreateQQImage", true);
-                intent.putExtra("imagePath", result1.imageFile.getAbsolutePath());
-
-                startActivity(intent);
-            }
-        }
-    };
-
-    private FilterManager.FilterManagerDelegate mFilterManagerDelegate = new FilterManager.FilterManagerDelegate() {
-        @Override
-        public void onFilterManagerInited(FilterManager manager) {
-            //TuSdk.messageHub().showSuccess(getActivity(), R.string.lsq_inited);
-        }
-    };
 }

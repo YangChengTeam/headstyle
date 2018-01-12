@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -29,9 +28,6 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.feiyou.headstyle.App;
 import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.adapter.HeadShowItemAdapter;
@@ -47,7 +43,7 @@ import com.feiyou.headstyle.service.HomeService;
 import com.feiyou.headstyle.service.UserService;
 import com.feiyou.headstyle.util.AppUtils;
 import com.feiyou.headstyle.util.DialogUtils;
-import com.feiyou.headstyle.util.ImageUtils;
+import com.feiyou.headstyle.util.ImgUtils;
 import com.feiyou.headstyle.util.NavgationBarUtils;
 import com.feiyou.headstyle.util.PreferencesUtils;
 import com.feiyou.headstyle.util.StringUtils;
@@ -72,14 +68,6 @@ import com.umeng.socialize.media.UMImage;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.FileCallBack;
 
-import org.lasque.tusdk.TuSdkGeeV1;
-import org.lasque.tusdk.core.TuSdk;
-import org.lasque.tusdk.core.TuSdkResult;
-import org.lasque.tusdk.core.seles.tusdk.FilterManager;
-import org.lasque.tusdk.impl.activity.TuFragment;
-import org.lasque.tusdk.impl.components.TuEditMultipleComponent;
-import org.lasque.tusdk.modules.components.TuSdkComponent;
-import org.lasque.tusdk.modules.components.TuSdkHelperComponent;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -179,11 +167,6 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
 
     private boolean isLastPage;
 
-    public TuSdkHelperComponent componentHelper;
-
-    // 组件选项配置
-    TuEditMultipleComponent component = null;
-
     private boolean isSearch = false;
 
     private String searchKey = "";
@@ -227,7 +210,6 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
     @Override
     protected void initVars() {
         super.initVars();
-        this.componentHelper = new TuSdkHelperComponent(this);
     }
 
     @Override
@@ -236,7 +218,6 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
 
         MobclickAgent.onEvent(this, "image_head_detail", AppUtils.getVersionName(this));
 
-        TuSdk.checkFilterManager(mFilterManagerDelegate);
         okHttpRequest = new OKHttpRequest();
         mService = new HomeService();
         uService = new UserService();
@@ -298,7 +279,7 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
                     imagePath = file.getAbsolutePath();
                     Bitmap tempBitmap = BitmapFactory.decodeFile(imagePath);
                     if (tempBitmap != null) {
-                        tempBitmap = ImageUtils.compressImage(tempBitmap, 100);
+                        tempBitmap = ImgUtils.compressImage(tempBitmap, 100);
                         image = new UMImage(HeadShow3Activity.this, tempBitmap);
                     }
                 }
@@ -477,12 +458,6 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
 
     @OnClick(R.id.iv_make_image)
     public void makeImage(View view) {
-        component = TuSdkGeeV1.editMultipleCommponent(this, delegate);
-
-        // 是否保存到相册
-        component.componentOption().editMultipleOption().setSaveToAlbum(false);
-        // 是否保存到临时文件
-        component.componentOption().editMultipleOption().setSaveToTemp(true);
 
         if (StringUtils.isEmpty(imagePath)) {
             if (adapter.getHeads() != null && adapter.getHeads().size() > 0) {
@@ -507,41 +482,20 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
 
                     Bitmap tempBitmap = BitmapFactory.decodeFile(imagePath);
                     if (tempBitmap != null) {
-                        tempBitmap = ImageUtils.compressImage(tempBitmap, 100);
+                        tempBitmap = ImgUtils.compressImage(tempBitmap, 100);
                         image = new UMImage(HeadShow3Activity.this, tempBitmap);
                     }
 
                     isSetting = false;
-                    // 设置图片
-                    component.setImage(tempBitmap)
-                            // 在组件执行完成后自动关闭组件
-                            .setAutoDismissWhenCompleted(true)
-                            // 开启组件
-                            .showComponent();
                 }
             });
         } else {
-            if (imagePath != null && imagePath.length() > 0) {
-                isSetting = false;
-
-                Glide.with(this).load(imagePath).into(new SimpleTarget<Drawable>() {
-                    @Override
-                    public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
-                        BitmapDrawable bitmapDrawable = (BitmapDrawable) resource;
-                        // 设置图片
-                        component.setImage(bitmapDrawable.getBitmap())
-                                // 在组件执行完成后自动关闭组件
-                                .setAutoDismissWhenCompleted(true)
-                                // 开启组件
-                                .showComponent();
-                    }
-                });
-            } else {
-                ToastUtils.show(HeadShow3Activity.this, "图片地址有误，不能设置QQ头像");
-            }
+            isSetting = false;
         }
 
-
+        Intent intent = new Intent(HeadShow3Activity.this, PhotoEditActivity.class);
+        intent.putExtra("image_path", imagePath);
+        startActivity(intent);
     }
 
     @OnClick(R.id.iv_in_keep)
@@ -649,7 +603,7 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
 
                         Bitmap tempBitmap = BitmapFactory.decodeFile(imagePath);
                         if (tempBitmap != null) {
-                            tempBitmap = ImageUtils.compressImage(tempBitmap, 100);
+                            tempBitmap = ImgUtils.compressImage(tempBitmap, 100);
                             image = new UMImage(HeadShow3Activity.this, tempBitmap);
                         }
 
@@ -741,7 +695,7 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
 
                         Bitmap tempBitmap = BitmapFactory.decodeFile(imagePath);
                         if (tempBitmap != null) {
-                            tempBitmap = ImageUtils.compressImage(tempBitmap, 100);
+                            tempBitmap = ImgUtils.compressImage(tempBitmap, 100);
                             image = new UMImage(HeadShow3Activity.this, tempBitmap);
                         }
 
@@ -769,7 +723,7 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
             @Override
             public void run() {
                 timeNum++;
-                if (timeNum > 20) {
+                if (timeNum > 10) {
                     timer.cancel();
                     timer.purge();
                     timer = null;
@@ -780,7 +734,7 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
     }
 
     public void computeTime() {
-        if (timeNum > 20) {
+        if (timeNum > 10) {
             PreferencesUtils.putBoolean(this, "is_follow_weixin", true);
         }
     }
@@ -822,7 +776,7 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
 
                     Bitmap tempBitmap = BitmapFactory.decodeFile(imagePath);
                     if (tempBitmap != null) {
-                        tempBitmap = ImageUtils.compressImage(tempBitmap, 100);
+                        tempBitmap = ImgUtils.compressImage(tempBitmap, 100);
                         image = new UMImage(HeadShow3Activity.this, tempBitmap);
                     }
 
@@ -1076,7 +1030,7 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
 
                                                 Bitmap tempBitmap = BitmapFactory.decodeFile(imagePath);
                                                 if (tempBitmap != null) {
-                                                    tempBitmap = ImageUtils.compressImage(tempBitmap, 100);
+                                                    tempBitmap = ImgUtils.compressImage(tempBitmap, 100);
                                                     image = new UMImage(HeadShow3Activity.this, tempBitmap);
                                                 }
 
@@ -1174,30 +1128,6 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
         UMShareAPI.get(this).HandleQQError(HeadShow3Activity.this, requestCode, umAuthListener);
         mShareAPI.onActivityResult(requestCode, resultCode, data);
     }
-
-    /**
-     * 组件委托
-     */
-    TuSdkComponent.TuSdkComponentDelegate delegate = new TuSdkComponent.TuSdkComponentDelegate() {
-        @Override
-        public void onComponentFinished(TuSdkResult result1, Error error, TuFragment lastFragment) {
-
-            if (result1.imageFile.exists() && result1.imageFile.getAbsolutePath() != null) {
-
-                Intent intent = new Intent(HeadShow3Activity.this, HeadCreateShowActivity.class);
-                intent.putExtra("isCreateQQImage", true);
-                intent.putExtra("imagePath", result1.imageFile.getAbsolutePath());
-                startActivity(intent);
-            }
-        }
-    };
-
-    private FilterManager.FilterManagerDelegate mFilterManagerDelegate = new FilterManager.FilterManagerDelegate() {
-        @Override
-        public void onFilterManagerInited(FilterManager manager) {
-            //TuSdk.messageHub().showSuccess(getActivity(), R.string.lsq_inited);
-        }
-    };
 
     @OnClick(R.id.back_image)
     public void finishActivity() {

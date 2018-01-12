@@ -9,8 +9,8 @@ android {
         applicationId "com.feiyou.headstyle"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 34
-        versionName "3.1.6"
+        versionCode 35
+        versionName "3.2"
         multiDexEnabled true
         ndk {
             abiFilters "armeabi-v7a", "x86"
@@ -93,7 +93,6 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.0.0'
     compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.3'
     //compile 'com.jakewharton.rxbinding:rxbinding:+'
-    compile project(':TuSDKUI')
     compile project(':rxbus')
     compile project(':IMKit')
     compile project(':banner')
@@ -109,4 +108,6 @@ dependencies {
     annotationProcessor "com.github.hotchemi:permissionsdispatcher-processor:3.1.0"
     compile files('libs/BaiduLBS_Android.jar')
     implementation project(':video-player')
+    compile project(":Gpu-Image")
+    compile project(":ImageViewTouch")
 }
