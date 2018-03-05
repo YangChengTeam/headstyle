@@ -41,7 +41,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.feiyou.headstyle.ui.fragment.Show1Fragment.showImageUrlList;
+import static com.feiyou.headstyle.ui.fragment.Show1Fragment.showgGameImageUrlList;
 
 public class PhotosListAdapter extends RecyclerView.Adapter<PhotosListAdapter.MyViewHolder> implements View.OnClickListener {
 
@@ -116,8 +116,8 @@ public class PhotosListAdapter extends RecyclerView.Adapter<PhotosListAdapter.My
                 if (cimgs != null) {
                     String[] imgs = cimgs.split("\\|");
                     for (int m = imgs.length - 1; m >= 0; m--) {
-                        if (!showImageUrlList.contains(imgs[m])) {
-                            showImageUrlList.add(imgs[m]);
+                        if (!showgGameImageUrlList.contains(imgs[m])) {
+                            showgGameImageUrlList.add(imgs[m]);
                         }
                     }
                 }
@@ -200,7 +200,7 @@ public class PhotosListAdapter extends RecyclerView.Adapter<PhotosListAdapter.My
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 Intent intent = new Intent(mContext, ShowImageListActivity.class);
 
-                intent.putStringArrayListExtra("imageList", (ArrayList<String>) showImageUrlList);
+                intent.putStringArrayListExtra("imageList", (ArrayList<String>) showgGameImageUrlList);
                 intent.putExtra("position", position);
                 intent.putExtra("current_img_url", imageDatas.get(position).getHurl());
                 mContext.startActivity(intent);

@@ -114,9 +114,11 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
                 final String cimgs = articleData.get(i).cimg;
                 if (cimgs != null) {
                     String[] imgs = cimgs.split("\\|");
-                    for (int m = imgs.length - 1; m >= 0; m--) {
-                        if (!showImageUrlList.contains(imgs[m])) {
-                            showImageUrlList.add(imgs[m]);
+                    if(showImageUrlList != null && showImageUrlList.size() > 0) {
+                        for (int m = imgs.length - 1; m >= 0; m--) {
+                            if (!showImageUrlList.contains(imgs[m])) {
+                                showImageUrlList.add(imgs[m]);
+                            }
                         }
                     }
                 }

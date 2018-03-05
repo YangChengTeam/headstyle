@@ -22,6 +22,7 @@ import com.feiyou.headstyle.common.Server;
 import com.feiyou.headstyle.net.OKHttpRequest;
 import com.feiyou.headstyle.net.listener.OnResponseListener;
 import com.feiyou.headstyle.service.SpecialService;
+import com.feiyou.headstyle.util.AppUtils;
 import com.feiyou.headstyle.util.StringUtils;
 import com.feiyou.headstyle.view.DividerItemDecoration;
 import com.orhanobut.logger.Logger;
@@ -156,7 +157,9 @@ public class SpecialListActivity extends BaseActivity implements SwipeRefreshLay
                     specialCountTextView.setText(ret.total + "张");
                     if (ret.list != null) {
                         if (Util.isOnMainThread()) {
-                            Glide.with(SpecialListActivity.this).load(ret.list.get(0).getHurl()).into(specialImageView);
+                            if (AppUtils.isValidContext(SpecialListActivity.this)) {
+                                Glide.with(SpecialListActivity.this).load(ret.list.get(0).getHurl()).into(specialImageView);
+                            }
                         }
                         mAdapter.setNewData(ret.list);
                     }

@@ -12,9 +12,10 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.feiyou.headstyle.App;
 import com.feiyou.headstyle.R;
-import com.feiyou.headstyle.adapter.ArticleListAdapter;
+import com.feiyou.headstyle.adapter.ArticleNewListAdapter;
 import com.feiyou.headstyle.bean.ArticleInfo;
 import com.feiyou.headstyle.bean.ArticleListRet;
 import com.feiyou.headstyle.bean.UserInfo;
@@ -44,7 +45,7 @@ import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public class MyArticleActivity extends BaseActivity implements ArticleListAdapter.LoginShowListener, SwipeRefreshLayout.OnRefreshListener {
+public class MyArticleActivity extends BaseActivity implements ArticleNewListAdapter.LoginShowListener, SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.title_text)
     TextView titleTv;
@@ -58,7 +59,7 @@ public class MyArticleActivity extends BaseActivity implements ArticleListAdapte
     @BindView(R.id.article_recyclerview_list)
     RecyclerView mRecyclerView;
 
-    private ArticleListAdapter mAdapter;
+    private ArticleNewListAdapter mAdapter;
 
     private List<ArticleInfo> articleInfoList;
 
@@ -90,6 +91,8 @@ public class MyArticleActivity extends BaseActivity implements ArticleListAdapte
 
     public int maxPage;
 
+    public int pageSize = 10;
+
     @Override
     public int getLayoutId() {
         return R.layout.activity_article;
@@ -118,34 +121,28 @@ public class MyArticleActivity extends BaseActivity implements ArticleListAdapte
         articleService = new ArticleService();
         okHttpRequest = new OKHttpRequest();
 
-        mAdapter = new ArticleListAdapter(this, articleInfoList);
+        mAdapter = new ArticleNewListAdapter(this, articleInfoList);
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setShowListener(this);
 
-        mAdapter.setOnItemClickListener(new ArticleListAdapter.OnRecyclerViewItemClickListener() {
+        mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(View view, int position) {
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+
                 Intent intent = new Intent(MyArticleActivity.this, ArticleDetailActivity.class);
+                intent.putExtra("show_type", 0);
                 intent.putExtra("sid", articleInfoList.get(position).sid);
                 startActivity(intent);
             }
         });
 
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        mAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (isSlideToBottom(recyclerView)) {
-                    pageNum++;
-                    getNextData();
-                }
+            public void onLoadMoreRequested() {
+                pageNum++;
+                getNextData();
             }
-
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-        });
+        },mRecyclerView);
 
         mShareAPI = UMShareAPI.get(this);
         initLoginDialog();
@@ -213,8 +210,8 @@ public class MyArticleActivity extends BaseActivity implements ArticleListAdapte
                                 articleInfoList.clear();
                             }
 
-                            articleInfoList.addAll(temp);
-                            //mAdapter.addNewDatas(temp);
+                            //articleInfoList.addAll(temp);
+                            mAdapter.addNewDatas(temp);
                             mAdapter.notifyDataSetChanged();
                         }
                     }
@@ -248,7 +245,12 @@ public class MyArticleActivity extends BaseActivity implements ArticleListAdapte
                     //设置首页列表数据
                     List<ArticleInfo> temp = articleService.getData(response).data;
                     if (temp != null && temp.size() > 0) {
-                        //articleInfoList.addAll(temp);
+                        if(temp.size() == pageSize){
+                            mAdapter.loadMoreComplete();
+                        }
+                        if(temp.size() < pageSize){
+                            mAdapter.loadMoreEnd();
+                        }
                         mAdapter.addNewDatas(temp);
 
                         mAdapter.notifyDataSetChanged();

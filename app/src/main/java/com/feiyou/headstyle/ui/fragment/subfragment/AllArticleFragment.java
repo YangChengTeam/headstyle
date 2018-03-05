@@ -11,9 +11,10 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.feiyou.headstyle.App;
 import com.feiyou.headstyle.R;
-import com.feiyou.headstyle.adapter.ArticleListAdapter;
+import com.feiyou.headstyle.adapter.ArticleNewListAdapter;
 import com.feiyou.headstyle.bean.ArticleInfo;
 import com.feiyou.headstyle.bean.UserInfo;
 import com.feiyou.headstyle.common.Constant;
@@ -45,7 +46,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 
-public class AllArticleFragment extends BaseFragment implements ArticleListAdapter.LoginShowListener, SwipeRefreshLayout.OnRefreshListener {
+public class AllArticleFragment extends BaseFragment implements ArticleNewListAdapter.LoginShowListener, SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.pull_to_refresh)
     SwipeRefreshLayout swipeLayout;
@@ -53,7 +54,7 @@ public class AllArticleFragment extends BaseFragment implements ArticleListAdapt
     @BindView(R.id.article_recyclerview_list)
     RecyclerView mRecyclerView;
 
-    private ArticleListAdapter mAdapter;
+    private ArticleNewListAdapter mAdapter;
 
     private List<ArticleInfo> articleInfoList;
 
@@ -87,6 +88,8 @@ public class AllArticleFragment extends BaseFragment implements ArticleListAdapt
 
     private int lastItemPosition = -1;
 
+    public int pageSize = 10;
+
     public AllArticleFragment() {
     }
 
@@ -118,13 +121,14 @@ public class AllArticleFragment extends BaseFragment implements ArticleListAdapt
         articleService = new ArticleService();
         okHttpRequest = new OKHttpRequest();
 
-        mAdapter = new ArticleListAdapter(getActivity(), articleInfoList);
+        mAdapter = new ArticleNewListAdapter(getActivity(), articleInfoList);
+
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setShowListener(this);
 
-        mAdapter.setOnItemClickListener(new ArticleListAdapter.OnRecyclerViewItemClickListener() {
+        mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(View view, int position) {
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 lastItemPosition = position;
                 Intent intent = new Intent(getActivity(), ArticleDetailActivity.class);
                 intent.putExtra("show_type", 0);
@@ -133,23 +137,15 @@ public class AllArticleFragment extends BaseFragment implements ArticleListAdapt
             }
         });
 
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        mAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (isSlideToBottom(recyclerView)) {
-                    pageNum++;
-                    if (pageNum <= maxPage) {
-                        getNextData();
-                    }
+            public void onLoadMoreRequested() {
+                pageNum++;
+                if (pageNum <= maxPage) {
+                    getNextData();
                 }
             }
-
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-        });
+        },mRecyclerView);
 
         if (AppUtils.isLogin(getActivity())) {
             userInfo = (UserInfo) PreferencesUtils.getObject(getActivity(), Constant.USER_INFO, UserInfo.class);
@@ -246,9 +242,13 @@ public class AllArticleFragment extends BaseFragment implements ArticleListAdapt
                 //设置首页列表数据
                 List<ArticleInfo> temp = articleService.getData(response).data;
                 if (temp != null && temp.size() > 0) {
-                    //articleInfoList.addAll(temp);
+                    if(temp.size() == pageSize){
+                        mAdapter.loadMoreComplete();
+                    }
+                    if(temp.size() < pageSize){
+                        mAdapter.loadMoreEnd();
+                    }
                     mAdapter.addNewDatas(temp);
-
                     mAdapter.notifyDataSetChanged();
                 }
             }

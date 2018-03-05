@@ -207,33 +207,37 @@ public class FunTestItemActivity extends BaseActivity {
         RxView.clicks(mSubmitButton).throttleFirst(200, TimeUnit.MILLISECONDS).subscribe(new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
-                int tempIndex;
-                int itemScore = 0;
-                if (cType == 1) {
-                    if (itemResult != null) {
-                        for (int i = 0; i < itemResult.length; i++) {
-                            int index = itemResult[i] - 1;
-                            if (index < 0) {
-                                index = 0;
+                try {
+                    int tempIndex;
+                    int itemScore = 0;
+                    if (cType == 1) {
+                        if (itemResult != null) {
+                            for (int i = 0; i < itemResult.length; i++) {
+                                int index = itemResult[i] - 1;
+                                if (index < 0) {
+                                    index = 0;
+                                }
+                                int tempScore = mTopicList.get(i).list.get(index).itemcount;
+                                itemScore += tempScore;
                             }
-                            int tempScore = mTopicList.get(i).list.get(index).itemcount;
-                            itemScore += tempScore;
                         }
+
+                        Logger.e("total score --->" + itemScore);
+
+                    } else {
+                        currentPosition = topicIndexMap.get(aPosition);
+                        tempIndex = analysisMap.get(aPosition) == null ? 0 : analysisMap.get(aPosition) - 1;
+                        itemScore = mTopicList.get(currentPosition).list.get(tempIndex) == null ? 0 : mTopicList.get(currentPosition).list.get(tempIndex).itemcount;
                     }
-
-                    Logger.e("total score --->" + itemScore);
-
-                } else {
-                    currentPosition = topicIndexMap.get(aPosition);
-                    tempIndex = analysisMap.get(aPosition) - 1;
-                    itemScore = mTopicList.get(currentPosition).list.get(tempIndex).itemcount;
+                    Intent intent = new Intent(FunTestItemActivity.this, FunTestResultActivity.class);
+                    intent.putExtra("test_score", itemScore);
+                    intent.putExtra("test_id", funTestInfo.testid);
+                    intent.putExtra("fun_test_data_info", funTestInfo);
+                    startActivity(intent);
+                    finish();
+                } catch (NullPointerException e) {
+                    Logger.i("funtestitem error --->" + e.getMessage());
                 }
-                Intent intent = new Intent(FunTestItemActivity.this, FunTestResultActivity.class);
-                intent.putExtra("test_score", itemScore);
-                intent.putExtra("test_id", funTestInfo.testid);
-                intent.putExtra("fun_test_data_info", funTestInfo);
-                startActivity(intent);
-                finish();
             }
         });
 
