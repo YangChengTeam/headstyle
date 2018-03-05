@@ -25,6 +25,16 @@ public class WebPopupWindow extends BasePopupWindow {
 
     private Dialog loadingDialog;
 
+    public interface TimeListener {
+        void startCount();
+    }
+
+    public TimeListener timeListener;
+
+    public void setTimeListener(TimeListener timeListener) {
+        this.timeListener = timeListener;
+    }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @SuppressLint("SetJavaScriptEnabled")
     public WebPopupWindow(Activity context, final String url) {
@@ -75,6 +85,9 @@ public class WebPopupWindow extends BasePopupWindow {
                 if (openWxpay(url)) {
                 } else {
                     view.loadUrl(url);
+                    if(timeListener != null) {
+                        timeListener.startCount();
+                    }
                 }
                 return true;
             }
@@ -92,6 +105,9 @@ public class WebPopupWindow extends BasePopupWindow {
                 intent.setAction(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse(url));
                 mContext.startActivity(intent);
+                if(timeListener != null) {
+                    timeListener.startCount();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
                 MainActivity.getMainActivity().fixOpenwx(0,url);

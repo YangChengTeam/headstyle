@@ -86,7 +86,7 @@ import okhttp3.Call;
  */
 
 public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapterView.onFlingListener,
-        SwipeFlingAdapterView.OnItemClickListener, WeiXinFollowDialog.TimeListener {
+        SwipeFlingAdapterView.OnItemClickListener, WeiXinFollowDialog.TimeListener,WebPopupWindow.TimeListener{
 
     @BindView(R.id.title_text)
     TextView titleTv;
@@ -646,6 +646,7 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
                 }
 
                 WebPopupWindow webPopupWindow = new WebPopupWindow(HeadShow3Activity.this, App.weixinUrl);
+                webPopupWindow.setTimeListener(this);
                 webPopupWindow.show(HeadShow3Activity.this.getWindow().getDecorView().getRootView());
                 return;
             } else {
@@ -733,12 +734,17 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
         timer.schedule(task, 1000, 1000);
     }
 
+    @Override
+    public void startCount() {
+        Logger.i("startCount--->");
+        timeStart();
+    }
+
     public void computeTime() {
         if (timeNum > 10) {
             PreferencesUtils.putBoolean(this, "is_follow_weixin", true);
         }
     }
-
 
     @Override
     protected void onResume() {

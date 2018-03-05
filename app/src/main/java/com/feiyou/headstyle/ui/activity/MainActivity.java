@@ -511,26 +511,28 @@ public class MainActivity extends BaseActivity {
     public void fixOpenwx(int state,String url) {
         if (state == 1) {
             WebPopupWindow webPopupWindow = new WebPopupWindow(MainActivity.getMainActivity(), url);
+            webPopupWindow.setTimeListener(null);
             webPopupWindow.show(MainActivity.getMainActivity().getWindow().getDecorView().getRootView());
-            return;
-        }
 
-        //AppUtil.copy(MainActivity.this, Config.WEIXIN);
-        String html = "关注【头像达人】微信公众号，做时尚达人吧!";
-        new MaterialDialog.Builder(MainActivity.this)
-                .title("关注微信公众号")
-                .content(Html.fromHtml(html))
-                .positiveText("确定")
-                .backgroundColor(Color.WHITE)
-                .contentColor(Color.GRAY)
-                .canceledOnTouchOutside(false)
-                .titleColor(Color.BLACK)
-                .onAny(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        WeiXinUtil.gotoWeiXin(MainActivity.this, "正在前往微信...");
-                    }
-                })
-                .build().show();
+            return;
+        }else {
+            //AppUtil.copy(MainActivity.this, Config.WEIXIN);
+            String html = "关注【头像达人】微信公众号，做时尚达人吧!";
+            new MaterialDialog.Builder(MainActivity.this)
+                    .title("关注微信公众号")
+                    .content(Html.fromHtml(html))
+                    .positiveText("确定")
+                    .backgroundColor(Color.WHITE)
+                    .contentColor(Color.GRAY)
+                    .canceledOnTouchOutside(false)
+                    .titleColor(Color.BLACK)
+                    .onAny(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            WeiXinUtil.gotoWeiXin(MainActivity.this, "正在前往微信...");
+                        }
+                    })
+                    .build().show();
+        }
     }
 }
