@@ -66,6 +66,7 @@ import java.util.Map;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.OnClick;
+import io.rong.imkit.RongIM;
 import okhttp3.Call;
 
 public class HeadShowActivity extends BaseActivity {
@@ -732,6 +733,15 @@ public class HeadShowActivity extends BaseActivity {
                                 } else {
                                     addKeep();
                                 }
+                                App.connect(userInfo.getUsertoken());
+                                Uri uri = null;
+                                if (!StringUtils.isBlank(userInfo.getUserimg())) {
+                                    uri = Uri.parse(userInfo.getUserimg());
+                                }
+                                io.rong.imlib.model.UserInfo ryUser = new io.rong.imlib.model.UserInfo(userInfo.getUid(), userInfo.getNickName(), uri);
+                                RongIM.getInstance().setCurrentUserInfo(ryUser);
+
+                                RongIM.getInstance().refreshUserInfoCache(ryUser);
                             }
                         }
 

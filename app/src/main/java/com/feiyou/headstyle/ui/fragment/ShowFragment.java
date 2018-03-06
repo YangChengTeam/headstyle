@@ -48,6 +48,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import io.rong.imkit.RongIM;
 import okhttp3.Call;
 
 /**
@@ -390,6 +391,15 @@ public class ShowFragment extends BaseFragment implements CustomWebViewDelegate,
                                     onResume();
                                 }
                                 RxBus.get().post(Constant.LOGIN_SUCCESS,"loginSuccess");
+                                App.connect(userInfo.getUsertoken());
+                                Uri uri = null;
+                                if (!StringUtils.isBlank(userInfo.getUserimg())) {
+                                    uri = Uri.parse(userInfo.getUserimg());
+                                }
+                                io.rong.imlib.model.UserInfo ryUser = new io.rong.imlib.model.UserInfo(userInfo.getUid(), userInfo.getNickName(), uri);
+                                RongIM.getInstance().setCurrentUserInfo(ryUser);
+
+                                RongIM.getInstance().refreshUserInfoCache(ryUser);
                             }
                         }
 

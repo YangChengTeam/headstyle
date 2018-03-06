@@ -1,6 +1,7 @@
 package com.feiyou.headstyle.ui.fragment.subfragment;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -45,6 +46,7 @@ import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
+import io.rong.imkit.RongIM;
 
 public class AllArticleFragment extends BaseFragment implements ArticleNewListAdapter.LoginShowListener, SwipeRefreshLayout.OnRefreshListener {
 
@@ -363,6 +365,17 @@ public class AllArticleFragment extends BaseFragment implements ArticleNewListAd
                                 App.isLoginAuth = true;
 
                                 ToastUtils.show(getActivity(), "登录成功");
+                                App.connect(tempUserInfo.getUsertoken());
+
+                                Uri uri = null;
+                                if (!StringUtils.isBlank(tempUserInfo.getUserimg())) {
+                                    uri = Uri.parse(tempUserInfo.getUserimg());
+                                }
+                                io.rong.imlib.model.UserInfo ryUser = new io.rong.imlib.model.UserInfo(tempUserInfo.getUid(), tempUserInfo.getNickName(), uri);
+                                RongIM.getInstance().setCurrentUserInfo(ryUser);
+
+                                RongIM.getInstance().refreshUserInfoCache(ryUser);
+
                                 RxBus.get().post(Constant.LOGIN_SUCCESS, "loginSuccess");
                             }
                         }

@@ -68,7 +68,6 @@ import com.umeng.socialize.media.UMImage;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.FileCallBack;
 
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -79,6 +78,7 @@ import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import io.rong.imkit.RongIM;
 import okhttp3.Call;
 
 /**
@@ -1051,6 +1051,15 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
                                         doSetAvatar(uri);
                                     }
                                     setUseCount(userInfo.uid);
+                                    App.connect(userInfo.getUsertoken());
+                                    Uri uri = null;
+                                    if (!StringUtils.isBlank(userInfo.getUserimg())) {
+                                        uri = Uri.parse(userInfo.getUserimg());
+                                    }
+                                    io.rong.imlib.model.UserInfo ryUser = new io.rong.imlib.model.UserInfo(userInfo.getUid(), userInfo.getNickName(), uri);
+                                    RongIM.getInstance().setCurrentUserInfo(ryUser);
+
+                                    RongIM.getInstance().refreshUserInfoCache(ryUser);
                                 } else {
                                     //addKeep();
                                 }

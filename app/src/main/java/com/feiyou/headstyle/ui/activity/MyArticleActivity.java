@@ -1,6 +1,7 @@
 package com.feiyou.headstyle.ui.activity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -44,6 +45,7 @@ import java.util.Map;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.OnClick;
+import io.rong.imkit.RongIM;
 
 public class MyArticleActivity extends BaseActivity implements ArticleNewListAdapter.LoginShowListener, SwipeRefreshLayout.OnRefreshListener {
 
@@ -369,6 +371,16 @@ public class MyArticleActivity extends BaseActivity implements ArticleNewListAda
 
                                 pageNum = 1;
                                 loadData();
+                                App.connect(tempUserInfo.getUsertoken());
+
+                                Uri uri = null;
+                                if (!StringUtils.isBlank(tempUserInfo.getUserimg())) {
+                                    uri = Uri.parse(tempUserInfo.getUserimg());
+                                }
+                                io.rong.imlib.model.UserInfo ryUser = new io.rong.imlib.model.UserInfo(tempUserInfo.getUid(), tempUserInfo.getNickName(), uri);
+                                RongIM.getInstance().setCurrentUserInfo(ryUser);
+
+                                RongIM.getInstance().refreshUserInfoCache(ryUser);
                                 RxBus.get().post(Constant.LOGIN_SUCCESS,"loginSuccess");
                             }
                         }

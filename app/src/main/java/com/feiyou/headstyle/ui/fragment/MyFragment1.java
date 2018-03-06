@@ -157,14 +157,14 @@ public class MyFragment1 extends BaseFragment {
 
         mShareAPI = UMShareAPI.get(getActivity());
 
-        if (App.isLetter) {
+        if (AppUtils.isLogin(getActivity())) {
+            userInfo = (UserInfo) PreferencesUtils.getObject(getActivity(), Constant.USER_INFO, UserInfo.class);
+        }
+
+        if (App.isLetter && userInfo != null) {
             mLetterCountImageView.setVisibility(View.VISIBLE);
         }else{
             mLetterCountImageView.setVisibility(View.GONE);
-        }
-
-        if (AppUtils.isLogin(getActivity())) {
-            userInfo = (UserInfo) PreferencesUtils.getObject(getActivity(), Constant.USER_INFO, UserInfo.class);
         }
 
         RxView.clicks(mUserHeadImageView).throttleFirst(200, TimeUnit.MILLISECONDS).subscribe(new Action1<Void>() {
@@ -561,6 +561,7 @@ public class MyFragment1 extends BaseFragment {
                                 PreferencesUtils.putObject(getActivity(), Constant.USER_INFO, userInfo);
                                 App.isLoginAuth = true;
                                 getUserInfo();
+                                App.connect(userInfo.getUsertoken());
                                 RxBus.get().post(Constant.LOGIN_SUCCESS, "loginSuccess");
                             }
                         }

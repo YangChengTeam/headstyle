@@ -2,6 +2,7 @@ package com.feiyou.headstyle.ui.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
@@ -70,6 +71,7 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.rong.imkit.RongIM;
 import okhttp3.Call;
 import rx.functions.Action1;
 
@@ -402,6 +404,15 @@ public class FunTestResultActivity extends BaseActivity implements FunTestCommen
     protected void onResume() {
         super.onResume();
         userInfo = (UserInfo) PreferencesUtils.getObject(FunTestResultActivity.this, Constant.USER_INFO, UserInfo.class);
+
+        Uri uri = null;
+        if (!StringUtils.isBlank(userInfo.getUserimg())) {
+            uri = Uri.parse(userInfo.getUserimg());
+        }
+        io.rong.imlib.model.UserInfo ryUser = new io.rong.imlib.model.UserInfo(userInfo.getUid(), userInfo.getNickName(), uri);
+        RongIM.getInstance().setCurrentUserInfo(ryUser);
+
+        RongIM.getInstance().refreshUserInfoCache(ryUser);
     }
 
     //弹出窗口监听消失
@@ -790,6 +801,7 @@ public class FunTestResultActivity extends BaseActivity implements FunTestCommen
                                 PreferencesUtils.putObject(FunTestResultActivity.this, Constant.USER_INFO, userInfo);
                                 App.isLoginAuth = true;
                                 onResume();
+                                App.connect(userInfo.getUsertoken());
                                 RxBus.get().post(Constant.LOGIN_SUCCESS,"loginSuccess");
                             }
                         }

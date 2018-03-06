@@ -1,6 +1,7 @@
 package com.feiyou.headstyle.ui.activity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -38,6 +39,7 @@ import java.util.Map;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.OnClick;
+import io.rong.imkit.RongIM;
 
 public class ShowDetailActivity extends BaseActivity {
 
@@ -292,6 +294,17 @@ public class ShowDetailActivity extends BaseActivity {
                                 oid = userInfo.openid;
                                 loadData();
                                 ToastUtils.show(ShowDetailActivity.this, "登录成功");
+                                App.connect(userInfo.getUsertoken());
+
+                                Uri uri = null;
+                                if (!StringUtils.isBlank(userInfo.getUserimg())) {
+                                    uri = Uri.parse(userInfo.getUserimg());
+                                }
+                                io.rong.imlib.model.UserInfo ryUser = new io.rong.imlib.model.UserInfo(userInfo.getUid(), userInfo.getNickName(), uri);
+                                RongIM.getInstance().setCurrentUserInfo(ryUser);
+
+                                RongIM.getInstance().refreshUserInfoCache(ryUser);
+
                                 RxBus.get().post(Constant.LOGIN_SUCCESS,"loginSuccess");
                             }
                         }

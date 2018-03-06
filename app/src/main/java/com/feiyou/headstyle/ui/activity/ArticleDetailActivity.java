@@ -78,6 +78,7 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.rong.imkit.RongIM;
 import rx.functions.Action1;
 
 
@@ -746,6 +747,15 @@ public class ArticleDetailActivity extends BaseActivity implements CommentAdapte
                                     message.what = 0;
                                     handler.sendMessage(message);
                                     RxBus.get().post(Constant.LOGIN_SUCCESS, "loginSuccess");
+                                    Uri uri = null;
+                                    if (!StringUtils.isBlank(userInfo.getUserimg())) {
+                                        uri = Uri.parse(userInfo.getUserimg());
+                                    }
+                                    io.rong.imlib.model.UserInfo ryUser = new io.rong.imlib.model.UserInfo(userInfo.getUid(), userInfo.getNickName(), uri);
+                                    RongIM.getInstance().setCurrentUserInfo(ryUser);
+
+                                    RongIM.getInstance().refreshUserInfoCache(ryUser);
+                                    App.connect(userInfo.getUsertoken());
                                 }
                             }
                         }

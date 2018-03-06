@@ -3,6 +3,7 @@ package com.feiyou.headstyle.ui.fragment;
 
 import android.content.Intent;
 import android.graphics.Matrix;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
@@ -62,6 +63,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import io.rong.imkit.RongIM;
 import okhttp3.Call;
 
 /**
@@ -433,6 +435,15 @@ public class Show1Fragment extends BaseFragment implements CustomWebViewDelegate
                                 } else {
                                     onResume();
                                 }
+                                App.connect(userInfo.getUsertoken());
+                                Uri uri = null;
+                                if (!StringUtils.isBlank(userInfo.getUserimg())) {
+                                    uri = Uri.parse(userInfo.getUserimg());
+                                }
+                                io.rong.imlib.model.UserInfo ryUser = new io.rong.imlib.model.UserInfo(userInfo.getUid(), userInfo.getNickName(), uri);
+                                RongIM.getInstance().setCurrentUserInfo(ryUser);
+
+                                RongIM.getInstance().refreshUserInfoCache(ryUser);
                             }
                         }
 

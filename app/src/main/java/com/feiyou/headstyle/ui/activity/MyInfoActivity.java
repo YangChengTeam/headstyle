@@ -67,6 +67,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.finalteam.galleryfinal.GalleryFinal;
 import cn.finalteam.galleryfinal.model.PhotoInfo;
+import io.rong.imkit.RongIM;
 import me.shaohui.advancedluban.Luban;
 import me.shaohui.advancedluban.OnMultiCompressListener;
 import rx.functions.Action1;
@@ -441,6 +442,9 @@ public class MyInfoActivity extends BaseActivity {
                 if (userInfo != null) {
                     PreferencesUtils.putObject(MyInfoActivity.this, Constant.USER_INFO, null);
                     App.isLoginAuth = false;
+                    RongIM.getInstance().logout();
+                    App.isConnect = false;
+                    App.isLetter = false;
                 }
                 finish();
             }
