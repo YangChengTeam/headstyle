@@ -2,6 +2,7 @@ package com.feiyou.headstyle.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -81,6 +82,7 @@ public class MyInfoUpdateActivity extends BaseActivity {
                 case 2:
                     titleName = "修改签名";
                     mUpdateEditText.setText(userInfo != null ? userInfo.getSign() : "");
+                    mUpdateEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(15)});
                     break;
                 case 3:
                     titleName = "修改QQ";

@@ -379,12 +379,13 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
 
         loadCount++;
 
-        Random random = new Random();
-        int result = random.nextInt(10);
-        rPageNum = result + 1;
-        pageNum = rPageNum;
-
-        Logger.e("loadDataByParams 随机产生的页码url--->" + rPageNum);
+        if(mAdapter.getDataList() == null || mAdapter.getDataList().size() == 0){
+            Random random = new Random();
+            int result = random.nextInt(10);
+            rPageNum = result + 1;
+            pageNum = rPageNum;
+            Logger.e("首次请求随机产生的页码page--->" + rPageNum);
+        }
 
         StringBuffer homeUrl = new StringBuffer(Server.NEW_HOME_DATA);
 
@@ -434,7 +435,7 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                     Logger.e("first data ==" + temp.get(0).getHurl());
                     mAdapter.addNewDatas(temp);
                     pageNum++;
-                    Logger.e("加载最新页码page--->" + pageNum);
+                    Logger.e("下一页页码page--->" + pageNum);
 
                     Message message = new Message();
                     message.what = 0;
@@ -602,6 +603,8 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
             if (userInfo != null) {
                 GlideHelper.circleImageView(getActivity(), userImg, userInfo.getUserimg(), R.mipmap.user_head_def_icon);
             }
+        }else{
+            GlideHelper.circleImageView(getActivity(), userImg, R.mipmap.user_head_def_icon, R.mipmap.user_head_def_icon);
         }
     }
 
@@ -920,13 +923,7 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
 
     public void refreshData() {
         mAdapter.clear();
-        Random random = new Random();
-        int result = random.nextInt(10);
-        rPageNum = result + 1;
-        pageNum = rPageNum;
         loadCount = 0;
-        Logger.e("随机产生的页码url--->" + rPageNum);
-
         isRefresh = true;
         loadDataByParams();
 
@@ -986,8 +983,8 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                     new ShareAction(getActivity())
                             .setPlatform(SHARE_MEDIA.QQ)
                             .setCallback(umShareListener)
-                            .withTitle("你的好友送了你一顶【圣诞帽】，快快点击领取")
-                            .withText("圣诞帽个性定制，快来使用吧")
+                            .withTitle("换个头像换个心情，希望你每天不一样!")
+                            .withText("个性头像定制，快来使用吧")
                             .withTargetUrl("http://gx.qqtn.com/")
                             .withMedia(image)
                             .share();
@@ -999,8 +996,8 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                     new ShareAction(getActivity())
                             .setPlatform(SHARE_MEDIA.QZONE)
                             .setCallback(umShareListener)
-                            .withTitle("你的好友送了你一顶【圣诞帽】，快快点击领取")
-                            .withText("圣诞帽个性定制，快来使用吧")
+                            .withTitle("换个头像换个心情，希望你每天不一样!")
+                            .withText("个性头像定制，快来使用吧")
                             .withTargetUrl("http://gx.qqtn.com/")
                             .withMedia(image)
                             .share();
@@ -1012,8 +1009,8 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                     new ShareAction(getActivity())
                             .setPlatform(SHARE_MEDIA.WEIXIN)
                             .setCallback(umShareListener)
-                            .withTitle("你的好友送了你一顶【圣诞帽】，快快点击领取")
-                            .withText("圣诞帽个性定制，快来使用吧")
+                            .withTitle("换个头像换个心情，希望你每天不一样!")
+                            .withText("个性头像定制，快来使用吧")
                             .withTargetUrl("http://gx.qqtn.com/")
                             .withMedia(image)
                             .share();
@@ -1025,8 +1022,8 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                     new ShareAction(getActivity())
                             .setPlatform(SHARE_MEDIA.WEIXIN_CIRCLE)
                             .setCallback(umShareListener)
-                            .withTitle("你的好友送了你一顶【圣诞帽】，快快点击领取")
-                            .withText("圣诞帽个性定制，快来使用吧")
+                            .withTitle("换个头像换个心情，希望你每天不一样!")
+                            .withText("个性头像定制，快来使用吧")
                             .withTargetUrl("http://www.qqtn.com/tx/")
                             .withMedia(image)
                             .share();

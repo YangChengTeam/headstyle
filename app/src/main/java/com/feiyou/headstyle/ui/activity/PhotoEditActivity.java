@@ -192,7 +192,11 @@ public class PhotoEditActivity extends BaseActivity {
         mDefaultDatas.add(R.mipmap.s6);
         mDefaultDatas.add(R.mipmap.s7);
         mDefaultDatas.add(R.mipmap.s8);
-
+        mDefaultDatas.add(R.mipmap.s9);
+        mDefaultDatas.add(R.mipmap.s10);
+        mDefaultDatas.add(R.mipmap.s11);
+        mDefaultDatas.add(R.mipmap.s12);
+        mDefaultDatas.add(R.mipmap.s13);
         filterDatas = new ArrayList<Integer>();
         for (int i = 1; i <= 15; i++) {
             try {

@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:gravity="center_horizontal"
-            android:text="圣诞帽子一键制作，快邀请好友一起玩吧"
+            android:text="换个头像换个心情，希望你每天不一样!"
             android:textColor="#d4151e"
             android:textSize="16sp"/>
     </LinearLayout>

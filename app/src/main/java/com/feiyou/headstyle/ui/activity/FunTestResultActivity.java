@@ -404,15 +404,16 @@ public class FunTestResultActivity extends BaseActivity implements FunTestCommen
     protected void onResume() {
         super.onResume();
         userInfo = (UserInfo) PreferencesUtils.getObject(FunTestResultActivity.this, Constant.USER_INFO, UserInfo.class);
+        if(userInfo != null) {
+            Uri uri = null;
+            if (!StringUtils.isBlank(userInfo.getUserimg())) {
+                uri = Uri.parse(userInfo.getUserimg());
+            }
+            io.rong.imlib.model.UserInfo ryUser = new io.rong.imlib.model.UserInfo(userInfo.getUid(), userInfo.getNickName(), uri);
+            RongIM.getInstance().setCurrentUserInfo(ryUser);
 
-        Uri uri = null;
-        if (!StringUtils.isBlank(userInfo.getUserimg())) {
-            uri = Uri.parse(userInfo.getUserimg());
+            RongIM.getInstance().refreshUserInfoCache(ryUser);
         }
-        io.rong.imlib.model.UserInfo ryUser = new io.rong.imlib.model.UserInfo(userInfo.getUid(), userInfo.getNickName(), uri);
-        RongIM.getInstance().setCurrentUserInfo(ryUser);
-
-        RongIM.getInstance().refreshUserInfoCache(ryUser);
     }
 
     //弹出窗口监听消失

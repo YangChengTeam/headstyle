@@ -57,7 +57,7 @@ public class GlideHelper {
 
     public static void circleImageView(final Context context, ImageView imageView, String url, int
             placehorder) {
-        circleBorderImageView(context, imageView, url, placehorder, 0, Color.WHITE);
+        circleBorderImageView(context, imageView, url, placehorder, 0, 0);
     }
 
     public static void circleImageView(final Context context, ImageView imageView, int res, int

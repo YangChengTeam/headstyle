@@ -10,7 +10,7 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_margin="1dp"
-        android:src="@mipmap/sticker_default_icon"/>
+        android:src="@mipmap/s1"/>
 
     <TextView
         android:id="@+id/filter_name"

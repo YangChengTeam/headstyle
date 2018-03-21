@@ -88,6 +88,9 @@ public class ArticleDetailActivity extends BaseActivity implements CommentAdapte
 
     ListView mAgreeListView;
 
+    @BindView(R.id.title_text)
+    TextView titleTv;
+
     @BindView(R.id.article_user_img)
     SimpleDraweeView userImg;
 
@@ -257,7 +260,9 @@ public class ArticleDetailActivity extends BaseActivity implements CommentAdapte
     }
 
     public void initViews() {
+
         ButterKnife.bind(this);
+        titleTv.setText("详情");
 
         commitReplyDialog = new BottomSheetDialog(this);
         replyView = LayoutInflater.from(ArticleDetailActivity.this).inflate(R.layout.comment_reply_view, null);

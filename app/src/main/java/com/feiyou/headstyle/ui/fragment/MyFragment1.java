@@ -207,9 +207,14 @@ public class MyFragment1 extends BaseFragment {
         RxView.clicks(mMyMessageLayout).throttleFirst(200, TimeUnit.MILLISECONDS).subscribe(new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
-                Map<String, Boolean> map = new HashMap<String, Boolean>();
-                map.put(Conversation.ConversationType.PRIVATE.getName(), false);
-                RongIM.getInstance().startConversationList(getActivity(), map);
+                if (userInfo != null) {
+                    Map<String, Boolean> map = new HashMap<String, Boolean>();
+                    map.put(Conversation.ConversationType.PRIVATE.getName(), false);
+                    RongIM.getInstance().startConversationList(getActivity(), map);
+                }else{
+                    ToastUtils.show(getActivity(),"请登录后查看");
+                    return;
+                }
             }
         });
 

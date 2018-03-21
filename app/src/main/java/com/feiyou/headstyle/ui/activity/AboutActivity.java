@@ -155,8 +155,8 @@ public class AboutActivity extends BaseActivity {
                     new ShareAction(AboutActivity.this)
                             .setPlatform(SHARE_MEDIA.QQ)
                             .setCallback(umShareListener)
-                            .withTitle("你的好友送了你一顶【圣诞帽】，快快点击领取")
-                            .withText("圣诞帽个性定制，快来使用吧")
+                            .withTitle("换个头像换个心情，希望你每天不一样!")
+                            .withText("个性头像定制，快来使用吧")
                             .withTargetUrl("http://gx.qqtn.com/")
                             .withMedia(image)
                             .share();
@@ -168,8 +168,8 @@ public class AboutActivity extends BaseActivity {
                     new ShareAction(AboutActivity.this)
                             .setPlatform(SHARE_MEDIA.QZONE)
                             .setCallback(umShareListener)
-                            .withTitle("你的好友送了你一顶【圣诞帽】，快快点击领取")
-                            .withText("圣诞帽个性定制，快来使用吧")
+                            .withTitle("换个头像换个心情，希望你每天不一样!")
+                            .withText("个性头像定制，快来使用吧")
                             .withTargetUrl("http://gx.qqtn.com/")
                             .withMedia(image)
                             .share();
@@ -181,8 +181,8 @@ public class AboutActivity extends BaseActivity {
                     new ShareAction(AboutActivity.this)
                             .setPlatform(SHARE_MEDIA.WEIXIN)
                             .setCallback(umShareListener)
-                            .withTitle("你的好友送了你一顶【圣诞帽】，快快点击领取")
-                            .withText("圣诞帽个性定制，快来使用吧")
+                            .withTitle("换个头像换个心情，希望你每天不一样!")
+                            .withText("个性头像定制，快来使用吧")
                             .withTargetUrl("http://gx.qqtn.com/")
                             .withMedia(image)
                             .share();
@@ -194,8 +194,8 @@ public class AboutActivity extends BaseActivity {
                     new ShareAction(AboutActivity.this)
                             .setPlatform(SHARE_MEDIA.WEIXIN_CIRCLE)
                             .setCallback(umShareListener)
-                            .withTitle("你的好友送了你一顶【圣诞帽】，快快点击领取")
-                            .withText("圣诞帽个性定制，快来使用吧")
+                            .withTitle("换个头像换个心情，希望你每天不一样!")
+                            .withText("个性头像定制，快来使用吧")
                             .withTargetUrl("http://www.qqtn.com/tx/")
                             .withMedia(image)
                             .share();

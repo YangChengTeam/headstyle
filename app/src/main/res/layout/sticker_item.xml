@@ -7,7 +7,7 @@
 
     <ImageView
         android:id="@+id/iv_sticker"
-        android:layout_width="66dp"
-        android:layout_height="66dp"
-        android:src="@mipmap/sticker_default_icon"/>
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@mipmap/s1"/>
 </LinearLayout>

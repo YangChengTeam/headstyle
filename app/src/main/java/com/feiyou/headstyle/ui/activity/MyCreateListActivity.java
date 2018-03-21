@@ -73,7 +73,7 @@ public class MyCreateListActivity extends BaseActivity implements SwipeRefreshLa
     @Override
     public void initViews() {
         super.initViews();
-
+        titleTv.setText("我的制作");
         mAdapter = new MyCreateAdapter(this, data);
         mPhotoWall.setAdapter(mAdapter);
 

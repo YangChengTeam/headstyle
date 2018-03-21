@@ -464,6 +464,8 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
                 imageUrl = adapter.getHeads().get(0);
             }
 
+            Logger.i("current imageurl--->" + imageUrl);
+
             fileName = String.valueOf(TimeUtils.getCurrentTimeInLong()) + ".jpg";
             savePath = Constant.BASE_NORMAL_SAVE_IMAGE_DIR + File.separator + "DCIM" + File.separator + "camera";
 
@@ -487,15 +489,19 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
                     }
 
                     isSetting = false;
+
+                    Intent intent = new Intent(HeadShow3Activity.this, PhotoEditActivity.class);
+                    intent.putExtra("image_path", imagePath);
+                    startActivity(intent);
                 }
             });
         } else {
             isSetting = false;
-        }
 
-        Intent intent = new Intent(HeadShow3Activity.this, PhotoEditActivity.class);
-        intent.putExtra("image_path", imagePath);
-        startActivity(intent);
+            Intent intent = new Intent(HeadShow3Activity.this, PhotoEditActivity.class);
+            intent.putExtra("image_path", imagePath);
+            startActivity(intent);
+        }
     }
 
     @OnClick(R.id.iv_in_keep)
@@ -845,8 +851,8 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
                             .withMedia(image);
 
                     if (isSetting) {
-                        shareAction.withTitle("你的好友送了你一顶【圣诞帽】，快快点击领取")
-                                .withText("圣诞帽个性定制，快来使用吧")
+                        shareAction.withTitle("换个头像换个心情，希望你每天不一样!")
+                                .withText("个性头像定制，快来使用吧")
                                 .withTargetUrl("http://gx.qqtn.com/");
                     }
                     shareAction.share();
@@ -860,8 +866,8 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
                     ShareAction shareActionqz = new ShareAction(HeadShow3Activity.this)
                             .setPlatform(SHARE_MEDIA.QZONE)
                             .setCallback(umShareListener)
-                            .withTitle("你的好友送了你一顶【圣诞帽】，快快点击领取")
-                            .withText("圣诞帽个性定制，快来使用吧")
+                            .withTitle("换个头像换个心情，希望你每天不一样!")
+                            .withText("个性头像定制，快来使用吧")
                             .withMedia(image);
                     if (isSetting) {
                         shareActionqz.withTargetUrl("http://gx.qqtn.com/");
@@ -879,8 +885,8 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
                             .setCallback(umShareListener)
                             .withMedia(image);
                     if (isSetting) {
-                        shareActionwc.withTitle("你的好友送了你一顶【圣诞帽】，快快点击领取")
-                                .withText("圣诞帽个性定制，快来使用吧")
+                        shareActionwc.withTitle("换个头像换个心情，希望你每天不一样!")
+                                .withText("个性头像定制，快来使用吧")
                                 .withTargetUrl("http://gx.qqtn.com/");
                     }
                     shareActionwc.share();
@@ -894,11 +900,11 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
                     ShareAction shareActioncr = new ShareAction(HeadShow3Activity.this)
                             .setPlatform(SHARE_MEDIA.WEIXIN_CIRCLE)
                             .setCallback(umShareListener)
-                            .withTitle("你的好友送了你一顶【圣诞帽】，快快点击领取")
-                            .withText("圣诞帽个性定制，快来使用吧")
+                            .withTitle("换个头像换个心情，希望你每天不一样!")
+                            .withText("个性头像定制，快来使用吧")
                             .withMedia(image);
                     if (isSetting) {
-                        shareActioncr.withTargetUrl("http://www.qqtn.com/");
+                        shareActioncr.withTargetUrl("http://gx.qqtn.com/");
                     }
                     shareActioncr.share();
 
@@ -918,17 +924,17 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
         @Override
         public void onResult(SHARE_MEDIA platform) {
             com.umeng.socialize.utils.Log.d("plat", "platform" + platform);
-            Toast.makeText(HeadShow3Activity.this, platform + " 分享成功啦", Toast.LENGTH_SHORT).show();
+            Toast.makeText(HeadShow3Activity.this, "分享成功啦", Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onError(SHARE_MEDIA platform, Throwable t) {
-            Toast.makeText(HeadShow3Activity.this, platform + " 分享失败啦", Toast.LENGTH_SHORT).show();
+            Toast.makeText(HeadShow3Activity.this, "分享失败啦", Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onCancel(SHARE_MEDIA platform) {
-            Toast.makeText(HeadShow3Activity.this, platform + " 分享取消了", Toast.LENGTH_SHORT).show();
+            Toast.makeText(HeadShow3Activity.this, "分享取消了", Toast.LENGTH_SHORT).show();
         }
     };
 

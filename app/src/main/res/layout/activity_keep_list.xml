@@ -19,7 +19,7 @@
         android:id="@+id/photo_wall"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:columnWidth="@dimen/image_thumbnail_size"
+        android:columnWidth="120dp"
         android:gravity="center"
         android:horizontalSpacing="@dimen/image_thumbnail_spacing"
         android:numColumns="3"

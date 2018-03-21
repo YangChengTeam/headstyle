@@ -87,9 +87,9 @@
                             android:layout_centerVertical="true"
                             android:layout_gravity="center"
                             android:ellipsize="end"
-                            android:maxEms="18"
+                            android:maxEms="15"
                             android:singleLine="true"
-                            android:text="你还没有签名"
+                            android:text="你还没有签名你还没有签名你还没有签名"
                             android:textColor="@color/white"
                             android:textSize="12sp"/>
                     </LinearLayout>

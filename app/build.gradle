@@ -9,8 +9,8 @@ android {
         applicationId "com.feiyou.headstyle"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 37
-        versionName "3.3"
+        versionCode 38
+        versionName "3.3.1"
         multiDexEnabled true
         ndk {
             abiFilters "armeabi-v7a", "x86"
@@ -62,6 +62,7 @@ android {
             jniLibs.srcDirs = ['libs']
         }
     }
+
 }
 
 dependencies {
@@ -100,6 +101,7 @@ dependencies {
     compile 'com.jakewharton.rxbinding:rxbinding-appcompat-v7:+'
     compile 'com.jakewharton.rxbinding:rxbinding-design:+'
     compile 'com.android.support:multidex:1.0.2'
+    androidTestCompile 'com.android.support:multidex:1.0.2'
     compile 'com.shizhefei:ViewPagerIndicator:1.1.6'
     compile('com.github.hotchemi:permissionsdispatcher:3.1.0') {
         // if you don't use android.app.Fragment you can exclude support for them
@@ -107,7 +109,8 @@ dependencies {
     }
     annotationProcessor "com.github.hotchemi:permissionsdispatcher-processor:3.1.0"
     compile files('libs/BaiduLBS_Android.jar')
-    implementation project(':video-player')
-    compile project(":Gpu-Image")
-    compile project(":ImageViewTouch")
+    //implementation project(':video-player')
+    compile project(':Gpu-Image')
+    compile project(':ImageViewTouch')
+    compile project(':video-player')
 }

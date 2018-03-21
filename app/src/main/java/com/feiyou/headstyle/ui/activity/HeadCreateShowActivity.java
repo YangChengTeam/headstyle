@@ -330,8 +330,8 @@ public class HeadCreateShowActivity extends BaseActivity {
                     new ShareAction(HeadCreateShowActivity.this)
                             .setPlatform(SHARE_MEDIA.QZONE)
                             .setCallback(umShareListener)
-                            .withTitle("你的好友送了你一顶【圣诞帽】，快快点击领取")
-                            .withText("圣诞帽个性定制，快来使用吧")
+                            .withTitle("换个头像换个心情，希望你每天不一样!")
+                            .withText("个性头像定制，快来使用吧")
                             .withTargetUrl("http://www.qqtn.com/tx/")
                             .withMedia(image)
                             .share();
@@ -353,9 +353,9 @@ public class HeadCreateShowActivity extends BaseActivity {
                     new ShareAction(HeadCreateShowActivity.this)
                             .setPlatform(SHARE_MEDIA.WEIXIN_CIRCLE)
                             .setCallback(umShareListener)
-                            .withTitle("你的好友送了你一顶【圣诞帽】，快快点击领取")
-                            .withText("圣诞帽个性定制，快来使用吧")
-                            .withTargetUrl("http://www.qqtn.com/tx/")
+                            .withTitle("换个头像换个心情，希望你每天不一样!")
+                            .withText("个性头像定制，快来使用吧")
+                            //.withTargetUrl("http://gx.qqtn.com/")
                             .withMedia(image)
                             .share();
                     if (shareWindow != null && shareWindow.isShowing()) {
@@ -372,17 +372,17 @@ public class HeadCreateShowActivity extends BaseActivity {
         @Override
         public void onResult(SHARE_MEDIA platform) {
             com.umeng.socialize.utils.Log.d("plat", "platform" + platform);
-            Toast.makeText(HeadCreateShowActivity.this, platform + " 分享成功啦", Toast.LENGTH_SHORT).show();
+            Toast.makeText(HeadCreateShowActivity.this, "分享成功啦", Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onError(SHARE_MEDIA platform, Throwable t) {
-            Toast.makeText(HeadCreateShowActivity.this, platform + " 分享失败啦", Toast.LENGTH_SHORT).show();
+            Toast.makeText(HeadCreateShowActivity.this, "分享失败啦", Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onCancel(SHARE_MEDIA platform) {
-            Toast.makeText(HeadCreateShowActivity.this, platform + " 分享取消了", Toast.LENGTH_SHORT).show();
+            Toast.makeText(HeadCreateShowActivity.this, "分享取消了", Toast.LENGTH_SHORT).show();
         }
     };
 
