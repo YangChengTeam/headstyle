@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -16,6 +17,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -70,12 +72,18 @@ import cn.finalteam.galleryfinal.model.PhotoInfo;
 import io.rong.imkit.RongIM;
 import me.shaohui.advancedluban.Luban;
 import me.shaohui.advancedluban.OnMultiCompressListener;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
 import rx.functions.Action1;
 
 /**
  * Created by admin on 2017/11/21.
  */
-
+@RuntimePermissions
 public class MyInfoActivity extends BaseActivity {
 
     private static final int TAKE_BIG_PICTURE = 1000;
@@ -219,6 +227,39 @@ public class MyInfoActivity extends BaseActivity {
         return R.layout.activity_my_info;
     }
 
+    @NeedsPermission({Manifest.permission.CAMERA})
+    public void requestCamera() {
+        //startLocation();
+    }
+
+    @OnShowRationale({Manifest.permission.CAMERA})
+    void showRationaleForCamera(final PermissionRequest request) {
+        new AlertDialog.Builder(this)
+                .setMessage("请允许拍照权限")
+                .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        request.proceed();//再次执行请求
+                    }
+                }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        })
+                .show();
+    }
+
+    @OnPermissionDenied({Manifest.permission.CAMERA})
+    void showDeniedForCamera() {
+        ToastUtils.show(this, "用户拒绝了拍照权限");
+    }
+
+    @OnNeverAskAgain({Manifest.permission.CAMERA})
+    void showNeverAskForCamera() {
+
+    }
+
     public static boolean isNumeric(String str) {
         for (int i = 0; i < str.length(); i++) {
             System.out.println(str.charAt(i));
@@ -267,16 +308,21 @@ public class MyInfoActivity extends BaseActivity {
         RxView.clicks(mUserHeadLayout).throttleFirst(200, TimeUnit.MILLISECONDS).subscribe(new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
-                if (Build.VERSION.SDK_INT >= 23) {
-                    int checkCallPhonePermission = ContextCompat.checkSelfPermission(MyInfoActivity.this, Manifest.permission.CAMERA);
-                    if (checkCallPhonePermission != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(MyInfoActivity.this, new String[]{Manifest.permission.CAMERA}, OPEN_CAMERA);
-                        return;
+                try {
+                    if (Build.VERSION.SDK_INT >= 23) {
+                        int checkCallPhonePermission = ContextCompat.checkSelfPermission(MyInfoActivity.this, Manifest.permission.CAMERA);
+                        if (checkCallPhonePermission != PackageManager.PERMISSION_GRANTED) {
+                            //ActivityCompat.requestPermissions(MyInfoActivity.this, new String[]{Manifest.permission.CAMERA}, OPEN_CAMERA);
+                            MyInfoActivityPermissionsDispatcher.requestCameraWithPermissionCheck(MyInfoActivity.this);
+                            return;
+                        } else {
+                            photoSelect();
+                        }
                     } else {
                         photoSelect();
                     }
-                } else {
-                    photoSelect();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -615,7 +661,7 @@ public class MyInfoActivity extends BaseActivity {
                     isCrop = true;
                     GlideHelper.circleImageView(this, mUserHeadImageView, outputImage.getAbsolutePath(), 0);
                     updateImage();
-                }else{
+                } else {
                     if (userInfo != null) {
                         GlideHelper.circleImageView(MyInfoActivity.this, mUserHeadImageView, userInfo.getUserimg(), R.mipmap.user_head_def_icon);
                     }

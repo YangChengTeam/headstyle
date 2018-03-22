@@ -140,66 +140,73 @@ public class FunTestItemActivity extends BaseActivity {
         mFunTopicItemOptionAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-
-                if (lastOptionItemView != null) {
-                    lastOptionItemView.findViewById(R.id.layout_topic_option).setBackgroundResource(R.drawable.topic_item_bg);
-                }
-
-                view.findViewById(R.id.layout_topic_option).setBackgroundResource(R.drawable.topic_item_selecet_bg);
-                lastOptionItemView = view;
-
-                if (cType == 1) {
-                    if (currentPosition < itemResult.length) {
-
-                        Logger.e("position score --->" + mFunTopicItemOptionAdapter.getData().get(position).itemcount);
-
-                        itemResult[currentPosition] = position + 1;
-                        currentPosition++;
+                try {
+                    if (lastOptionItemView != null) {
+                        lastOptionItemView.findViewById(R.id.layout_topic_option).setBackgroundResource(R.drawable.topic_item_bg);
                     }
-                } else {
-                    hrefPosition = mFunTopicItemOptionAdapter.getData().get(position).itemhref;
-                    if (hrefPosition <= mTopicList.size() && aPosition < mTopicList.size()) {
-                        if (hrefPosition > 0) {
-                            currentPosition = hrefPosition - 1;
-                            analysisMap.put(aPosition, position + 1);
-                            aPosition++;
-                            topicIndexMap.put(aPosition, currentPosition);
-                        } else {
-                            analysisMap.put(aPosition, position + 1);
-                            //topicIndexMap.put(aPosition + 1, currentPosition);
+
+                    view.findViewById(R.id.layout_topic_option).setBackgroundResource(R.drawable.topic_item_selecet_bg);
+                    lastOptionItemView = view;
+
+                    if (cType == 1) {
+                        if (currentPosition < itemResult.length) {
+
+                            Logger.e("position score --->" + mFunTopicItemOptionAdapter.getData().get(position).itemcount);
+
+                            itemResult[currentPosition] = position + 1;
+                            currentPosition++;
+                        }
+                    } else {
+                        hrefPosition = mFunTopicItemOptionAdapter.getData().get(position).itemhref;
+                        if (hrefPosition <= mTopicList.size() && aPosition < mTopicList.size()) {
+                            if (hrefPosition > 0) {
+                                currentPosition = hrefPosition - 1;
+                                analysisMap.put(aPosition, position + 1);
+                                aPosition++;
+                                topicIndexMap.put(aPosition, currentPosition);
+                            } else {
+                                analysisMap.put(aPosition, position + 1);
+                                //topicIndexMap.put(aPosition + 1, currentPosition);
+                            }
                         }
                     }
-                }
-                mFunTopicItemOptionAdapter.setSelectItem(-1);
+                    mFunTopicItemOptionAdapter.setSelectItem(-1);
 
-                if (currentPosition >= mTopicList.size() && cType == 1) {
-                    currentPosition = mTopicList.size() - 1;
-                    //ToastUtils.show(FunTestItemActivity.this, "已经是最后一题了");
-                    //return;
+                    if (currentPosition >= mTopicList.size() && cType == 1) {
+                        currentPosition = mTopicList.size() - 1;
+                        //ToastUtils.show(FunTestItemActivity.this, "已经是最后一题了");
+                        //return;
+                    }
+                    updateItemView();
+                } catch (Exception e) {
+                    Logger.e(e.getMessage());
                 }
-                updateItemView();
             }
         });
 
         RxView.clicks(mPreButton).throttleFirst(200, TimeUnit.MILLISECONDS).subscribe(new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
-                if (cType == 1) {
-                    if (currentPosition > 0) {
-                        lastOptionItemView = mLinearLayoutManager.findViewByPosition(currentPosition);
-                        currentPosition--;
-                        updateItemView();
-                    }
-                } else {
-                    if (aPosition > -1) {
-                        aPosition--;
-                        if (aPosition < 0) {
-                            aPosition = 0;
+                try {
+                    if (cType == 1) {
+                        if (currentPosition > 0) {
+                            lastOptionItemView = mLinearLayoutManager.findViewByPosition(currentPosition);
+                            currentPosition--;
+                            updateItemView();
                         }
-                        currentPosition = topicIndexMap.get(aPosition);
-                        hrefPosition = mTopicList.get(currentPosition).list.get(0).itemhref;
-                        updateItemView();
+                    } else {
+                        if (aPosition > -1) {
+                            aPosition--;
+                            if (aPosition < 0) {
+                                aPosition = 0;
+                            }
+                            currentPosition = topicIndexMap.get(aPosition);
+                            hrefPosition = mTopicList.get(currentPosition).list.get(0).itemhref;
+                            updateItemView();
+                        }
                     }
+                } catch (Exception e) {
+                    Logger.e(e.getMessage());
                 }
             }
         });
@@ -235,7 +242,7 @@ public class FunTestItemActivity extends BaseActivity {
                     intent.putExtra("fun_test_data_info", funTestInfo);
                     startActivity(intent);
                     finish();
-                } catch (NullPointerException e) {
+                } catch (Exception e) {
                     Logger.i("funtestitem error --->" + e.getMessage());
                 }
             }

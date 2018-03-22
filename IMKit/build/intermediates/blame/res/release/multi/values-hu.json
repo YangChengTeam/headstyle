@@ -1,6 +1,6 @@
 [
     {
-        "outputFile": "E:\\zdh\\as_workspace\\HeadStyle\\IMKit\\build\\intermediates\\incremental\\mergeReleaseResources\\merged.dir\\values-hu\\values-hu.xml",
+        "outputFile": "C:\\work\\android_studio_work\\HeadStyle\\IMKit\\build\\intermediates\\incremental\\mergeReleaseResources\\merged.dir\\values-hu\\values-hu.xml",
         "map": [
             {
                 "to": {
@@ -11,7 +11,7 @@
                     "endOffset": 151
                 },
                 "from": {
-                    "file": "C:\\Users\\admin\\.android\\build-cache\\d75df0e8d2e8ed0002024eda6111f28b5b784efa\\output\\res\\values-hu\\values-hu.xml",
+                    "file": "C:\\Users\\super\\.android\\build-cache\\5a7df97288203479f9c5b8a3ce3a168e0f4cbf3e\\output\\res\\values-hu\\values-hu.xml",
                     "position": {
                         "startLine": 2,
                         "startColumn": 4,
