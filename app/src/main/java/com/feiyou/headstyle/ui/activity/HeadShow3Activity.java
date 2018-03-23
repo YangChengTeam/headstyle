@@ -86,7 +86,7 @@ import okhttp3.Call;
  */
 
 public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapterView.onFlingListener,
-        SwipeFlingAdapterView.OnItemClickListener, WeiXinFollowDialog.TimeListener,WebPopupWindow.TimeListener{
+        SwipeFlingAdapterView.OnItemClickListener, WeiXinFollowDialog.TimeListener, WebPopupWindow.TimeListener {
 
     @BindView(R.id.title_text)
     TextView titleTv;
@@ -794,21 +794,24 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
 
                     final ViewGroup viewGroup = (ViewGroup) ((ViewGroup) HeadShow3Activity.this
                             .findViewById(android.R.id.content)).getChildAt(0);
-                    shareWindow = new SharePopupWindow(HeadShow3Activity.this, itemsOnClick);
-
-                    shareWindow.showAtLocation(viewGroup, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, NavgationBarUtils.getNavigationBarHeight(HeadShow3Activity.this));
-                    setBackgroundAlpha(HeadShow3Activity.this, 0.5f);
-                    shareWindow.setOnDismissListener(new HeadShow3Activity.PoponDismissListener());
+                    if (AppUtils.isValidContext(HeadShow3Activity.this)) {
+                        shareWindow = new SharePopupWindow(HeadShow3Activity.this, itemsOnClick);
+                        shareWindow.showAtLocation(viewGroup, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, NavgationBarUtils.getNavigationBarHeight(HeadShow3Activity.this));
+                        setBackgroundAlpha(HeadShow3Activity.this, 0.5f);
+                        shareWindow.setOnDismissListener(new HeadShow3Activity.PoponDismissListener());
+                    }
                 }
             });
         } else {
             final ViewGroup viewGroup = (ViewGroup) ((ViewGroup) HeadShow3Activity.this
                     .findViewById(android.R.id.content)).getChildAt(0);
-            shareWindow = new SharePopupWindow(HeadShow3Activity.this, itemsOnClick);
+            if (AppUtils.isValidContext(HeadShow3Activity.this)) {
+                shareWindow = new SharePopupWindow(HeadShow3Activity.this, itemsOnClick);
 
-            shareWindow.showAtLocation(viewGroup, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, NavgationBarUtils.getNavigationBarHeight(HeadShow3Activity.this));
-            setBackgroundAlpha(HeadShow3Activity.this, 0.5f);
-            shareWindow.setOnDismissListener(new HeadShow3Activity.PoponDismissListener());
+                shareWindow.showAtLocation(viewGroup, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, NavgationBarUtils.getNavigationBarHeight(HeadShow3Activity.this));
+                setBackgroundAlpha(HeadShow3Activity.this, 0.5f);
+                shareWindow.setOnDismissListener(new HeadShow3Activity.PoponDismissListener());
+            }
         }
     }
 
