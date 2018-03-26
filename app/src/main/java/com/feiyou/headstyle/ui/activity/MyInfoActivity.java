@@ -12,11 +12,13 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -221,6 +223,8 @@ public class MyInfoActivity extends BaseActivity {
     private boolean isUpdateImage;
 
     private boolean isCrop;
+
+    private File file;
 
     @Override
     public int getLayoutId() {
@@ -645,7 +649,7 @@ public class MyInfoActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         Logger.e("file length --- >" + outputImage.length());
-        if (imageUri == null || outputImage.length() == 0) {
+        if (imageUri == null) {
             if (userInfo != null) {
                 GlideHelper.circleImageView(MyInfoActivity.this, mUserHeadImageView, userInfo.getUserimg(), R.mipmap.user_head_def_icon);
             }
@@ -702,12 +706,15 @@ public class MyInfoActivity extends BaseActivity {
             isUpdateImage = true;
             switch (v.getId()) {
                 case R.id.layout_camera:
-                    outputImage = new File(Constant.SD_DIR, TimeUtils.getCurrentTimeInLong() + ".png");
-                    imageUri = Uri.fromFile(outputImage);
+                    //outputImage = new File(Constant.SD_DIR, TimeUtils.getCurrentTimeInLong() + ".png");
+                    //imageUri = Uri.fromFile(outputImage);
                     //启动相机去拍照，直接传入了uri，照完以后，会把照片直接存储到这个uri
-                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);//action is capture
+                    /*Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);//action is capture
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-                    startActivityForResult(intent, TAKE_BIG_PICTURE);
+                    startActivityForResult(intent, TAKE_BIG_PICTURE);*/
+
+                    useCamera();
+
                     break;
                 case R.id.layout_local_photo:
                     GalleryFinal.openGallerySingle(REQUEST_CODE_GALLERY, mOnHanlderResultCallback);
@@ -721,9 +728,30 @@ public class MyInfoActivity extends BaseActivity {
         }
     };
 
+    /**
+     * 使用相机
+     */
+    private void useCamera() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        outputImage = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
+                + "/test/" + System.currentTimeMillis() + ".jpg");
+        outputImage.getParentFile().mkdirs();
+
+        //改变Uri  com.xykj.customview.fileprovider注意和xml中的一致
+        Uri uri = FileProvider.getUriForFile(this, "com.feiyou.headstyle.fileProvider", outputImage);
+        imageUri = uri;
+        //添加权限
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+        startActivityForResult(intent, TAKE_BIG_PICTURE);
+    }
+
     private void cropImageUri(Uri uri, int outputX, int outputY, int requestCode) {
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setDataAndType(uri, "image/*");
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         //是否裁剪
         intent.putExtra("crop", "true");
         //设置xy的裁剪比例
