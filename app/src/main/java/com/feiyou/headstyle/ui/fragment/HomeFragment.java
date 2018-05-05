@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.LogUtils;
 import com.feiyou.headstyle.App;
 import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.adapter.HeadTypeAdapter;
@@ -289,7 +290,7 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    checkVersion();
+                    //checkVersion();
                 }
             }).start();
         }
@@ -379,7 +380,7 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
 
         loadCount++;
 
-        if(mAdapter.getDataList() == null || mAdapter.getDataList().size() == 0){
+        if (mAdapter.getDataList() == null || mAdapter.getDataList().size() == 0) {
             Random random = new Random();
             int result = random.nextInt(10);
             rPageNum = result + 1;
@@ -387,17 +388,31 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
             Logger.e("首次请求随机产生的页码page--->" + rPageNum);
         }
 
-        StringBuffer homeUrl = new StringBuffer(Server.NEW_HOME_DATA);
+        //StringBuffer homeUrl = new StringBuffer(Server.NEW_HOME_DATA);
 
-        homeUrl.append("/").append("0");
+        //homeUrl.append("/").append("0");
 
-        homeUrl.append("/").append("0");
+//        homeUrl.append("/").append("0");
+//
+//        homeUrl.append("/").append(String.valueOf(pageNum)).append(".html");
+//
+//        Logger.e("first url111--->" + homeUrl);
 
-        homeUrl.append("/").append(String.valueOf(pageNum)).append(".html");
+        String times = com.blankj.utilcode.util.TimeUtils.getNowMills() + "";
+        String uuid = StringUtils.getUUIDString();
+        String validateStr = StringUtils.getValidateString("gxtx", times, uuid);
 
-        Logger.e("first url111--->" + homeUrl);
+        LogUtils.i("times--->" + times + "---uuid---" + uuid + "---val---" + validateStr);
 
-        okHttpRequest.aget(homeUrl.toString(), null, new OnResponseListener() {
+        final Map<String, String> params = new HashMap<String, String>();
+        params.put("action", "0");
+        params.put("p", pageNum + "");
+
+        params.put("timestamp", times);
+        params.put("randstr", uuid);
+        params.put("corestr", validateStr);
+
+        okHttpRequest.aget(Server.NEW_HOME_DATA, params, new OnResponseListener() {
             @Override
             public void onSuccess(final String response) {
 
@@ -417,7 +432,7 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                     //设置banner数据
                     final List<SpecialInfo> tempSpecialInfos = mService.getSpecialInfos(response);
                     if (tempSpecialInfos != null && tempSpecialInfos.size() > 0) {
-
+                        Logger.i(tempSpecialInfos.toString());
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
@@ -445,6 +460,7 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
 
             @Override
             public void onError(Exception e) {
+                e.printStackTrace();
                 swipeLayout.setRefreshing(false);
             }
 
@@ -603,7 +619,7 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
             if (userInfo != null) {
                 GlideHelper.circleImageView(getActivity(), userImg, userInfo.getUserimg(), R.mipmap.user_head_def_icon);
             }
-        }else{
+        } else {
             GlideHelper.circleImageView(getActivity(), userImg, R.mipmap.user_head_def_icon, R.mipmap.user_head_def_icon);
         }
     }

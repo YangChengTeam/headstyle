@@ -8,25 +8,25 @@ package io.rong.imlib;
 
 public final class R {
     public static final class array {
-        public static int rc_reconnect_interval = 0x7f0a0009;
+        public static int rc_reconnect_interval = 0x7f03000a;
     }
     public static final class bool {
-        public static int rc_extension_history = 0x7f060004;
-        public static int rc_typing_status = 0x7f060009;
+        public static int rc_extension_history = 0x7f050005;
+        public static int rc_typing_status = 0x7f05000a;
     }
     public static final class integer {
-        public static int rc_audio_encoding_bit_rate = 0x7f0c0001;
-        public static int rc_image_quality = 0x7f0c0006;
-        public static int rc_image_size = 0x7f0c0007;
+        public static int rc_audio_encoding_bit_rate = 0x7f0d0002;
+        public static int rc_image_quality = 0x7f0d0007;
+        public static int rc_image_size = 0x7f0d0008;
     }
     public static final class string {
-        public static int rc_heartbeat_timer = 0x7f05010a;
-        public static int rc_init_failed = 0x7f050072;
-        public static int rc_location_sharing_ended = 0x7f050089;
-        public static int rc_media_message_default_save_path = 0x7f05010c;
-        public static int rc_notification_new_msg = 0x7f0500aa;
-        public static int rc_notification_new_plural_msg = 0x7f0500ab;
-        public static int rc_notification_ticker_text = 0x7f0500ac;
-        public static int rc_quit_custom_service = 0x7f0500ce;
+        public static int rc_heartbeat_timer = 0x7f15007d;
+        public static int rc_init_failed = 0x7f150083;
+        public static int rc_location_sharing_ended = 0x7f15009a;
+        public static int rc_media_message_default_save_path = 0x7f15009c;
+        public static int rc_notification_new_msg = 0x7f1500bc;
+        public static int rc_notification_new_plural_msg = 0x7f1500bd;
+        public static int rc_notification_ticker_text = 0x7f1500be;
+        public static int rc_quit_custom_service = 0x7f1500e0;
     }
 }

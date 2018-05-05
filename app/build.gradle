@@ -2,15 +2,15 @@ apply plugin: 'com.android.application'
 apply plugin: 'org.greenrobot.greendao'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion '26.0.2'
+    compileSdkVersion 27
+    buildToolsVersion '27.0.2'
 
     defaultConfig {
         applicationId "com.feiyou.headstyle"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 38
-        versionName "3.3.1"
+        versionCode 39
+        versionName "3.3.2"
         multiDexEnabled true
         ndk {
             abiFilters "armeabi-v7a", "x86"
@@ -107,6 +107,7 @@ dependencies {
         // if you don't use android.app.Fragment you can exclude support for them
         exclude module: "support-v13"
     }
+    implementation 'com.blankj:utilcode:1.14.3'
     annotationProcessor "com.github.hotchemi:permissionsdispatcher-processor:3.1.0"
     compile files('libs/BaiduLBS_Android.jar')
     //implementation project(':video-player')

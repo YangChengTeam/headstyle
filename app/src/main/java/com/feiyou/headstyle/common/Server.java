@@ -2,15 +2,15 @@ package com.feiyou.headstyle.common;
 
 public class Server {
 
-    public final static boolean isDebug = false;
+    public final static boolean isDebug = true;
 
-    public final static String BASE_SERVER_IP = isDebug ? "http://test.qqtn.com/" : "http://tx.qqtn.com/";
+    public final static String BASE_SERVER_IP = isDebug ? "http://ntx.qqtn.com/index/api" : "http://tx.qqtn.com/";
 
     //获取首页数据
     public final static String HOME_DATA = BASE_SERVER_IP + "apajax.asp?action=0&ctype=0&num=50";
 
     //获取首页数据
-    public final static String NEW_HOME_DATA = BASE_SERVER_IP + "gxtx/0";
+    public final static String NEW_HOME_DATA = BASE_SERVER_IP;
 
     //搜索接口地址
     public final static String SEARCH_DATA = BASE_SERVER_IP + "apajax.asp?action=2&num=50";

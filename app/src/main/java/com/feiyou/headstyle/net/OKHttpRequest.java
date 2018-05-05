@@ -28,6 +28,7 @@ public class OKHttpRequest {
                 Logger.e("--- onError data aget---");
                 onResponseListener.onError(e);
                 e.printStackTrace();
+                Logger.e(e.getMessage());
             }
 
             @Override

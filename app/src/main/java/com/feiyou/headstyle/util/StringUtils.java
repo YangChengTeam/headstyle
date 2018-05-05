@@ -1,9 +1,12 @@
 package com.feiyou.headstyle.util;
 
+import com.blankj.utilcode.util.EncryptUtils;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -310,5 +313,35 @@ public class StringUtils {
             return String.valueOf(ls[num]);
         }
         return "";
+    }
+
+    /**
+     * 获取UUID值
+     *
+     * @return
+     */
+    public static String getUUIDString() {
+        String uuid = UUID.randomUUID().toString(); //获取UUID并转化为String对象
+        uuid = uuid.replace("-", "");               //因为UUID本身为32位只是生成时多了“-”，所以将它们去点就可
+        return uuid;
+    }
+
+    /**
+     * 参数先由 字符串 'gxtx' 与 timestamp 与 randstr 按此顺序排列组成，以'/'相隔 如：gxtx/1525428894/5eEeQuAL9gTajxXFWJhMrE0hUQmmj29W  得到的字符串 用MD5加密 取出后十六位字符串得到 如：d8650196ef1330d4
+     *
+     * @param fixed
+     * @param times
+     * @param random
+     * @return
+     */
+    public static String getValidateString(String fixed, String times, String random) {
+        StringBuffer sb = new StringBuffer(fixed);
+        sb.append("/").append(times).append("/").append(random);
+        //String md5String = EncryptUtils.encryptMD5ToString(sb.toString());
+        String md5String = MD5Util.getMD5(sb.toString());
+        if (md5String.length() > 16) {
+            return md5String.substring(md5String.length() - 16);
+        }
+        return null;
     }
 }

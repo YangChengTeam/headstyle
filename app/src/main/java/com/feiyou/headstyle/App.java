@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.multidex.MultiDex;
 
+import com.blankj.utilcode.util.Utils;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.feiyou.headstyle.common.Constant;
 import com.feiyou.headstyle.common.DbHelper;
@@ -90,6 +91,7 @@ public class App extends Application {
         RongIM.init(this);
         RongIM.getInstance().setMessageAttachedUserInfo(true);
         Fresco.initialize(this);
+        Utils.init(this);
         PlatformConfig.setQQZone("1105592461", "xCJux2hAAjyh1qdx");
         PlatformConfig.setWeixin("wxd1112ca9a216aeda", "0e18de42fc068c41f0aca921403b9932");
         ThemeConfig theme = new ThemeConfig.Builder()
