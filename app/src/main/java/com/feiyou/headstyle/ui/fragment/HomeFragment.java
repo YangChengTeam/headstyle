@@ -290,7 +290,7 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    //checkVersion();
+                    checkVersion();
                 }
             }).start();
         }
@@ -361,23 +361,9 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     @Override
     public void loadData() {
         loadDataByParams();
-        /*List<SpecialInfo> tSpecialInfoList = mService.getSpecialInfoListFromDB();
-        if (tSpecialInfoList != null) {
-            updataSpecialData(tSpecialInfoList);
-
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    loadDataByParams();
-                }
-            }, 1500);
-        } else {
-            loadDataByParams();
-        }*/
     }
 
     public void loadDataByParams() {
-
         loadCount++;
 
         if (mAdapter.getDataList() == null || mAdapter.getDataList().size() == 0) {
@@ -388,29 +374,8 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
             Logger.e("首次请求随机产生的页码page--->" + rPageNum);
         }
 
-        //StringBuffer homeUrl = new StringBuffer(Server.NEW_HOME_DATA);
-
-        //homeUrl.append("/").append("0");
-
-//        homeUrl.append("/").append("0");
-//
-//        homeUrl.append("/").append(String.valueOf(pageNum)).append(".html");
-//
-//        Logger.e("first url111--->" + homeUrl);
-
-        String times = com.blankj.utilcode.util.TimeUtils.getNowMills() + "";
-        String uuid = StringUtils.getUUIDString();
-        String validateStr = StringUtils.getValidateString("gxtx", times, uuid);
-
-        LogUtils.i("times--->" + times + "---uuid---" + uuid + "---val---" + validateStr);
-
-        final Map<String, String> params = new HashMap<String, String>();
-        params.put("action", "0");
+        Map<String, String> params = new HashMap<String, String>();
         params.put("p", pageNum + "");
-
-        params.put("timestamp", times);
-        params.put("randstr", uuid);
-        params.put("corestr", validateStr);
 
         okHttpRequest.aget(Server.NEW_HOME_DATA, params, new OnResponseListener() {
             @Override

@@ -19,7 +19,9 @@ import com.feiyou.headstyle.util.StringUtils;
 import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -147,16 +149,11 @@ public class HeadListActivity extends BaseActivity implements SwipeRefreshLayout
                 }
             });
 
-            StringBuffer homeUrl = new StringBuffer(Server.NEW_HOME_DATA);
-            homeUrl.append("/").append("0").append("/").append("0");
-            if (cid > 0) {
-                homeUrl.append("/").append(cid + "");
-            } else {
-                homeUrl.append("/").append("0");
-            }
-            homeUrl.append("/").append(String.valueOf(pageNum)).append(".html");
-            Logger.e("first url--->" + homeUrl.toString());
-            okHttpRequest.aget(homeUrl.toString(), null, new OnResponseListener() {
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("p", pageNum + "");
+            params.put("cid", cid + "");
+
+            okHttpRequest.aget(Server.NEW_HOME_DATA, params, new OnResponseListener() {
                 @Override
                 public void onSuccess(String response) {
                     swipeLayout.setRefreshing(false);
@@ -201,17 +198,12 @@ public class HeadListActivity extends BaseActivity implements SwipeRefreshLayout
 
         pageNum++;
         if (pageNum <= maxPage || maxPage == 1) {
-            StringBuffer homeUrl = new StringBuffer(Server.NEW_HOME_DATA);
-            homeUrl.append("/").append("0").append("/").append("0");
-            if (cid > 0) {
-                homeUrl.append("/").append(cid + "");
-            } else {
-                homeUrl.append("/").append("0");
-            }
-            homeUrl.append("/").append(String.valueOf(pageNum)).append(".html");
-            Logger.e("next url--->" + homeUrl.toString());
 
-            okHttpRequest.aget(homeUrl.toString(), null, new OnResponseListener() {
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("p", pageNum + "");
+            params.put("cid", cid + "");
+
+            okHttpRequest.aget(Server.NEW_HOME_DATA, params, new OnResponseListener() {
                 @Override
                 public void onSuccess(String response) {
                     //设置首页列表数据

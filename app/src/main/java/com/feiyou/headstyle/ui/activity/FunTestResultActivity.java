@@ -335,6 +335,7 @@ public class FunTestResultActivity extends BaseActivity implements FunTestCommen
 
                 final Map<String, String> params = new HashMap<String, String>();
                 params.put("testid", testId);
+                params.put("act", "add");
                 params.put("uid", userInfo != null ? userInfo.uid : "");
                 params.put("content", mCommentEditView.getText().toString());
 

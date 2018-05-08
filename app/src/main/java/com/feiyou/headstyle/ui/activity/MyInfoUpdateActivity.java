@@ -143,6 +143,7 @@ public class MyInfoUpdateActivity extends BaseActivity {
         if (userInfo != null) {
 
             Map<String, String> params = new HashMap<String, String>();
+            params.put("action", "userinfo");
             params.put("openid", userInfo.getOpenid());
             params.put("stype", "edit");
             params.put("uid", userInfo.getUid());
@@ -170,7 +171,7 @@ public class MyInfoUpdateActivity extends BaseActivity {
                     break;
             }
 
-            okHttpRequest.aget(Server.USER_INFO_DATA, params, new OnResponseListener() {
+            okHttpRequest.apost(Server.UPDATE_USER_INFO_DATA, params,new OnResponseListener() {
                 @Override
                 public void onSuccess(String response) {
                     if (materialDialog != null && materialDialog.isShowing()) {

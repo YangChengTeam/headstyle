@@ -155,7 +155,7 @@ public class SpecialListActivity extends BaseActivity implements SwipeRefreshLay
                     specialTitleTextView.setText(ret.title);
                     specialDesTextView.setText(ret.description);
                     specialCountTextView.setText(ret.total + "张");
-                    if (ret.list != null) {
+                    if (ret.list != null && ret.list.size() > 0) {
                         if (Util.isOnMainThread()) {
                             if (AppUtils.isValidContext(SpecialListActivity.this)) {
                                 Glide.with(SpecialListActivity.this).load(ret.list.get(0).getHurl()).into(specialImageView);

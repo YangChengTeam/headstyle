@@ -76,6 +76,7 @@ public class AgreeItemAdapter extends BaseAdapter {
         }
 
         AgreeInfo agreeInfo = agreeList.get(position);
+
         GlideHelper.circleImageView(mContext, holder.userImg, agreeInfo.simg, R.mipmap.user_head_def_icon);
         holder.userName.setText(agreeInfo.nickname);
         return convertView;

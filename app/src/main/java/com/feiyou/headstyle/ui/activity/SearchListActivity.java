@@ -19,7 +19,9 @@ import com.feiyou.headstyle.util.StringUtils;
 import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -163,22 +165,14 @@ public class SearchListActivity extends BaseActivity implements SwipeRefreshLayo
             }
         });
 
-        /*final Map<String, String> params = new HashMap<String, String>();
-        Logger.e("page---" + pageNum + "--maxpage---" + maxPage);
-        params.put("p", String.valueOf(pageNum));
-
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("p", pageNum + "");
         if (!StringUtils.isEmpty(searchKey)) {
             params.put("keyword", searchKey);
-        }*/
-
-        StringBuffer homeUrl = new StringBuffer(Server.NEW_SEARCH_DATA);
-        homeUrl.append("/").append(searchKey);
-        homeUrl.append("/").append("0");
-        homeUrl.append("/").append(String.valueOf(pageNum)).append(".html");
-        Logger.e("new search url --->" + homeUrl);
+        }
 
         if (pageNum <= maxPage || maxPage == 0) {
-            okHttpRequest.aget(homeUrl.toString(), null, new OnResponseListener() {
+            okHttpRequest.aget(Server.NEW_SEARCH_DATA, params, new OnResponseListener() {
                 @Override
                 public void onSuccess(String response) {
                     swipeLayout.setRefreshing(false);

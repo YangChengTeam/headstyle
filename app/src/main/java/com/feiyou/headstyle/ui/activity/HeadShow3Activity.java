@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.bumptech.glide.Glide;
 import com.feiyou.headstyle.App;
 import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.adapter.HeadShowItemAdapter;
@@ -265,7 +266,6 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
         if (bundle != null && bundle.getString("imageUrl") != null) {
             imageUrl = bundle.getString("imageUrl");
 
-
             OkHttpUtils.get().url(imageUrl).build().execute(new FileCallBack(savePath, fileName)//
             {
                 @Override
@@ -284,7 +284,6 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
                     }
                 }
             });
-
         }
 
         if (AppUtils.isLogin(this)) {
@@ -304,10 +303,13 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
                     if (userKeepInfo != null) {
                         if (userKeepInfo.iskeep.equals("1")) {
 
-                            Drawable drawable = ContextCompat.getDrawable(HeadShow3Activity.this, R.mipmap.keep_success_icon);
+                            /*Drawable drawable = ContextCompat.getDrawable(HeadShow3Activity.this, R.mipmap.keep_success_icon);
                             /// 这一步必须要做,否则不会显示.
                             drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-                            //keepHeadImg.setCompoundDrawables(null, drawable, null, null);
+                            mKeepImageView.setCompoundDrawables(null, drawable, null, null);*/
+
+                            Glide.with(HeadShow3Activity.this).load(R.mipmap.in_keep_press_icon).into(mKeepImageView);
+
                             isKeep = "1";
                         }
                     }
@@ -374,22 +376,20 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
         Logger.e("page---" + page);
 
         String loadUrl = "";
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("p", pageNum + "");
         if (isSearch) {
-            StringBuffer searchUrl = new StringBuffer(Server.NEW_SEARCH_DATA);
-            searchUrl.append("/").append(searchKey);
-            searchUrl.append("/").append("0");
-            searchUrl.append("/").append(String.valueOf(pageNum)).append(".html");
-            loadUrl = searchUrl.toString();
-        } else {
-            StringBuffer homeUrl = new StringBuffer(Server.NEW_HOME_DATA);
-            homeUrl.append("/").append("0").append("/").append("0");
-            if (typeId > 0) {
-                homeUrl.append("/").append(typeId + "");
+            loadUrl = Server.NEW_SEARCH_DATA;
+            if (!StringUtils.isEmpty(searchKey)) {
+                params.put("keyword", searchKey);
             }
-            homeUrl.append("/").append(String.valueOf(pageNum)).append(".html");
-            loadUrl = homeUrl.toString();
+        } else {
+            loadUrl = Server.NEW_HOME_DATA;
+            if (typeId > 0) {
+                params.put("cid", typeId+"");
+            }
         }
-        okHttpRequest.aget(loadUrl, null, new OnResponseListener() {
+        okHttpRequest.aget(loadUrl, params, new OnResponseListener() {
             @Override
             public void onSuccess(String response) {
                 //设置首页列表数据

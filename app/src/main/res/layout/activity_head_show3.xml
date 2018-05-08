@@ -30,34 +30,34 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="24dp"
         android:gravity="center">
 
         <ImageView
             android:id="@+id/iv_set_qq_head"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:src="@mipmap/set_qq_head_icon"/>
 
         <ImageView
             android:id="@+id/iv_make_image"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginLeft="16dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="18dp"
             android:src="@mipmap/iv_create_icon"/>
 
         <ImageView
             android:id="@+id/iv_in_keep"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginLeft="16dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="18dp"
             android:src="@mipmap/in_keep_normal_icon"/>
 
         <ImageView
             android:id="@+id/iv_down_head"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginLeft="16dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="18dp"
             android:src="@mipmap/down_head_icon"/>
     </LinearLayout>
 </RelativeLayout>

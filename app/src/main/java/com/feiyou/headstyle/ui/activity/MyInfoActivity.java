@@ -218,6 +218,8 @@ public class MyInfoActivity extends BaseActivity {
 
     private int updateStar = 0;
 
+    private String birthday = "";
+
     private String[] stars;
 
     private boolean isUpdateImage;
@@ -234,6 +236,7 @@ public class MyInfoActivity extends BaseActivity {
     @NeedsPermission({Manifest.permission.CAMERA})
     public void requestCamera() {
         //startLocation();
+        com.blankj.utilcode.util.ToastUtils.showLong("requestCamera");
     }
 
     @OnShowRationale({Manifest.permission.CAMERA})
@@ -250,8 +253,7 @@ public class MyInfoActivity extends BaseActivity {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
             }
-        })
-                .show();
+        }).show();
     }
 
     @OnPermissionDenied({Manifest.permission.CAMERA})
@@ -523,23 +525,6 @@ public class MyInfoActivity extends BaseActivity {
         photoModePopupWindow.setOnDismissListener(new PoponDismissListener());
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            //就像onActivityResult一样这个地方就是判断你是从哪来的。
-            case OPEN_CAMERA:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // Permission Granted
-                    photoSelect();
-                } else {
-                    ToastUtils.show(MyInfoActivity.this, "禁止了相机权限,请开启");
-                    // Permission Denied
-                }
-                break;
-            default:
-                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-    }
 
     @Override
     protected void onResume() {
@@ -820,13 +805,16 @@ public class MyInfoActivity extends BaseActivity {
 
         @Override
         public void onDateSet(DatePicker view, int years, int monthOfYear, int dayOfMonth) {
-            mBirDateTextView.setText(years + "-" + monthOfYear + "-" + dayOfMonth);
+            birthday = years + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
+            mBirDateTextView.setText(birthday);
+            updateInfo(3);
         }
     };
 
     public void updateImage() {
         if (userInfo != null) {
             final Map<String, String> params = new HashMap<String, String>();
+            params.put("action", "userinfo");
             params.put("openid", userInfo.getOpenid());
             params.put("stype", "edit");
             params.put("hasimg", "1");
@@ -856,7 +844,7 @@ public class MyInfoActivity extends BaseActivity {
                 public void onSuccess(List<File> fileList) {
                     isUpdateImage = false;
                     if (fileList != null && fileList.size() > 0) {
-                        okHttpRequest.aget(updateImageUrl.toString(), null, fileList, new OnResponseListener() {
+                        okHttpRequest.aget(Server.UPDATE_USER_INFO_DATA, params, fileList, new OnResponseListener() {
                             @Override
                             public void onSuccess(String response) {
                                 if (materialDialog != null && materialDialog.isShowing()) {
@@ -906,6 +894,7 @@ public class MyInfoActivity extends BaseActivity {
     public void updateInfo(final int type) {
         if (userInfo != null) {
             Map<String, String> params = new HashMap<String, String>();
+            params.put("action", "userinfo");
             params.put("openid", userInfo.getOpenid());
             params.put("stype", "edit");
             params.put("uid", userInfo.getUid());
@@ -916,8 +905,10 @@ public class MyInfoActivity extends BaseActivity {
             if (type == 2) {
                 params.put("star", updateStar + "");
             }
-
-            okHttpRequest.aget(Server.USER_INFO_DATA, params, new OnResponseListener() {
+            if (type == 3) {
+                params.put("birthday", birthday);
+            }
+            okHttpRequest.aget(Server.UPDATE_USER_INFO_DATA, params, new OnResponseListener() {
                 @Override
                 public void onSuccess(String response) {
                     if (materialDialog != null && materialDialog.isShowing()) {
