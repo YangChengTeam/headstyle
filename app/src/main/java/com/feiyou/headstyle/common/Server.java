@@ -2,9 +2,9 @@ package com.feiyou.headstyle.common;
 
 public class Server {
 
-    public final static boolean isDebug = true;
+    public final static boolean isDebug = false;
 
-    public final static String BASE_SERVER_IP = isDebug ? "http://ntx.qqtn.com/" : "http://tx.qqtn.com/";
+    public final static String BASE_SERVER_IP = isDebug ? "http://ntx.qqtn.com/" : "http://ntx.qqtn.com/";
 
     //获取首页数据
     public final static String HOME_DATA = BASE_SERVER_IP + "apajax.asp?action=0&ctype=0&num=50";
@@ -28,7 +28,7 @@ public class Server {
     public final static String KEEP_LIST_DATA = BASE_SERVER_IP + "index/api?action=5&num=50&selkeep=1";
 
     //发帖
-    public final static String SEND_ARTICLE_DATA = BASE_SERVER_IP + "txapp/sajax.asp?action=upload";
+    public final static String SEND_ARTICLE_DATA = BASE_SERVER_IP + "main/api";
 
     //发帖(无文件)
     public final static String SEND_ARTICLE_NO_FILE_DATA = BASE_SERVER_IP + "txapp/sajax.asp?action=addshow";
@@ -52,13 +52,13 @@ public class Server {
     public final static String COMMENT_DATA = BASE_SERVER_IP + "main/api?action=cinfolist";
 
     //点赞
-    public final static String UP_ZAN_DATA = BASE_SERVER_IP + "txapp/sajax.asp?action=upzan";
+    public final static String UP_ZAN_DATA = BASE_SERVER_IP + "main/api?action=upzan";
 
     //评论
     public final static String ADD_COMMENT_DATA = BASE_SERVER_IP + "main/api?action=adcomment";
 
     //我的发帖
-    public final static String MY_ARTICLE_DATA = BASE_SERVER_IP + "txapp/sajax.asp?action=myshow";
+    public final static String MY_ARTICLE_DATA = BASE_SERVER_IP + "main/api?action=myshow";
 
     //专题列表数据
     public final static String SPECIAL_LIST_DATA = BASE_SERVER_IP + "index/api?action=8";

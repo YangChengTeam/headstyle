@@ -42,6 +42,7 @@ import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.adapter.StarItemAdapter;
 import com.feiyou.headstyle.bean.StarInfo;
 import com.feiyou.headstyle.bean.UserInfo;
+import com.feiyou.headstyle.bean.UserInfoRet;
 import com.feiyou.headstyle.common.Constant;
 import com.feiyou.headstyle.common.Server;
 import com.feiyou.headstyle.net.OKHttpRequest;
@@ -850,8 +851,8 @@ public class MyInfoActivity extends BaseActivity {
                                 if (materialDialog != null && materialDialog.isShowing()) {
                                     materialDialog.dismiss();
                                 }
-                                UserInfo tempInfo = mService.login(response);
-                                if (tempInfo != null) {
+                                UserInfoRet tempInfo = mService.update(response);
+                                if (tempInfo != null && tempInfo.errCode == Constant.RESULT_SUCCESS) {
                                     ToastUtils.show(MyInfoActivity.this, "修改成功");
                                     Logger.e("修改成功");
                                 } else {
@@ -914,8 +915,8 @@ public class MyInfoActivity extends BaseActivity {
                     if (materialDialog != null && materialDialog.isShowing()) {
                         materialDialog.dismiss();
                     }
-                    UserInfo tempInfo = mService.login(response);
-                    if (tempInfo != null) {
+                    UserInfoRet tempInfo = mService.update(response);
+                    if (tempInfo != null && tempInfo.errCode == Constant.RESULT_SUCCESS) {
                         ToastUtils.show(MyInfoActivity.this, "修改成功");
                         Logger.e("修改成功");
                         if (type == 1) {

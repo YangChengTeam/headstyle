@@ -163,7 +163,7 @@ public class MyFragment1 extends BaseFragment {
 
         if (App.isLetter && userInfo != null) {
             mLetterCountImageView.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             mLetterCountImageView.setVisibility(View.GONE);
         }
 
@@ -211,8 +211,8 @@ public class MyFragment1 extends BaseFragment {
                     Map<String, Boolean> map = new HashMap<String, Boolean>();
                     map.put(Conversation.ConversationType.PRIVATE.getName(), false);
                     RongIM.getInstance().startConversationList(getActivity(), map);
-                }else{
-                    ToastUtils.show(getActivity(),"请登录后查看");
+                } else {
+                    ToastUtils.show(getActivity(), "请登录后查看");
                     return;
                 }
             }
@@ -289,12 +289,12 @@ public class MyFragment1 extends BaseFragment {
                         }
 
                         //原有的评论数
-                        int lastCount = PreferencesUtils.getInt(getActivity(), App.AID + userInfo.uid);
+                        int lastCount = PreferencesUtils.getInt(getActivity(), App.AID + userInfo.uid, -1);
 
                         int currentCount = !StringUtils.isBlank(userInfo.getComment()) ? Integer.parseInt(userInfo.getComment()) : 0;
                         //存储最新的评论数
                         PreferencesUtils.putInt(getActivity(), App.AID + userInfo.uid, currentCount);
-                        if ((currentCount > 0 && currentCount > lastCount) || App.isMessage) {
+                        if ((currentCount > 0 && currentCount > lastCount && lastCount > -1 && currentCount - lastCount > 0) || App.isMessage) {
                             mMessageCountLayout.setVisibility(View.VISIBLE);
                             App.isMessage = true;
                             //我的发帖评论总数
@@ -306,7 +306,7 @@ public class MyFragment1 extends BaseFragment {
                             } else {
                                 mMessageCountLayout.setBackgroundResource(R.mipmap.single_num_icon);
                             }
-                            mMessageCountTextView.setText(userInfo.getComment() + "");
+                            mMessageCountTextView.setText((currentCount - lastCount) + "");
                         } else {
                             App.isMessage = false;
                             mMessageCountLayout.setVisibility(View.GONE);
@@ -608,7 +608,7 @@ public class MyFragment1 extends BaseFragment {
     public void messageHint(String result) {
         if (App.isLetter) {
             mLetterCountImageView.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             mLetterCountImageView.setVisibility(View.GONE);
         }
     }

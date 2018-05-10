@@ -28,6 +28,7 @@ import com.feiyou.headstyle.net.listener.OnResponseListener;
 import com.feiyou.headstyle.service.ArticleService;
 import com.feiyou.headstyle.ui.activity.ArticleDetailActivity;
 import com.feiyou.headstyle.ui.activity.FriendInfoActivity;
+import com.feiyou.headstyle.ui.activity.MyInfoActivity;
 import com.feiyou.headstyle.ui.activity.ShowImageListActivity;
 import com.feiyou.headstyle.util.AppUtils;
 import com.feiyou.headstyle.util.PreferencesUtils;
@@ -161,10 +162,16 @@ public class PhotosNewListAdapter extends BaseQuickAdapter<ArticleInfo,BaseViewH
         userImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (articleData.get(position) != null) {
-                    Intent intent = new Intent(mContext, FriendInfoActivity.class);
-                    intent.putExtra("fuid", articleData.get(position).uid);
+                UserInfo cUserInfo = (UserInfo) PreferencesUtils.getObject(mContext, Constant.USER_INFO, UserInfo.class);
+                if (cUserInfo != null && cUserInfo.getUid().equals(articleData.get(position).uid)) {
+                    Intent intent = new Intent(mContext, MyInfoActivity.class);
                     mContext.startActivity(intent);
+                } else {
+                    if (articleData.get(position) != null) {
+                        Intent intent = new Intent(mContext, FriendInfoActivity.class);
+                        intent.putExtra("fuid", articleData.get(position).uid);
+                        mContext.startActivity(intent);
+                    }
                 }
             }
         });

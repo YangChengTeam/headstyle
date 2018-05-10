@@ -215,6 +215,13 @@ public class AllArticleFragment extends BaseFragment implements ArticleNewListAd
                     //articleInfoList.addAll(temp);
                     mAdapter.addNewDatas(temp);
                     mAdapter.notifyDataSetChanged();
+                    if(temp.size() <10 ){
+                        mAdapter.loadMoreEnd();
+                    }else{
+                        mAdapter.loadMoreComplete();
+                    }
+                }else{
+                    mAdapter.loadMoreEnd();
                 }
             }
 

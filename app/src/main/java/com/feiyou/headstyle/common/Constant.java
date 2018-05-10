@@ -17,6 +17,8 @@ public class Constant {
 
     public final static int RESULT_FAIL = -1;
 
+    public final static int OPERATION_CODE = -2;
+
     public final static Gson GSON = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").disableHtmlEscaping()
             .create();
 

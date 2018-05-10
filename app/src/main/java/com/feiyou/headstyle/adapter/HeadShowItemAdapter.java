@@ -31,7 +31,7 @@ public class HeadShowItemAdapter extends BaseAdapter {
         super();
         this.mContext = mContext;
         this.heads = heads;
-        ivWidth = ScreenUtils.getWidth(mContext) - SizeUtils.dp2px(mContext, 26);
+        ivWidth = ScreenUtils.getWidth(mContext) - SizeUtils.dp2px(mContext, 66);
     }
 
     public List<String> getHeads() {

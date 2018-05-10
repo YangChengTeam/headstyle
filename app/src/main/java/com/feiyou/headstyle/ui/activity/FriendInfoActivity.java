@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.bean.UserInfo;
+import com.feiyou.headstyle.bean.UserInfoRet;
 import com.feiyou.headstyle.common.Constant;
 import com.feiyou.headstyle.common.Server;
 import com.feiyou.headstyle.net.OKHttpRequest;
@@ -184,6 +185,7 @@ public class FriendInfoActivity extends BaseActivity {
         if (!StringUtils.isEmpty(fuid)) {
             final Map<String, String> params = new HashMap<String, String>();
             params.put("uid", fuid);
+            params.put("cuid", currentUserInfo != null ? currentUserInfo.getUid() : "");
             //查询好友用户信息
             okHttpRequest.aget(Server.USER_INFO_DATA, params, new OnResponseListener() {
                 @Override
@@ -234,7 +236,7 @@ public class FriendInfoActivity extends BaseActivity {
         if (currentUserInfo != null) {
             Map<String, String> params = new HashMap<String, String>();
             params.put("openid", currentUserInfo.getOpenid());
-            params.put("stype", "edit");
+            params.put("stype", "zan");
             params.put("uid", currentUserInfo.getUid());
             params.put("zanuid", fuid);
             params.put("iszan", "1");
@@ -245,14 +247,17 @@ public class FriendInfoActivity extends BaseActivity {
                     if (materialDialog != null && materialDialog.isShowing()) {
                         materialDialog.dismiss();
                     }
-                    UserInfo tempInfo = mService.login(response);
-                    if (tempInfo != null) {
+                    UserInfoRet tempInfo = mService.update(response);
+                    if (tempInfo != null && tempInfo.errCode == Constant.RESULT_SUCCESS) {
                         ToastUtils.show(FriendInfoActivity.this, "点赞成功");
                         Logger.e("点赞成功");
                         if (!StringUtils.isBlank(friendUserInfo.getUserzan())) {
                             int temp = Integer.parseInt(friendUserInfo.getUserzan()) + 1;
                             mAgreeCountTextView.setText(temp + "");
                         }
+                    } else if (tempInfo.errCode == Constant.OPERATION_CODE) {
+                        ToastUtils.show(FriendInfoActivity.this, "已经点赞过了");
+                        Logger.e("已经点赞过了");
                     } else {
                         ToastUtils.show(FriendInfoActivity.this, "点赞失败,请稍后重试");
                         Logger.e("点赞失败");

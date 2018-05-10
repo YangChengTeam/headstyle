@@ -42,6 +42,17 @@ public class UserService extends BaseService {
         return null;
     }
 
+    public UserInfoRet update(String response) {
+        if (!StringUtils.isEmpty(response)) {
+            UserInfoRet result = Constant.GSON.fromJson(response, UserInfoRet.class);
+            if (result == null || result.errCode == Constant.RESULT_FAIL) {
+                return result;
+            }
+            return result;
+        }
+        return null;
+    }
+
     public Result headKeep(String response) {
         if (!StringUtils.isEmpty(response)) {
             Result result = Constant.GSON.fromJson(response, Result.class);

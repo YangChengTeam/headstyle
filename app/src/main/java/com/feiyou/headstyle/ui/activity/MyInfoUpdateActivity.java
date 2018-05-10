@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.bean.UserInfo;
+import com.feiyou.headstyle.bean.UserInfoRet;
 import com.feiyou.headstyle.common.Constant;
 import com.feiyou.headstyle.common.Server;
 import com.feiyou.headstyle.net.OKHttpRequest;
@@ -177,11 +178,16 @@ public class MyInfoUpdateActivity extends BaseActivity {
                     if (materialDialog != null && materialDialog.isShowing()) {
                         materialDialog.dismiss();
                     }
-                    UserInfo tempInfo = mService.login(response);
+                    UserInfoRet tempInfo = mService.update(response);
                     if (tempInfo != null) {
-                        ToastUtils.show(MyInfoUpdateActivity.this, "修改成功");
-                        Logger.e("修改成功");
-                        finish();
+                        if(tempInfo != null && tempInfo.errCode == Constant.RESULT_SUCCESS) {
+                            ToastUtils.show(MyInfoUpdateActivity.this, "修改成功");
+                            Logger.e("修改成功");
+                            finish();
+                        }else{
+                            ToastUtils.show(MyInfoUpdateActivity.this, tempInfo.message);
+                            Logger.e("修改失败--->" + tempInfo.message);
+                        }
                     } else {
                         ToastUtils.show(MyInfoUpdateActivity.this, "修改失败,请稍后重试");
                         Logger.e("修改失败");

@@ -173,6 +173,7 @@ public class ShowAddActivity extends BaseActivity {
         }
 
         final Map<String, String> params = new HashMap<String, String>();
+        params.put("action","upload");
         params.put("scontent", showContentEt.getText().toString());
         params.put("stype", stype);
 
