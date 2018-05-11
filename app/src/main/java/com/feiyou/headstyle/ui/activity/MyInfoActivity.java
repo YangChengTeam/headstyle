@@ -719,18 +719,36 @@ public class MyInfoActivity extends BaseActivity {
      */
     private void useCamera() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         outputImage = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
                 + "/test/" + System.currentTimeMillis() + ".jpg");
         outputImage.getParentFile().mkdirs();
 
-        //改变Uri  com.xykj.customview.fileprovider注意和xml中的一致
+        /*//改变Uri  com.xykj.customview.fileprovider注意和xml中的一致
         Uri uri = FileProvider.getUriForFile(this, "com.feiyou.headstyle.fileProvider", outputImage);
         imageUri = uri;
         //添加权限
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-        startActivityForResult(intent, TAKE_BIG_PICTURE);
+        startActivityForResult(intent, TAKE_BIG_PICTURE);*/
+
+
+        Uri uri = null;
+        Logger.i("currentApiVersion--->" + android.os.Build.VERSION.SDK_INT);
+        if (android.os.Build.VERSION.SDK_INT < 24) {
+            uri = Uri.fromFile(outputImage);
+            imageUri = uri;
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+            startActivityForResult(intent, TAKE_BIG_PICTURE);
+        } else {
+            ContentValues contentValues = new ContentValues(1);
+            contentValues.put(MediaStore.Images.Media.DATA, outputImage.getAbsolutePath());
+            uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+            imageUri = uri;
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+            startActivityForResult(intent, TAKE_BIG_PICTURE);
+        }
     }
 
     private void cropImageUri(Uri uri, int outputX, int outputY, int requestCode) {
