@@ -15,6 +15,7 @@ public class FunTestInfo implements Serializable {
     public String content;
     public String sharetitle;
     public String sharedesc;
+    public String sharelogo;
     public String smallimg;
     public String bigimg;
     public String paixu;

@@ -141,8 +141,7 @@ public class MyFileUtils {
         String sdcardState = Environment.getExternalStorageState();
         //如果没SD卡则放缓存
         if (Environment.MEDIA_MOUNTED.equals(sdcardState)) {
-            BASE_PATH = Environment.getExternalStorageDirectory().getAbsolutePath()
-                        + "/stickercamera/";
+            BASE_PATH = App.getApp().getCacheDirPath();
         } else {
             BASE_PATH = App.getApp().getCacheDirPath();
         }

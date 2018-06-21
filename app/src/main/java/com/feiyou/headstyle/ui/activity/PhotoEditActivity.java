@@ -355,7 +355,7 @@ public class PhotoEditActivity extends BaseActivity {
             try {
                 bitmap = params[0];
 
-                String picName = TimeUtils.getCurrentTimeInString();
+                String picName = com.blankj.utilcode.util.TimeUtils.getNowMills() + "";
                 fileName = ImageUtils.saveToFile(MyFileUtils.getInst().getPhotoSavedPath() + "/" + picName, false, bitmap);
 
             } catch (Exception e) {

@@ -2,6 +2,7 @@ package com.feiyou.headstyle.ui.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -22,6 +23,9 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.feiyou.headstyle.App;
 import com.feiyou.headstyle.R;
@@ -201,7 +205,6 @@ public class FunTestResultActivity extends BaseActivity implements FunTestCommen
         mService = new FunTestResultService();
         mUserService = new UserService();
         mShareAPI = UMShareAPI.get(this);
-        image = new UMImage(FunTestResultActivity.this, R.mipmap.logo_100);
 
         materialDialog = new MaterialDialog.Builder(FunTestResultActivity.this)
                 .content("回复中...")
@@ -209,12 +212,21 @@ public class FunTestResultActivity extends BaseActivity implements FunTestCommen
                 .backgroundColorRes(R.color.white)
                 .contentColorRes(R.color.dialog_content_color).build();
 
+        image = new UMImage(FunTestResultActivity.this, R.mipmap.logo_100);
+
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
             testId = bundle.getString("test_id");
             testScore = bundle.getInt("test_score");
             funTestInfo = (FunTestInfo) bundle.getSerializable("fun_test_data_info");
+
+            Glide.with(this).asBitmap().load(funTestInfo.sharelogo).into(new SimpleTarget<Bitmap>() {
+                @Override
+                public void onResourceReady(Bitmap bitmap, Transition<? super Bitmap> transition) {
+                    image = new UMImage(FunTestResultActivity.this, bitmap);
+                }
+            });
         }
 
         mTitleTextView.setText("测试结果");
@@ -230,12 +242,12 @@ public class FunTestResultActivity extends BaseActivity implements FunTestCommen
             mShareCountTextView.setText(funTestInfo.sharetotal + "人转发");
             mFunTestTitleTextView.setText(funTestInfo.title);
             shareTitle = funTestInfo.sharetitle;
-            if (!StringUtils.isEmpty(shareTitle)) {
-                if (shareTitle.length() > 11) {
-                    String tShareTitle = shareTitle.substring(0, 11);
-                    shareTitle = tShareTitle + "......";
-                }
-            }
+//            if (!StringUtils.isEmpty(shareTitle)) {
+//                if (shareTitle.length() > 11) {
+//                    String tShareTitle = shareTitle.substring(0, 11);
+//                    shareTitle = tShareTitle + "......";
+//                }
+//            }
         }
 
         mFunMoreTestAdapter = new FunMoreTestAdapter(this, null);

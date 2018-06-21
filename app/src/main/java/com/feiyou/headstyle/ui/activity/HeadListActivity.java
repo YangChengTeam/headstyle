@@ -151,6 +151,7 @@ public class HeadListActivity extends BaseActivity implements SwipeRefreshLayout
 
             Map<String, String> params = new HashMap<String, String>();
             params.put("p", pageNum + "");
+            params.put("num", "48");
             params.put("cid", cid + "");
 
             okHttpRequest.aget(Server.NEW_HOME_DATA, params, new OnResponseListener() {
@@ -238,7 +239,7 @@ public class HeadListActivity extends BaseActivity implements SwipeRefreshLayout
         if (data != null && data.size() > 0) {
             intent.putExtra("tid", cid);
             intent.putExtra("pos", position);
-            int tempPage = (position / 50) + 1;
+            int tempPage = (position / 48) + 1;
             intent.putExtra("page", tempPage);
             intent.putExtra("cid", data.get(position).getCid());
             intent.putExtra("imageUrl", data.get(position).getHurl());

@@ -2,6 +2,7 @@ package com.feiyou.headstyle.ui.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -14,6 +15,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.feiyou.headstyle.App;
 import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.bean.FunTestInfo;
@@ -98,7 +101,7 @@ public class FunTestDetailActivity extends BaseActivity {
     @Override
     public void initViews() {
         super.initViews();
-
+        image = new UMImage(FunTestDetailActivity.this, R.mipmap.logo_100);
         mService = new FunTestResultService();
         Bundle bundle = getIntent().getExtras();
         funTestInfo = (FunTestInfo) bundle.getSerializable("fun_test_data_info");
@@ -110,16 +113,22 @@ public class FunTestDetailActivity extends BaseActivity {
             mFunTestDesTextView.setText(funTestInfo.content);
             Glide.with(this).load(funTestInfo.smallimg).into(mTestTopicImageView);
             shareTitle = funTestInfo.sharetitle;
-            if (!StringUtils.isEmpty(shareTitle)) {
-                if (shareTitle.length() > 11) {
-                    String tShareTitle = shareTitle.substring(0, 11);
-                    shareTitle = tShareTitle + "......";
+//            if (!StringUtils.isEmpty(shareTitle)) {
+//                if (shareTitle.length() > 11) {
+//                    String tShareTitle = shareTitle.substring(0, 11);
+//                    shareTitle = tShareTitle + "......";
+//                }
+//            }
+            Glide.with(this).asBitmap().load(funTestInfo.sharelogo).into(new SimpleTarget<Bitmap>() {
+                @Override
+                public void onResourceReady(Bitmap bitmap, Transition<? super Bitmap> transition) {
+                    image = new UMImage(FunTestDetailActivity.this, bitmap);
                 }
-            }
+            });
         }
 
         mShareAPI = UMShareAPI.get(this);
-        image = new UMImage(FunTestDetailActivity.this, R.mipmap.logo_100);
+
 
         RxView.clicks(mStartButton).throttleFirst(200, TimeUnit.MILLISECONDS).subscribe(new Action1<Void>() {
             @Override

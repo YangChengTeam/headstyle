@@ -126,7 +126,7 @@ public class ArticleNewListAdapter extends BaseQuickAdapter<ArticleInfo, BaseVie
         TextView commentCountTv = helper.getConvertView().findViewById(R.id.comment_count_tv);
         final TextView praiseCountTv = helper.getConvertView().findViewById(R.id.praise_count_tv);
         LinearLayout commentLayout = helper.getConvertView().findViewById(R.id.comment_layout);
-        LinearLayout pariseLayout = helper.getConvertView().findViewById(R.id.praise_layout);
+        final LinearLayout pariseLayout = helper.getConvertView().findViewById(R.id.praise_layout);
 
 
         userName.setText(articleData.get(position).nickname);
@@ -235,6 +235,7 @@ public class ArticleNewListAdapter extends BaseQuickAdapter<ArticleInfo, BaseVie
 
                 if (AppUtils.isLogin(mContext)) {
                     if (iszan == 0) {
+                        pariseLayout.setClickable(false);
                         final Map<String, String> params = new HashMap<String, String>();
                         UserInfo userInfo = (UserInfo) PreferencesUtils.getObject(mContext, Constant.USER_INFO, UserInfo.class);
                         params.put("sid", sid);

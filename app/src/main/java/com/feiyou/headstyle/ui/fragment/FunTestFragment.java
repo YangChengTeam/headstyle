@@ -2,6 +2,7 @@ package com.feiyou.headstyle.ui.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +17,8 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.feiyou.headstyle.App;
 import com.feiyou.headstyle.R;
@@ -296,6 +299,13 @@ public class FunTestFragment extends BaseFragment implements SwipeRefreshLayout.
             shareWindow.showAtLocation(mFunTestLayout, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
             setBackgroundAlpha(getActivity(), 0.5f);
             shareWindow.setOnDismissListener(new PoponDismissListener());
+
+            Glide.with(this).asBitmap().load(funTestInfo.sharelogo).into(new SimpleTarget<Bitmap>() {
+                @Override
+                public void onResourceReady(Bitmap bitmap, Transition<? super Bitmap> transition) {
+                    image = new UMImage(getActivity(), bitmap);
+                }
+            });
         } else {
             ToastUtils.show(getActivity(), "数据异常，请稍后重试");
         }

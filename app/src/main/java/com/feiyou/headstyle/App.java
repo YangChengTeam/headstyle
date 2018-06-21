@@ -3,6 +3,7 @@ package com.feiyou.headstyle;
 import android.app.Application;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.StrictMode;
 import android.support.multidex.MultiDex;
@@ -96,13 +97,15 @@ public class App extends Application {
         Utils.init(this);
         PlatformConfig.setQQZone("1105592461", "xCJux2hAAjyh1qdx");
         PlatformConfig.setWeixin("wxd1112ca9a216aeda", "0e18de42fc068c41f0aca921403b9932");
+
+        ColorDrawable colorDrawable = new ColorDrawable(0xfff1f1f1);
         ThemeConfig theme = new ThemeConfig.Builder()
                 .setTitleBarBgColor(Color.rgb(251, 83, 96))
                 .setTitleBarTextColor(Color.rgb(255, 255, 255))
                 .setFabNornalColor(Color.rgb(251, 83, 96))
                 .setFabPressedColor(Color.rgb(246, 130, 130))
                 .setCropControlColor(Color.parseColor("#fb5161"))
-                .setEditPhotoBgTexture(getResources().getDrawable(R.mipmap.common_cancel_normal))
+                .setEditPhotoBgTexture(colorDrawable)
                 .build();
 
         //配置功能

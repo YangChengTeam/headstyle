@@ -253,7 +253,7 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
 
             pageNum = bundle.getInt("page");
 
-            start = pageNum > 0 ? cpos % 50 : cpos;
+            start = pageNum > 0 ? cpos % 48 : cpos;
 
             if (bundle.getString("searchKey") != null) {
                 isSearch = true;
@@ -378,6 +378,7 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
         String loadUrl = "";
         Map<String, String> params = new HashMap<String, String>();
         params.put("p", pageNum + "");
+        params.put("num", "48");
         if (isSearch) {
             loadUrl = Server.NEW_SEARCH_DATA;
             if (!StringUtils.isEmpty(searchKey)) {
@@ -405,7 +406,7 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
                         }
                     }
 
-                    if (headListRet.data.size() < 50) {
+                    if (headListRet.data.size() < 48) {
                         isLastPage = true;
                     }
 

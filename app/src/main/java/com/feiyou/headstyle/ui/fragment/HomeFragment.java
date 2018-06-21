@@ -265,6 +265,8 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                         // 判断是否滚动到底部
                         if (view.getLastVisiblePosition() == view.getCount() - 1) {
                             //ToastUtils.show(getActivity(),"滚动到了底部");
+                            pageNum++;
+                            Logger.e("下一页页码page--->" + pageNum);
                             loadDataByParams();//加载下一页数据
                         }
 
@@ -364,6 +366,7 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     }
 
     public void loadDataByParams() {
+
         loadCount++;
 
         if (mAdapter.getDataList() == null || mAdapter.getDataList().size() == 0) {
@@ -375,8 +378,11 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         }
 
         Map<String, String> params = new HashMap<String, String>();
-        params.put("p", pageNum + "");
 
+        Logger.e("request page===>" + pageNum);
+
+        params.put("p", pageNum + "");
+        params.put("num", "48");
         okHttpRequest.aget(Server.NEW_HOME_DATA, params, new OnResponseListener() {
             @Override
             public void onSuccess(final String response) {
@@ -414,8 +420,6 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                 if (temp != null && temp.size() > 0) {
                     Logger.e("first data ==" + temp.get(0).getHurl());
                     mAdapter.addNewDatas(temp);
-                    pageNum++;
-                    Logger.e("下一页页码page--->" + pageNum);
 
                     Message message = new Message();
                     message.what = 0;
@@ -884,7 +888,7 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
             Logger.e("url isRefresh--->" + isRefresh + "---position----" + position);
             intent.putExtra("pos", position);
 
-            int tempPage = (position / 50) + 1;
+            int tempPage = (position / 48) + 1;
             intent.putExtra("page", tempPage + rPageNum - 1);
 
             intent.putExtra("cid", mAdapter.getDataList().get(position).getCid());
