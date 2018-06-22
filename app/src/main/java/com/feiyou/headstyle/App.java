@@ -12,7 +12,6 @@ import com.blankj.utilcode.util.Utils;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.feiyou.headstyle.common.Constant;
 import com.feiyou.headstyle.common.DbHelper;
-import com.feiyou.headstyle.common.LocationService;
 import com.feiyou.headstyle.listener.FrescoPauseOnScrollListener;
 import com.feiyou.headstyle.util.AppUtils;
 import com.feiyou.headstyle.util.FileUtils;
@@ -66,8 +65,6 @@ public class App extends Application {
     public static String AID = "";
 
     public static boolean isConnect = false;
-
-    public LocationService locationService;
 
     public static int weixinState;
 
@@ -143,7 +140,6 @@ public class App extends Application {
                 return false;
             }
         });
-        locationService = new LocationService(getApplicationContext());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
