@@ -203,6 +203,7 @@ public class HeadListActivity extends BaseActivity implements SwipeRefreshLayout
             Map<String, String> params = new HashMap<String, String>();
             params.put("p", pageNum + "");
             params.put("cid", cid + "");
+            params.put("num", "48");
 
             okHttpRequest.aget(Server.NEW_HOME_DATA, params, new OnResponseListener() {
                 @Override
