@@ -28,7 +28,10 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.LogUtils;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.FutureTarget;
+import com.bumptech.glide.request.target.Target;
 import com.feiyou.headstyle.App;
 import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.adapter.HeadShowItemAdapter;
@@ -70,12 +73,16 @@ import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.FileCallBack;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ExecutionException;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -178,6 +185,8 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
 
     private boolean isFollow;
 
+    private File gifFile;
+
     private Handler handler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -195,6 +204,18 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
                     break;
                 case 1:
                     ToastUtils.show(HeadShow3Activity.this, "图片保存失败");
+                    break;
+                case 2:
+                    ToastUtils.show(HeadShow3Activity.this, "图片已保存到图库");
+
+                    // 最后通知图库更新
+                    if (gifFile.exists()) {
+                        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                        Uri uri = Uri.fromFile(gifFile);
+                        intent.setData(uri);
+                        sendBroadcast(intent);
+                    }
+
                     break;
                 default:
                     break;
@@ -373,7 +394,7 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
      * @param page
      */
     public void loadGalleryData(int page) {
-        Logger.e("page---" + page);
+        Logger.e("page--->" + page);
 
         String loadUrl = "";
         Map<String, String> params = new HashMap<String, String>();
@@ -387,7 +408,7 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
         } else {
             loadUrl = Server.NEW_HOME_DATA;
             if (typeId > 0) {
-                params.put("cid", typeId+"");
+                params.put("cid", typeId + "");
             }
         }
         okHttpRequest.aget(loadUrl, params, new OnResponseListener() {
@@ -412,7 +433,9 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
 
                     adapter.addDatas(temps);
                     adapter.notifyDataSetChanged();
-                    pageNum++;
+                    if (!isLastPage) {
+                        pageNum++;
+                    }
                 }
             }
 
@@ -433,9 +456,15 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
 
     @Override
     public void removeFirstObjectInAdapter() {
+
         MobclickAgent.onEvent(this, "swipe_image_count", AppUtils.getVersionName(this));
         adapter.remove(0);
+        LogUtils.d("adapter last count --->" + adapter.getCount());
         imagePath = null;
+        if (adapter.getCount() <= 3) {
+            start = 0;
+            loadGalleryData(pageNum);
+        }
     }
 
     @Override
@@ -448,9 +477,11 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
 
     @Override
     public void onAdapterAboutToEmpty(int itemsInAdapter) {
-        if (itemsInAdapter == 3) {
-            loadGalleryData(pageNum);
-        }
+        //LogUtils.d("onAdapterAboutToEmpty count-->" + swipeView.getAdapter().getCount());
+//        if (itemsInAdapter == 3) {
+//            LogUtils.d("onAdapterAboutToEmpty---pageNum--->" + pageNum + "---itemsInAdapter--->" + itemsInAdapter);
+//            loadGalleryData(pageNum);
+//        }
     }
 
     @Override
@@ -668,27 +699,17 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
     // 其次把文件插入到系统图库
     public void saveImageToGallery() {
         try {
-            if (!StringUtils.isEmpty(imagePath)) {
 
-                File saveFile = new File(imagePath);
-                Logger.e("saveFile--Path---" + imagePath);
+            if (adapter.getHeads() != null && adapter.getHeads().size() > 0) {
+                imageUrl = adapter.getHeads().get(0);
+            }
 
-                Message message = new Message();
-                message.what = 0;
-                if (!saveFile.exists()) {
-                    message.what = 1;
-                }
-                handler.sendMessage(message);
-            } else {
+            if (!StringUtils.isBlank(imageUrl) && imageUrl.endsWith("gif")) {
 
-                if (adapter.getHeads() != null && adapter.getHeads().size() > 0) {
-                    imageUrl = adapter.getHeads().get(0);
-                }
+                fileName = String.valueOf(TimeUtils.getCurrentTimeInLong()) + ".gif";
 
-                fileName = String.valueOf(TimeUtils.getCurrentTimeInLong()) + ".jpg";
-                savePath = Constant.BASE_NORMAL_SAVE_IMAGE_DIR + File.separator + "DCIM" + File.separator + "camera";
-
-                OkHttpUtils.get().url(imageUrl).build().execute(new FileCallBack(savePath, fileName) {
+                final String gifSavePath = Constant.BASE_NORMAL_SAVE_IMAGE_DIR + File.separator + "DCIM" + File.separator + "camera" + File.separator + fileName;
+                OkHttpUtils.get().url(imageUrl).build().execute(new FileCallBack(gifSavePath, fileName) {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         Message message = new Message();
@@ -698,20 +719,60 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
 
                     @Override
                     public void onResponse(File file, int id) {
-                        saveFile = file;
-                        imagePath = file.getAbsolutePath();
-
-                        Bitmap tempBitmap = BitmapFactory.decodeFile(imagePath);
-                        if (tempBitmap != null) {
-                            tempBitmap = ImgUtils.compressImage(tempBitmap, 100);
-                            image = new UMImage(HeadShow3Activity.this, tempBitmap);
-                        }
+                        gifFile = file;
 
                         Message message = new Message();
-                        message.what = 0;
+                        message.what = 2;
                         handler.sendMessage(message);
                     }
                 });
+
+            } else {
+                if (!StringUtils.isEmpty(imagePath)) {
+
+                    File saveFile = new File(imagePath);
+                    Logger.e("saveFile--Path---" + imagePath);
+
+                    Message message = new Message();
+                    message.what = 0;
+                    if (!saveFile.exists()) {
+                        message.what = 1;
+                    }
+                    handler.sendMessage(message);
+                } else {
+
+                    if (adapter.getHeads() != null && adapter.getHeads().size() > 0) {
+                        imageUrl = adapter.getHeads().get(0);
+                    }
+
+                    fileName = String.valueOf(TimeUtils.getCurrentTimeInLong()) + ".jpg";
+                    savePath = Constant.BASE_NORMAL_SAVE_IMAGE_DIR + File.separator + "DCIM" + File.separator + "camera";
+
+                    OkHttpUtils.get().url(imageUrl).build().execute(new FileCallBack(savePath, fileName) {
+                        @Override
+                        public void onError(Call call, Exception e, int id) {
+                            Message message = new Message();
+                            message.what = 1;
+                            handler.sendMessage(message);
+                        }
+
+                        @Override
+                        public void onResponse(File file, int id) {
+                            saveFile = file;
+                            imagePath = file.getAbsolutePath();
+
+                            Bitmap tempBitmap = BitmapFactory.decodeFile(imagePath);
+                            if (tempBitmap != null) {
+                                tempBitmap = ImgUtils.compressImage(tempBitmap, 100);
+                                image = new UMImage(HeadShow3Activity.this, tempBitmap);
+                            }
+
+                            Message message = new Message();
+                            message.what = 0;
+                            handler.sendMessage(message);
+                        }
+                    });
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
