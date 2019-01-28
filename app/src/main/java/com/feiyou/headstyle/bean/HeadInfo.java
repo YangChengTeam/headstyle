@@ -20,6 +20,7 @@ public class HeadInfo implements Parcelable {
     private String clicknum;
     private String keepnum;
     private String gaoqing;
+    private Long is_keep;
 
     public Long getId() {
         return this.id;
@@ -69,18 +70,18 @@ public class HeadInfo implements Parcelable {
         this.gaoqing = gaoqing;
     }
 
+    public Long getIs_keep() {
+        return is_keep;
+    }
+
+    public void setIs_keep(Long is_keep) {
+        this.is_keep = is_keep;
+    }
+
     public HeadInfo() {
     }
 
-    @Generated(hash = 1632015538)
-    public HeadInfo(Long id, String cid, String hurl, String clicknum, String keepnum, String gaoqing) {
-        this.id = id;
-        this.cid = cid;
-        this.hurl = hurl;
-        this.clicknum = clicknum;
-        this.keepnum = keepnum;
-        this.gaoqing = gaoqing;
-    }
+ 
 
     @Override
     public int describeContents() {
@@ -95,6 +96,7 @@ public class HeadInfo implements Parcelable {
         dest.writeString(this.clicknum);
         dest.writeString(this.keepnum);
         dest.writeString(this.gaoqing);
+        dest.writeValue(this.is_keep);
     }
 
     protected HeadInfo(Parcel in) {
@@ -104,7 +106,21 @@ public class HeadInfo implements Parcelable {
         this.clicknum = in.readString();
         this.keepnum = in.readString();
         this.gaoqing = in.readString();
+        this.is_keep = (Long) in.readValue(Long.class.getClassLoader());
     }
+
+    @Generated(hash = 926401397)
+    public HeadInfo(Long id, String cid, String hurl, String clicknum,
+            String keepnum, String gaoqing, Long is_keep) {
+        this.id = id;
+        this.cid = cid;
+        this.hurl = hurl;
+        this.clicknum = clicknum;
+        this.keepnum = keepnum;
+        this.gaoqing = gaoqing;
+        this.is_keep = is_keep;
+    }
+
 
     public static final Creator<HeadInfo> CREATOR = new Creator<HeadInfo>() {
         @Override
@@ -117,4 +133,6 @@ public class HeadInfo implements Parcelable {
             return new HeadInfo[size];
         }
     };
+
+
 }

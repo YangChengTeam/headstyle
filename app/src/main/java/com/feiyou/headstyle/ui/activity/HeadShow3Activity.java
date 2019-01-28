@@ -35,6 +35,7 @@ import com.bumptech.glide.request.target.Target;
 import com.feiyou.headstyle.App;
 import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.adapter.HeadShowItemAdapter;
+import com.feiyou.headstyle.bean.HeadInfo;
 import com.feiyou.headstyle.bean.HeadListRet;
 import com.feiyou.headstyle.bean.Result;
 import com.feiyou.headstyle.bean.UserInfo;
@@ -266,6 +267,7 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
         if (bundle != null && bundle.getString("cid") != null) {
             if (bundle.getString("cid") != null) {
                 cid = bundle.getString("cid");
+                LogUtils.d("cid--->" + cid);
             }
 
             typeId = bundle.getInt("tid", 0);
@@ -400,13 +402,17 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
         Map<String, String> params = new HashMap<String, String>();
         params.put("p", pageNum + "");
         params.put("num", "48");
+        if (userInfo != null) {
+            LogUtils.d("uid--->" + userInfo.uid);
+            params.put("uid", userInfo.uid);
+        }
         if (isSearch) {
             loadUrl = Server.NEW_SEARCH_DATA;
             if (!StringUtils.isEmpty(searchKey)) {
                 params.put("keyword", searchKey);
             }
         } else {
-            loadUrl = Server.NEW_HOME_DATA;
+            loadUrl = Server.NEW_DETAIL_LIST_DATA;
             if (typeId > 0) {
                 params.put("cid", typeId + "");
             }
@@ -419,11 +425,11 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
                 HeadListRet headListRet = mService.getData(response);
                 if (headListRet != null && headListRet.data != null) {
 
-                    List<String> temps = new ArrayList<String>();
+                    List<HeadInfo> temps = new ArrayList<HeadInfo>();
 
                     if (start < headListRet.data.size()) {
                         for (int i = start; i < headListRet.data.size(); i++) {
-                            temps.add(headListRet.data.get(i).getHurl());
+                            temps.add(headListRet.data.get(i));
                         }
                     }
 
@@ -452,6 +458,7 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
 
     @Override
     public void onItemClicked(MotionEvent event, View v, Object dataObject) {
+        LogUtils.d("onItemClicked hurl--->" + dataObject.toString());
     }
 
     @Override
@@ -469,10 +476,40 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
 
     @Override
     public void onLeftCardExit(Object dataObject) {
+        cid = adapter.getHeads().get(0).getCid();
+
+        //LogUtils.d("hurl--->" + start + "----"+ adapter.getHeads().get(0).getHurl() + "---iskeep---"+adapter.getHeads().get(0).getIs_keep());
+        if(adapter.getHeads() != null && adapter.getHeads().get(0) != null && adapter.getHeads().get(0).getIs_keep() != null){
+            if(adapter.getHeads().get(0).getIs_keep() == 0){
+                isKeep = "0";
+                Glide.with(HeadShow3Activity.this).load(R.mipmap.in_keep_normal_icon).into(mKeepImageView);
+            }else{
+                isKeep = "1";
+                Glide.with(HeadShow3Activity.this).load(R.mipmap.in_keep_press_icon).into(mKeepImageView);
+            }
+        }else{
+            isKeep = "1";
+            Glide.with(HeadShow3Activity.this).load(R.mipmap.in_keep_press_icon).into(mKeepImageView);
+        }
     }
 
     @Override
     public void onRightCardExit(Object dataObject) {
+        cid = adapter.getHeads().get(0).getCid();
+        //LogUtils.d("hurl--->" + start + "----"+ adapter.getHeads().get(0).getHurl() + "---iskeep---"+adapter.getHeads().get(0).getIs_keep());
+        if(adapter.getHeads() != null && adapter.getHeads().get(0) != null && adapter.getHeads().get(0).getIs_keep() != null){
+            if(adapter.getHeads().get(0).getIs_keep() == 0){
+                isKeep = "0";
+                Glide.with(HeadShow3Activity.this).load(R.mipmap.in_keep_normal_icon).into(mKeepImageView);
+            }else{
+                isKeep = "1";
+                Glide.with(HeadShow3Activity.this).load(R.mipmap.in_keep_press_icon).into(mKeepImageView);
+            }
+        }else{
+            isKeep = "1";
+            Glide.with(HeadShow3Activity.this).load(R.mipmap.in_keep_press_icon).into(mKeepImageView);
+        }
+
     }
 
     @Override
@@ -493,7 +530,7 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
 
         if (StringUtils.isEmpty(imagePath)) {
             if (adapter.getHeads() != null && adapter.getHeads().size() > 0) {
-                imageUrl = adapter.getHeads().get(0);
+                imageUrl = adapter.getHeads().get(0).getHurl();
             }
 
             Logger.i("current imageurl--->" + imageUrl);
@@ -549,6 +586,9 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
     public void addKeep() {
         userInfo = (UserInfo) PreferencesUtils.getObject(this, Constant.USER_INFO, UserInfo.class);
         if (userInfo != null && cid != null) {
+
+            LogUtils.d("cid--->addkeep--->" + cid);
+
             final Map<String, String> params = new HashMap<String, String>();
             params.put("openid", userInfo.openid);
             params.put("uid", userInfo.uid);
@@ -620,7 +660,7 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
 
             if (StringUtils.isEmpty(imagePath)) {
                 if (adapter.getHeads() != null && adapter.getHeads().size() > 0) {
-                    imageUrl = adapter.getHeads().get(0);
+                    imageUrl = adapter.getHeads().get(0).getHurl();
                 }
 
                 fileName = String.valueOf(TimeUtils.getCurrentTimeInLong()) + ".jpg";
@@ -701,7 +741,7 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
         try {
 
             if (adapter.getHeads() != null && adapter.getHeads().size() > 0) {
-                imageUrl = adapter.getHeads().get(0);
+                imageUrl = adapter.getHeads().get(0).getHurl();
             }
 
             if (!StringUtils.isBlank(imageUrl) && imageUrl.endsWith("gif")) {
@@ -742,7 +782,7 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
                 } else {
 
                     if (adapter.getHeads() != null && adapter.getHeads().size() > 0) {
-                        imageUrl = adapter.getHeads().get(0);
+                        imageUrl = adapter.getHeads().get(0).getHurl();
                     }
 
                     fileName = String.valueOf(TimeUtils.getCurrentTimeInLong()) + ".jpg";
@@ -830,7 +870,7 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
 
         if (StringUtils.isEmpty(imagePath)) {
             if (adapter.getHeads() != null && adapter.getHeads().size() > 0) {
-                imageUrl = adapter.getHeads().get(0);
+                imageUrl = adapter.getHeads().get(0).getHurl();
             }
 
             fileName = String.valueOf(TimeUtils.getCurrentTimeInLong()) + ".jpg";
@@ -1088,7 +1128,7 @@ public class HeadShow3Activity extends BaseActivity implements SwipeFlingAdapter
 
                                     if (StringUtils.isEmpty(imagePath)) {
                                         if (adapter.getHeads() != null && adapter.getHeads().size() > 0) {
-                                            imageUrl = adapter.getHeads().get(0);
+                                            imageUrl = adapter.getHeads().get(0).getHurl();
                                         }
 
                                         fileName = String.valueOf(TimeUtils.getCurrentTimeInLong()) + ".jpg";

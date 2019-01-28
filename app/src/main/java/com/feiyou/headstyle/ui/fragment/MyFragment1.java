@@ -568,6 +568,8 @@ public class MyFragment1 extends BaseFragment {
                                 getUserInfo();
                                 App.connect(userInfo.getUsertoken());
                                 RxBus.get().post(Constant.LOGIN_SUCCESS, "loginSuccess");
+                            }else{
+                                ToastUtils.show(getActivity(), "登录失败");
                             }
                         }
 

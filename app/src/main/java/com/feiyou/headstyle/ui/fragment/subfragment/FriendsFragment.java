@@ -15,6 +15,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.feiyou.headstyle.App;
 import com.feiyou.headstyle.R;
+import com.feiyou.headstyle.adapter.ArticleListAdapter;
+import com.feiyou.headstyle.adapter.FriendsListAdapter;
 import com.feiyou.headstyle.adapter.FriendsNewListAdapter;
 import com.feiyou.headstyle.bean.ArticleInfo;
 import com.feiyou.headstyle.bean.UserInfo;
@@ -36,6 +38,12 @@ import com.hwangjr.rxbus.annotation.Subscribe;
 import com.hwangjr.rxbus.annotation.Tag;
 import com.hwangjr.rxbus.thread.EventThread;
 import com.orhanobut.logger.Logger;
+import com.qq.e.ads.cfg.MultiProcessFlag;
+import com.qq.e.ads.nativ.NativeExpressAD;
+import com.qq.e.ads.nativ.NativeExpressADView;
+import com.qq.e.comm.pi.AdData;
+import com.qq.e.comm.util.AdError;
+import com.qq.e.comm.util.GDTLogger;
 import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.bean.SHARE_MEDIA;
@@ -48,7 +56,7 @@ import java.util.Map;
 import butterknife.BindView;
 import io.rong.imkit.RongIM;
 
-public class FriendsFragment extends BaseFragment implements FriendsNewListAdapter.LoginShowListener, SwipeRefreshLayout.OnRefreshListener {
+public class FriendsFragment extends BaseFragment implements FriendsListAdapter.LoginShowListener, SwipeRefreshLayout.OnRefreshListener,NativeExpressAD.NativeExpressADListener,FriendsListAdapter.OnRecyclerViewItemClickListener {
 
     @BindView(R.id.pull_to_refresh)
     SwipeRefreshLayout swipeLayout;
@@ -56,9 +64,9 @@ public class FriendsFragment extends BaseFragment implements FriendsNewListAdapt
     @BindView(R.id.article_recyclerview_list)
     RecyclerView mRecyclerView;
 
-    private FriendsNewListAdapter mAdapter;
+    private FriendsListAdapter mAdapter;
 
-    private List<ArticleInfo> articleInfoList;
+    private List<Object> articleInfoList;
 
     private int pageNum = 1;
 
@@ -92,6 +100,16 @@ public class FriendsFragment extends BaseFragment implements FriendsNewListAdapt
 
     public int pageSize = 10;
 
+    public static final int AD_COUNT = 10;// 加载广告的条数，取值范围为[1, 10]
+
+    public static int FIRST_AD_POSITION = 1; // 第一条广告的位置
+
+    private List<NativeExpressADView> mAdViewList;
+
+    private HashMap<NativeExpressADView, Integer> mAdViewPositionMap = new HashMap<>();
+
+    public static final String TAG = "ALL";
+
     public FriendsFragment() {
     }
 
@@ -103,7 +121,7 @@ public class FriendsFragment extends BaseFragment implements FriendsNewListAdapt
     @Override
     public void initVars() {
         super.initVars();
-        articleInfoList = new ArrayList<ArticleInfo>();
+        articleInfoList = new ArrayList<Object>();
     }
 
     @Override
@@ -123,31 +141,62 @@ public class FriendsFragment extends BaseFragment implements FriendsNewListAdapt
         articleService = new ArticleService();
         okHttpRequest = new OKHttpRequest();
 
-        mAdapter = new FriendsNewListAdapter(getActivity(), articleInfoList);
+        mAdapter = new FriendsListAdapter(getActivity(), articleInfoList,mAdViewPositionMap);
 
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setShowListener(this);
+        mAdapter.setOnItemClickListener(this);
 
-        mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+        mAdapter.setOnItemClickListener(new FriendsListAdapter.OnRecyclerViewItemClickListener() {
             @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                lastItemPosition = position;
+            public void onItemClick(View view, int data) {
+                lastItemPosition = data;
                 Intent intent = new Intent(getActivity(), ArticleDetailActivity.class);
                 intent.putExtra("show_type", 1);
-                intent.putExtra("sid", articleInfoList.get(position).sid);
+                intent.putExtra("sid", ((ArticleInfo)mAdapter.getArticleData().get(data)).sid);
                 startActivity(intent);
             }
         });
 
-        mAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
+//        mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+//                lastItemPosition = position;
+//                Intent intent = new Intent(getActivity(), ArticleDetailActivity.class);
+//                intent.putExtra("show_type", 0);
+//                intent.putExtra("sid", ((ArticleInfo)articleInfoList.get(position)).sid);
+//                startActivity(intent);
+//            }
+//        });
+
+//        mAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
+//            @Override
+//            public void onLoadMoreRequested() {
+//                pageNum++;
+//                if (pageNum <= maxPage) {
+//                    getNextData();
+//                }
+//            }
+//        },mRecyclerView);
+
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
             @Override
-            public void onLoadMoreRequested() {
-                pageNum++;
-                if (pageNum <= maxPage) {
-                    getNextData();
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                if(mRecyclerView.canScrollVertically(1)){
+                    Log.i(TAG, "direction 1: true");
+                }else {
+                    //Log.i(TAG, "direction 1: false");//滑动到底部
+                    pageNum++;
+                    if (pageNum <= maxPage) {
+                        getNextData();
+                    }
                 }
+
             }
-        },mRecyclerView);
+        });
 
         if (AppUtils.isLogin(getActivity())) {
             userInfo = (UserInfo) PreferencesUtils.getObject(getActivity(), Constant.USER_INFO, UserInfo.class);
@@ -213,8 +262,16 @@ public class FriendsFragment extends BaseFragment implements FriendsNewListAdapt
                     }
                     maxPage = Integer.parseInt(temp.get(0).maxpage);
                     //articleInfoList.addAll(temp);
-                    mAdapter.addNewDatas(temp);
+                    mAdapter.addNewDatas(new ArrayList<Object>(temp));
                     mAdapter.notifyDataSetChanged();
+//                    if(temp.size() <10 ){
+//                        mAdapter.loadMoreEnd();
+//                    }else{
+//                        mAdapter.loadMoreComplete();
+//                    }
+                    initNativeExpressAD();
+                }else{
+                    //mAdapter.loadMoreEnd();
                 }
             }
 
@@ -227,13 +284,11 @@ public class FriendsFragment extends BaseFragment implements FriendsNewListAdapt
             public void onBefore() {
             }
         });
-
-
     }
 
     public void getNextData() {
         final Map<String, String> params = setParams();
-
+        swipeLayout.setRefreshing(true);
         Logger.e("next---showtype---" + showType);
 
         if (userInfo != null) {
@@ -243,27 +298,26 @@ public class FriendsFragment extends BaseFragment implements FriendsNewListAdapt
         okHttpRequest.aget(Server.ARTICLE_ALL_DATA, params, new OnResponseListener() {
             @Override
             public void onSuccess(String response) {
+                swipeLayout.setRefreshing(false);
                 //设置首页列表数据
                 List<ArticleInfo> temp = articleService.getData(response).data;
                 if (temp != null && temp.size() > 0) {
+//                    if(temp.size() == pageSize){
+//                        mAdapter.loadMoreComplete();
+//                    }
+//                    if(temp.size() < pageSize){
+//                        mAdapter.loadMoreEnd();
+//                    }
 
-                    if(temp.size() == pageSize){
-                        mAdapter.loadMoreComplete();
-                    }
-                    if(temp.size() < pageSize){
-                        mAdapter.loadMoreEnd();
-                    }
-
-                    //articleInfoList.addAll(temp);
-                    mAdapter.addNewDatas(temp);
-
+                    mAdapter.addNewDatas(new ArrayList<Object>(temp));
                     mAdapter.notifyDataSetChanged();
+                    initNativeExpressAD();
                 }
             }
 
             @Override
             public void onError(Exception e) {
-
+                swipeLayout.setRefreshing(false);
             }
 
             @Override
@@ -381,6 +435,7 @@ public class FriendsFragment extends BaseFragment implements FriendsNewListAdapt
                                 RongIM.getInstance().setCurrentUserInfo(ryUser);
 
                                 RongIM.getInstance().refreshUserInfoCache(ryUser);
+
                                 RxBus.get().post(Constant.LOGIN_SUCCESS, "loginSuccess");
                             }
                         }
@@ -432,12 +487,107 @@ public class FriendsFragment extends BaseFragment implements FriendsNewListAdapt
             }
     )
     public void praiseSuccess(String type) {
-        if (lastItemPosition > -1 && type.equals("1")) {
+        if (lastItemPosition > -1 && type.equals("0")) {
             if (mAdapter.getArticleData() != null && mAdapter.getArticleData().size() > 0) {
-                mAdapter.getArticleData().get(lastItemPosition).iszan = 1;
-                mAdapter.getArticleData().get(lastItemPosition).zan = +1;
+                ((ArticleInfo)mAdapter.getArticleData().get(lastItemPosition)).iszan = 1;
+                ((ArticleInfo)mAdapter.getArticleData().get(lastItemPosition)).zan = +1;
                 mAdapter.notifyDataSetChanged();
             }
         }
+    }
+
+    private void initNativeExpressAD() {//com.qq.e.ads.nativ.ADSize.FULL_WIDTH
+        MultiProcessFlag.setMultiProcess(true);
+        com.qq.e.ads.nativ.ADSize adSize = new com.qq.e.ads.nativ.ADSize(com.qq.e.ads.nativ.ADSize.FULL_WIDTH, com.qq.e.ads.nativ.ADSize.AUTO_HEIGHT); // 消息流中用AUTO_HEIGHT // 消息流中用AUTO_HEIGHT
+        NativeExpressAD mADManager = new NativeExpressAD(getActivity(), adSize, Constant.APPID, Constant.AD_LIST_FIRENDS, this);
+        mADManager.loadAD(AD_COUNT);
+    }
+
+    @Override
+    public void onNoAD(AdError adError) {
+        Log.i(TAG,
+                String.format("onNoAD, error code: %d, error msg: %s", adError.getErrorCode(),
+                        adError.getErrorMsg()));
+    }
+
+    private NativeExpressADView view;
+
+    @Override
+    public void onADLoaded(List<NativeExpressADView> adList) {
+        if (adList != null && adList.size() > 0) {
+            mAdViewList = adList;
+            int adIndex =  (pageNum - 1) % adList.size();
+            int position = FIRST_AD_POSITION + (pageNum - 1) * pageSize;
+            view = mAdViewList.get(adIndex);
+
+            mAdViewPositionMap.put(view, position);
+            mAdapter.addADViewToPosition(position, view);
+        }
+    }
+
+    private String getAdInfo(NativeExpressADView nativeExpressADView) {
+        AdData adData = nativeExpressADView.getBoundData();
+        if (adData != null) {
+            StringBuilder infoBuilder = new StringBuilder();
+            infoBuilder.append("title:").append(adData.getTitle()).append(",")
+                    .append("desc:").append(adData.getDesc()).append(",")
+                    .append("patternType:").append(adData.getAdPatternType());
+            return infoBuilder.toString();
+        }
+        return null;
+    }
+
+    @Override
+    public void onRenderFail(NativeExpressADView nativeExpressADView) {
+
+    }
+
+    @Override
+    public void onRenderSuccess(NativeExpressADView nativeExpressADView) {
+
+    }
+
+    @Override
+    public void onADExposure(NativeExpressADView nativeExpressADView) {
+
+    }
+
+    @Override
+    public void onADClicked(NativeExpressADView nativeExpressADView) {
+
+    }
+
+    @Override
+    public void onADClosed(NativeExpressADView adView) {
+        if (mAdapter != null) {
+            int removedPosition = mAdViewPositionMap.get(adView);
+            mAdapter.removeADView(removedPosition, adView);
+        }
+    }
+
+    @Override
+    public void onADLeftApplication(NativeExpressADView nativeExpressADView) {
+
+    }
+
+    @Override
+    public void onADOpenOverlay(NativeExpressADView nativeExpressADView) {
+
+    }
+
+    @Override
+    public void onADCloseOverlay(NativeExpressADView nativeExpressADView) {
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (view != null) view.destroy();
+    }
+
+    @Override
+    public void onItemClick(View view, int data) {
+        Logger.d("data--->" + data);
     }
 }

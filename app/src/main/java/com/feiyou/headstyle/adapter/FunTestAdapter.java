@@ -37,6 +37,7 @@ public class FunTestAdapter extends BaseQuickAdapter<FunTestInfo, BaseViewHolder
 
     @Override
     protected void convert(final BaseViewHolder helper, final FunTestInfo item) {
+
         helper.setText(R.id.tv_fun_test_title, item.title).setText(R.id.tv_use_count, item.shareperson + "人使用").setText(R.id.tv_share_count, item.sharetotal).setText(R.id.tv_join_count, item.shareperson);
         Glide.with(mContext).load(item.smallimg).into((ImageView) helper.getConvertView().findViewById(R.id.iv_fun_test));
 

@@ -42,21 +42,21 @@
 
             <ImageView
                 android:id="@+id/iv_set_qq_head"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:src="@mipmap/set_qq_head_icon"/>
 
             <ImageView
                 android:id="@+id/iv_add_create"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_marginLeft="16dp"
                 android:src="@mipmap/my_create_normal_icon"/>
 
             <ImageView
                 android:id="@+id/iv_down_head"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_marginLeft="16dp"
                 android:src="@mipmap/down_head_icon"/>
         </LinearLayout>

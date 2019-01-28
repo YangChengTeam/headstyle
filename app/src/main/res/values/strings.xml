@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">个性头像</string>
-    <string name="version_name">个性头像V3.3.5</string>
+    <string name="version_name">个性头像V3.5.2</string>
     <string name="tab_home_text">首页</string>
     <string name="tab_show_text">我秀</string>
     <string name="tab_create_text">制作</string>
@@ -126,4 +126,7 @@
     <string name="open_weixin_text">是否打开微信并关注公众号</string>
     <string name="weixin_code_text">关注[头像达人]公众号</string>
     <string name="weixin_title_text">关注后，可免费下载,尽情炫酷</string>
+
+    <string name="gdtslogan">GDTslogan</string>
+    <string name="click_to_skip">点击跳过</string>
 </resources>

@@ -44,6 +44,7 @@ import com.feiyou.headstyle.view.MyImageViewDrawableOverlay;
 import com.orhanobut.logger.Logger;
 import com.umeng.analytics.MobclickAgent;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -355,8 +356,13 @@ public class PhotoEditActivity extends BaseActivity {
             try {
                 bitmap = params[0];
 
-                String picName = com.blankj.utilcode.util.TimeUtils.getNowMills() + "";
-                fileName = ImageUtils.saveToFile(MyFileUtils.getInst().getPhotoSavedPath() + "/" + picName, false, bitmap);
+                String picName = String.valueOf(TimeUtils.getCurrentTimeInLong()) + ".jpg";
+
+                String spath = Constant.BASE_NORMAL_SAVE_IMAGE_DIR + File.separator + "DCIM" + File.separator + "camera";
+
+                Logger.i("edit save path --->" + spath + "/" + picName);
+
+                fileName = ImageUtils.saveToFile(spath + "/" + picName, false, bitmap);
 
             } catch (Exception e) {
                 e.printStackTrace();

@@ -82,4 +82,13 @@ public class Constant {
     public final static String MESSAGE = "message_hint";
 
     public final static String PRAISE_SUCCESS = "praise_success";
+
+    public static final String APPID = "1107873400";
+
+    public static final String SPA_POSID = "6050141079184468";
+
+    public static final String AD_LIST_FIRENDS = "1010445089780509";
+
+    public static final String AD_LIST_TEST = "9090342150260042";
+
 }

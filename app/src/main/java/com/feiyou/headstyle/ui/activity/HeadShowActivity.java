@@ -100,14 +100,8 @@ public class HeadShowActivity extends BaseActivity {
     @BindView(R.id.high_image_layout)
     LinearLayout highImageLayout;
 
-    @BindView(R.id.qq_auth_login_btn)
-    TextView qqAuthImageBtn;
-
     @BindView(R.id.keep_head_img)
     TextView keepHeadImg;
-
-    @BindView(R.id.down_img)
-    TextView downImg;
 
     private UMShareAPI mShareAPI = null;
 
@@ -424,8 +418,7 @@ public class HeadShowActivity extends BaseActivity {
         }
     }
 
-
-    @OnClick(R.id.qq_auth_login_btn)
+    @OnClick(R.id.iv_set_qq_head)
     public void toAuth(View view) {
         operation = 1;
         //已经登录授权过，无需再次授权
@@ -444,7 +437,7 @@ public class HeadShowActivity extends BaseActivity {
         }
     }
 
-    @OnClick(R.id.down_img)
+    @OnClick(R.id.iv_down_head)
     public void downImg(View view) {
         saveImageToGallery();
     }

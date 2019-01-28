@@ -887,6 +887,10 @@ public class ArticleDetailActivity extends BaseActivity implements CommentAdapte
                         initCommentData();
 
                     } else {
+                        if (commentDialog != null) {
+                            commentDialog.hideProgressDialog();
+                            commentDialog.dismiss();
+                        }
                         ToastUtils.show(ArticleDetailActivity.this, "操作失败，请稍后重试");
                     }
                 }

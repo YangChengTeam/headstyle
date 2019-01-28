@@ -161,7 +161,8 @@ public class HeadCreateShowActivity extends BaseActivity {
             }
 
             if(bundle != null && bundle.getBoolean("from_createlist",false)){
-                mAddCreateImageView.setImageResource(R.mipmap.my_create_select_icon);
+                //mAddCreateImageView.setImageResource(R.mipmap.my_create_select_icon);
+                mAddCreateImageView.setVisibility(View.INVISIBLE);
             }
 
             Glide.with(this).asBitmap().load(imagePath).into(new SimpleTarget<Bitmap>() {

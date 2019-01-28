@@ -63,6 +63,9 @@ import com.feiyou.headstyle.util.ToastUtils;
 import com.feiyou.headstyle.view.BannerImageLoader;
 import com.feiyou.headstyle.view.HeaderGridView;
 import com.feiyou.headstyle.view.SharePopupWindow;
+import com.hwangjr.rxbus.annotation.Subscribe;
+import com.hwangjr.rxbus.annotation.Tag;
+import com.hwangjr.rxbus.thread.EventThread;
 import com.orhanobut.logger.Logger;
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMShareAPI;
@@ -155,8 +158,6 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     ArticleService articleService = null;
 
     private int rPageNum = 1;
-
-    public String alipyCode = "迅Z睿忆B意1骁融锐";
 
     private List<SpecialInfo> specialInfos;
 
@@ -316,7 +317,7 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
             }
         });
 
-        getAlipyCode();
+        //getAlipyCode();
 
         getWeixinInfo();
     }
@@ -365,7 +366,32 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         loadDataByParams();
     }
 
+    @Subscribe(
+            thread = EventThread.MAIN_THREAD,
+            tags = {
+                    @Tag(Constant.LOGIN_SUCCESS)
+            }
+    )
+    public void loginSuccess(String result) {
+        mAdapter.clear();
+        loadCount = 0;
+        isRefresh = true;
+        loadDataByParams();
+
+        //刷新是否有最新的评论
+        ((MainActivity) getActivity()).getUserInfo();
+    }
+
     public void loadDataByParams() {
+
+        if (AppUtils.isLogin(getActivity())) {
+            userInfo = (UserInfo) PreferencesUtils.getObject(getActivity(), Constant.USER_INFO, UserInfo.class);
+            if (userInfo != null) {
+                GlideHelper.circleImageView(getActivity(), userImg, userInfo.getUserimg(), R.mipmap.user_head_def_icon);
+            }
+        } else {
+            GlideHelper.circleImageView(getActivity(), userImg, R.mipmap.user_head_def_icon, R.mipmap.user_head_def_icon);
+        }
 
         loadCount++;
 
@@ -383,6 +409,10 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
 
         params.put("p", pageNum + "");
         params.put("num", "48");
+        if (userInfo != null) {
+            LogUtils.d("uid--->" + userInfo.uid);
+            params.put("uid", userInfo.uid);
+        }
         okHttpRequest.aget(Server.NEW_HOME_DATA, params, new OnResponseListener() {
             @Override
             public void onSuccess(final String response) {
@@ -420,10 +450,11 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                 if (temp != null && temp.size() > 0) {
                     Logger.e("first data ==" + temp.get(0).getHurl());
                     mAdapter.addNewDatas(temp);
+                    mAdapter.notifyDataSetChanged();
 
-                    Message message = new Message();
-                    message.what = 0;
-                    handler.sendMessage(message);
+//                    Message message = new Message();
+//                    message.what = 0;
+//                    handler.sendMessage(message);
                 }
             }
 
@@ -439,38 +470,6 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
             }
         });
 
-    }
-
-    public void copyAlipy(String code) {
-        ClipboardManager cm = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-        // 将文本内容放到系统剪贴板里。
-        cm.setPrimaryClip(ClipData.newPlainText(null, code));
-    }
-
-    public void getAlipyCode() {
-
-        okHttpRequest.aget("http://u.wk990.com/api/index/zfb_code?app_name=gxtx", null, new OnResponseListener() {
-            @Override
-            public void onSuccess(String response) {
-                if (!StringUtils.isEmpty(response)) {
-                    AlipyCodeRet alipyCodeRet = Constant.GSON.fromJson(response, AlipyCodeRet.class);
-                    if (alipyCodeRet != null && alipyCodeRet.code == 1) {
-                        alipyCode = alipyCodeRet.data.zfb_code;
-                    }
-                    copyAlipy(alipyCode);
-                }
-            }
-
-            @Override
-            public void onError(Exception e) {
-                copyAlipy(alipyCode);
-            }
-
-            @Override
-            public void onBefore() {
-
-            }
-        });
     }
 
     public void getWeixinInfo() {
@@ -493,7 +492,7 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
 
             @Override
             public void onError(Exception e) {
-                copyAlipy(alipyCode);
+
             }
 
             @Override
@@ -583,14 +582,7 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     @Override
     public void onResume() {
         super.onResume();
-        if (AppUtils.isLogin(getActivity())) {
-            userInfo = (UserInfo) PreferencesUtils.getObject(getActivity(), Constant.USER_INFO, UserInfo.class);
-            if (userInfo != null) {
-                GlideHelper.circleImageView(getActivity(), userImg, userInfo.getUserimg(), R.mipmap.user_head_def_icon);
-            }
-        } else {
-            GlideHelper.circleImageView(getActivity(), userImg, R.mipmap.user_head_def_icon, R.mipmap.user_head_def_icon);
-        }
+
     }
 
     private Handler handler = new Handler() {
@@ -720,153 +712,6 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
             if (!result) {
                 Intent intent = new Intent(getActivity(), UpdateService.class);
                 intent.putExtra("downUrl", downUrl);
-                getActivity().startService(intent);
-            } else {
-                ToastUtils.show(getActivity(), "下载地址有误，请稍后重试");
-            }
-        }
-    }
-
-
-    /**
-     * 判断是否下载或者打开"装逼神器APP"
-     */
-    public void downFight(int mCid, String mTitleName) {
-
-        if (AppUtils.appInstalled(getActivity(), "com.fy.tnzbsq")) {
-            //Toast.makeText(getActivity(),"应用已安装，请体验",Toast.LENGTH_SHORT).show();
-
-            //如果下载文件存在并且已经安装，直接删除下载文件
-            /*File downFile = new File(Constant.FIGHT_DOWN_FILE_PATH);
-            if (downFile.exists()) {
-                downFile.delete();
-            }
-
-            PackageManager packageManager = getActivity().getPackageManager();
-            Intent intent = new Intent();
-            intent = packageManager.getLaunchIntentForPackage("com.fy.tnzbsq");
-            startActivity(intent);*/
-
-            typeListActivity(mCid, mTitleName);
-
-        } else {
-            //if (!AppUtils.isServiceWork(getActivity(), "com.feiyou.headstyle.net.service.DownFightService")) {
-
-            //如果下载文件存在，直接启动安装
-            File downFile = new File(Constant.FIGHT_DOWN_FILE_PATH);
-            if (downFile.exists()) {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.setDataAndType(Uri.fromFile(downFile),
-                        "application/vnd.android.package-archive");
-                startActivity(intent);
-            } else {
-                //启动服务重新下载
-                //TODO 暂时注释
-                //new DownAsyncTask().execute();
-
-                //判断应用宝市场是否存在
-                if (AppUtils.appInstalled(getActivity(), "com.tencent.android.qqdownloader")) {
-                    AppUtils.shareAppShop(getActivity(), "com.fy.tnzbsq");
-                } else {
-                    new DownAsyncTask().execute();
-                }
-            }
-
-            /*} else {
-                ToastUtils.show(getActivity(), "斗图神器下载中");
-            }*/
-        }
-    }
-
-    /**
-     * 判断是否下载或者打开"装逼神器APP"
-     */
-    public void downLsdd(int mCid, String mTitleName) {
-
-        if (AppUtils.appInstalled(getActivity(), "com.whfeiyou.sound")) {
-            //Toast.makeText(getActivity(),"应用已安装，请体验",Toast.LENGTH_SHORT).show();
-
-            //如果下载文件存在并且已经安装，直接删除下载文件
-            /*File downFile = new File(Constant.FIGHT_DOWN_FILE_PATH);
-            if (downFile.exists()) {
-                downFile.delete();
-            }
-
-            PackageManager packageManager = getActivity().getPackageManager();
-            Intent intent = new Intent();
-            intent = packageManager.getLaunchIntentForPackage("com.fy.tnzbsq");
-            startActivity(intent);*/
-
-            typeListActivity(mCid, mTitleName);
-
-        } else {
-            //if (!AppUtils.isServiceWork(getActivity(), "com.feiyou.headstyle.net.service.DownFightService")) {
-
-            //如果下载文件存在，直接启动安装
-            File downFile = new File(Constant.LSDD_DOWN_FILE_PATH);
-            if (downFile.exists()) {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.setDataAndType(Uri.fromFile(downFile),
-                        "application/vnd.android.package-archive");
-                startActivity(intent);
-            } else {
-                //启动服务重新下载
-                //TODO 暂时注释
-                //new DownAsyncTask().execute();
-
-                //判断应用宝市场是否存在
-                if (AppUtils.appInstalled(getActivity(), "com.tencent.android.qqdownloader")) {
-                    AppUtils.shareAppShop(getActivity(), "com.whfeiyou.sound");
-                } else {
-                    new DownLsddAsyncTask().execute();
-                }
-            }
-
-            /*} else {
-                ToastUtils.show(getActivity(), "斗图神器下载中");
-            }*/
-        }
-    }
-
-    /**
-     * 启动服务下载"装逼神器APP"
-     */
-    public class DownAsyncTask extends AsyncTask<Integer, Integer, Boolean> {
-        @Override
-        protected Boolean doInBackground(Integer... params) {
-            return NetWorkUtils.is404NotFound(Constant.FIGHT_DOWN_URL);
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            super.onPostExecute(result);
-            if (!result) {
-                Intent intent = new Intent(getActivity(), DownFightService.class);
-                intent.putExtra("downUrl", Constant.FIGHT_DOWN_URL);
-                getActivity().startService(intent);
-            } else {
-                ToastUtils.show(getActivity(), "下载地址有误，请稍后重试");
-            }
-        }
-    }
-
-    /**
-     * 启动服务下载铃声朵朵
-     */
-    public class DownLsddAsyncTask extends AsyncTask<Integer, Integer, Boolean> {
-        @Override
-        protected Boolean doInBackground(Integer... params) {
-            return NetWorkUtils.is404NotFound(Constant.LSDD_DOWN_URL);
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            super.onPostExecute(result);
-            if (!result) {
-                Intent intent = new Intent(getActivity(), DownLsddService.class);
-                intent.putExtra("downUrl", Constant.LSDD_DOWN_URL);
                 getActivity().startService(intent);
             } else {
                 ToastUtils.show(getActivity(), "下载地址有误，请稍后重试");

@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.feiyou.headstyle.R;
+import com.feiyou.headstyle.bean.HeadInfo;
 import com.feiyou.headstyle.util.ScreenUtils;
 import com.feiyou.headstyle.util.SizeUtils;
 
@@ -21,37 +22,37 @@ public class HeadShowItemAdapter extends BaseAdapter {
 
     private Context mContext;
 
-    private List<String> heads;
+    private List<HeadInfo> heads;
 
     private int ivWidth;
 
     private int ivHeight;
 
-    public HeadShowItemAdapter(Context mContext, List<String> heads) {
+    public HeadShowItemAdapter(Context mContext, List<HeadInfo> heads) {
         super();
         this.mContext = mContext;
         this.heads = heads;
         ivWidth = ScreenUtils.getWidth(mContext) - SizeUtils.dp2px(mContext, 66);
     }
 
-    public List<String> getHeads() {
+    public List<HeadInfo> getHeads() {
         return heads;
     }
 
-    public void setHeads(List<String> heads) {
+    public void setHeads(List<HeadInfo> heads) {
         this.heads = heads;
     }
 
-    public void addItemData(String imageUrl) {
+    public void addItemData(HeadInfo imageUrl) {
         if (heads == null) {
-            heads = new ArrayList<String>();
+            heads = new ArrayList<HeadInfo>();
         }
         heads.add(imageUrl);
     }
 
-    public void addDatas(List<String> images) {
+    public void addDatas(List<HeadInfo> images) {
         if (heads == null) {
-            heads = new ArrayList<String>();
+            heads = new ArrayList<HeadInfo>();
         } else {
             heads.clear();
         }
@@ -100,7 +101,7 @@ public class HeadShowItemAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        Glide.with(mContext).load(heads.get(position)).into(holder.mHeadShowImageView);
+        Glide.with(mContext).load(heads.get(position).getHurl()).into(holder.mHeadShowImageView);
         return convertView;
     }
 

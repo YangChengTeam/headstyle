@@ -46,7 +46,7 @@ public class OKHttpRequest {
 
             @Override
             public void onResponse(String response, int id) {
-                //Logger.e("--- data success---" + response);
+                Logger.e("--- data success---" + response);
                 if (onResponseListener != null) {
                     onResponseListener.onSuccess(response);
                 }

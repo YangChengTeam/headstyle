@@ -13,6 +13,7 @@ import com.feiyou.headstyle.bean.MyCreateInfo;
 import com.feiyou.headstyle.bean.UserInfo;
 import com.feiyou.headstyle.common.Constant;
 import com.feiyou.headstyle.db.greendao.DaoSession;
+import com.feiyou.headstyle.db.greendao.MyCreateInfoDao;
 import com.feiyou.headstyle.net.OKHttpRequest;
 import com.feiyou.headstyle.service.HomeService;
 import com.feiyou.headstyle.util.AppUtils;
@@ -111,7 +112,7 @@ public class MyCreateListActivity extends BaseActivity implements SwipeRefreshLa
             if (userInfo != null) {
                 DaoSession daoSession = DbUtil.getSession(MyCreateListActivity.this);
 
-                List<MyCreateInfo> temp = daoSession.getMyCreateInfoDao().loadAll();
+                List<MyCreateInfo> temp = daoSession.getMyCreateInfoDao().queryBuilder().where(MyCreateInfoDao.Properties.Uid.eq(userInfo.uid)).list();
 
                 if (temp != null && temp.size() > 0) {
                     data.addAll(temp);

@@ -211,10 +211,13 @@ public class MyArticleActivity extends BaseActivity implements ArticleNewListAda
                             if (articleInfoList != null && articleInfoList.size() > 0) {
                                 articleInfoList.clear();
                             }
-
                             //articleInfoList.addAll(temp);
                             mAdapter.addNewDatas(temp);
                             mAdapter.notifyDataSetChanged();
+                        }
+                        if(temp.size() <= 10){
+                            mAdapter.loadMoreComplete();
+                            mAdapter.loadMoreEnd();
                         }
                     }
                 }

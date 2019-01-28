@@ -10,7 +10,10 @@ public class Server {
     public final static String HOME_DATA = BASE_SERVER_IP + "apajax.asp?action=0&ctype=0&num=50";
 
     //获取首页数据
-    public final static String NEW_HOME_DATA = BASE_SERVER_IP + "index/api?action=0";
+    public final static String NEW_HOME_DATA = BASE_SERVER_IP + "index/api?action=101";
+
+    //获取详情页列表的数据
+    public final static String NEW_DETAIL_LIST_DATA = BASE_SERVER_IP + "index/api?action=101";
 
     //搜索接口地址
     public final static String SEARCH_DATA = BASE_SERVER_IP + "apajax.asp?action=2&num=50";

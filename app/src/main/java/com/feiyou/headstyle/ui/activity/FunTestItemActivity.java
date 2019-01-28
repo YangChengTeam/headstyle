@@ -346,18 +346,26 @@ public class FunTestItemActivity extends BaseActivity {
 
     @OnClick(R.id.back_image)
     public void finishActivity() {
-        if (currentPosition > -1 && currentPosition < mTopicList.size()) {
-            testDialog.show();
-        } else {
+        if(mTopicList != null){
+            if (currentPosition > -1 && currentPosition < mTopicList.size()) {
+                testDialog.show();
+            } else {
+                finish();
+            }
+        }else{
             finish();
         }
     }
 
     @Override
     public void onBackPressed() {
-        if (currentPosition > -1 && currentPosition < mTopicList.size()) {
-            testDialog.show();
-        } else {
+        if(mTopicList != null){
+            if (currentPosition > -1 && currentPosition < mTopicList.size()) {
+                testDialog.show();
+            } else {
+                finish();
+            }
+        }else{
             finish();
         }
     }

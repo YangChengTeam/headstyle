@@ -118,7 +118,7 @@ public class CityFragment extends BaseFragment implements PhotosListAdapter.Logi
         articleService = new ArticleService();
         okHttpRequest = new OKHttpRequest();
 
-        mAdapter = new PhotosListAdapter(getActivity(), articleInfoList);
+        mAdapter = new PhotosListAdapter(getActivity(), null,null);
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setShowListener(this);
 
@@ -216,7 +216,7 @@ public class CityFragment extends BaseFragment implements PhotosListAdapter.Logi
                     maxPage = Integer.parseInt(temp.get(0).maxpage);
 
                     //articleInfoList.addAll(temp);
-                    mAdapter.addNewDatas(temp);
+                    mAdapter.addNewDatas(null);
                     mAdapter.notifyDataSetChanged();
                 }
             }
@@ -248,7 +248,7 @@ public class CityFragment extends BaseFragment implements PhotosListAdapter.Logi
                 List<ArticleInfo> temp = articleService.getData(response).data;
                 if (temp != null && temp.size() > 0) {
                     //articleInfoList.addAll(temp);
-                    mAdapter.addNewDatas(temp);
+                    mAdapter.addNewDatas(null);
 
                     mAdapter.notifyDataSetChanged();
                 }
@@ -417,9 +417,9 @@ public class CityFragment extends BaseFragment implements PhotosListAdapter.Logi
     public void praiseSuccess(String type) {
         if (lastItemPosition > -1 && type.equals("2")) {
             if (mAdapter.getArticleData() != null && mAdapter.getArticleData().size() > 0) {
-                mAdapter.getArticleData().get(lastItemPosition).iszan = 1;
-                mAdapter.getArticleData().get(lastItemPosition).zan = +1;
-                mAdapter.notifyDataSetChanged();
+//                mAdapter.getArticleData().get(lastItemPosition).iszan = 1;
+//                mAdapter.getArticleData().get(lastItemPosition).zan = +1;
+//                mAdapter.notifyDataSetChanged();
             }
         }
     }

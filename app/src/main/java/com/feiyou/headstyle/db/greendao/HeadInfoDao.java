@@ -30,6 +30,7 @@ public class HeadInfoDao extends AbstractDao<HeadInfo, Long> {
         public final static Property Clicknum = new Property(3, String.class, "clicknum", false, "CLICKNUM");
         public final static Property Keepnum = new Property(4, String.class, "keepnum", false, "KEEPNUM");
         public final static Property Gaoqing = new Property(5, String.class, "gaoqing", false, "GAOQING");
+        public final static Property Is_keep = new Property(6, Long.class, "is_keep", false, "IS_KEEP");
     }
 
 
@@ -50,7 +51,8 @@ public class HeadInfoDao extends AbstractDao<HeadInfo, Long> {
                 "\"HURL\" TEXT," + // 2: hurl
                 "\"CLICKNUM\" TEXT," + // 3: clicknum
                 "\"KEEPNUM\" TEXT," + // 4: keepnum
-                "\"GAOQING\" TEXT);"); // 5: gaoqing
+                "\"GAOQING\" TEXT," + // 5: gaoqing
+                "\"IS_KEEP\" INTEGER);"); // 6: is_keep
     }
 
     /** Drops the underlying database table. */
@@ -92,6 +94,11 @@ public class HeadInfoDao extends AbstractDao<HeadInfo, Long> {
         if (gaoqing != null) {
             stmt.bindString(6, gaoqing);
         }
+ 
+        Long is_keep = entity.getIs_keep();
+        if (is_keep != null) {
+            stmt.bindLong(7, is_keep);
+        }
     }
 
     @Override
@@ -127,6 +134,11 @@ public class HeadInfoDao extends AbstractDao<HeadInfo, Long> {
         if (gaoqing != null) {
             stmt.bindString(6, gaoqing);
         }
+ 
+        Long is_keep = entity.getIs_keep();
+        if (is_keep != null) {
+            stmt.bindLong(7, is_keep);
+        }
     }
 
     @Override
@@ -142,7 +154,8 @@ public class HeadInfoDao extends AbstractDao<HeadInfo, Long> {
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // hurl
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // clicknum
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // keepnum
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5) // gaoqing
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // gaoqing
+            cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6) // is_keep
         );
         return entity;
     }
@@ -155,6 +168,7 @@ public class HeadInfoDao extends AbstractDao<HeadInfo, Long> {
         entity.setClicknum(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setKeepnum(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setGaoqing(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setIs_keep(cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6));
      }
     
     @Override

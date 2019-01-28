@@ -7,14 +7,18 @@ import android.widget.AbsListView;
 import android.widget.GridView;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.feiyou.headstyle.R;
 import com.feiyou.headstyle.adapter.HeadWallAdapter;
 import com.feiyou.headstyle.bean.HeadInfo;
 import com.feiyou.headstyle.bean.HeadListRet;
+import com.feiyou.headstyle.bean.UserInfo;
+import com.feiyou.headstyle.common.Constant;
 import com.feiyou.headstyle.common.Server;
 import com.feiyou.headstyle.net.OKHttpRequest;
 import com.feiyou.headstyle.net.listener.OnResponseListener;
 import com.feiyou.headstyle.service.HomeService;
+import com.feiyou.headstyle.util.PreferencesUtils;
 import com.feiyou.headstyle.util.StringUtils;
 import com.orhanobut.logger.Logger;
 
@@ -57,6 +61,8 @@ public class HeadListActivity extends BaseActivity implements SwipeRefreshLayout
     private int cid;
 
     private int maxPage = 0;
+
+    private UserInfo userInfo;
 
     @Override
     public int getLayoutId() {
@@ -135,6 +141,7 @@ public class HeadListActivity extends BaseActivity implements SwipeRefreshLayout
 
     @Override
     public void loadData() {
+        userInfo = (UserInfo) PreferencesUtils.getObject(this, Constant.USER_INFO, UserInfo.class);
 
         if (nextData != null && nextData.size() > 0) {
             data.addAll(nextData);
@@ -153,6 +160,11 @@ public class HeadListActivity extends BaseActivity implements SwipeRefreshLayout
             params.put("p", pageNum + "");
             params.put("num", "48");
             params.put("cid", cid + "");
+
+            if (userInfo != null) {
+                LogUtils.d("uid--->" + userInfo.uid);
+                params.put("uid", userInfo.uid);
+            }
 
             okHttpRequest.aget(Server.NEW_HOME_DATA, params, new OnResponseListener() {
                 @Override
@@ -204,6 +216,11 @@ public class HeadListActivity extends BaseActivity implements SwipeRefreshLayout
             params.put("p", pageNum + "");
             params.put("cid", cid + "");
             params.put("num", "48");
+
+            if (userInfo != null) {
+                LogUtils.d("uid--->" + userInfo.uid);
+                params.put("uid", userInfo.uid);
+            }
 
             okHttpRequest.aget(Server.NEW_HOME_DATA, params, new OnResponseListener() {
                 @Override

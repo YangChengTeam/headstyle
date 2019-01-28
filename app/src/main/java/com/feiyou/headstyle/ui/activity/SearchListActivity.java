@@ -158,12 +158,12 @@ public class SearchListActivity extends BaseActivity implements SwipeRefreshLayo
     @Override
     public void loadData() {
 
-        swipeLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                swipeLayout.setRefreshing(true);
-            }
-        });
+//        swipeLayout.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                swipeLayout.setRefreshing(true);
+//            }
+//        });
 
         Map<String, String> params = new HashMap<String, String>();
         params.put("p", pageNum + "");
@@ -187,13 +187,16 @@ public class SearchListActivity extends BaseActivity implements SwipeRefreshLayo
                     if (temp != null && temp.size() > 0) {
                         data.addAll(temp);
                         mAdapter.addNewDatas(temp);
-
                         mAdapter.notifyDataSetChanged();
-
                         pageNum++;
                     } else {
-                        swipeLayout.setVisibility(View.GONE);
-                        noMoreTv.setVisibility(View.VISIBLE);
+                        if(pageNum == 1){
+                            swipeLayout.setVisibility(View.GONE);
+                            noMoreTv.setVisibility(View.VISIBLE);
+                        }else{
+                            swipeLayout.setVisibility(View.VISIBLE);
+                            noMoreTv.setVisibility(View.GONE);
+                        }
                     }
                 }
 
@@ -204,9 +207,11 @@ public class SearchListActivity extends BaseActivity implements SwipeRefreshLayo
 
                 @Override
                 public void onBefore() {
-
+                    swipeLayout.setRefreshing(true);
                 }
             });
+        }else{
+            swipeLayout.setRefreshing(false);
         }
     }
 

@@ -1,11 +1,13 @@
 package com.feiyou.headstyle.bean;
 
+import com.chad.library.adapter.base.entity.MultiItemEntity;
+
 import java.io.Serializable;
 
 /**
  * Created by admin on 2016/9/5.
  */
-public class FunTestInfo implements Serializable {
+public class FunTestInfo implements Serializable,MultiItemEntity {
 
     public String testid;
     public int cid;
@@ -21,4 +23,14 @@ public class FunTestInfo implements Serializable {
     public String paixu;
     public int stype;
 
+    public int itemType;
+
+    public void setItemType(int itemType) {
+        this.itemType = itemType;
+    }
+
+    @Override
+    public int getItemType() {
+        return itemType;
+    }
 }
